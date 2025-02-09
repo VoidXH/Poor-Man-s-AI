@@ -1,0 +1,49 @@
+﻿using System.Runtime.CompilerServices;
+
+namespace PoorMansAI.Engines {
+    /// <summary>
+    /// One kind of task-specific AI like image generator or chatbot.
+    /// </summary>
+    public abstract class Engine : IDisposable {
+        /// <summary>
+        /// Snapshot of progression.
+        /// </summary>
+        /// <param name="engineType">The engine sending this progress update</param>
+        /// <param name="id">ID of the user query to assign the result to</param>
+        /// <param name="progress">Ratio of completion</param>
+        /// <param name="status">Current version of the text/image/etc under generation</param>
+        public delegate void Progress(EngineType engineType, int id, float progress, string status);
+
+        /// <summary>
+        /// Progress is periodically reported for subscribed users.
+        /// </summary>
+        public event Progress OnProgress;
+
+        /// <summary>
+        /// Start the text/image/etc generation with a full prompt. This function blocks until the generation is done.
+        /// </summary>
+        /// <param name="id">ID of the user query to assign the result to</param>
+        /// <param name="prompt">What the user wants</param>
+        public abstract string Generate(int id, string prompt);
+
+        /// <summary>
+        /// Stop the generation process of the current instance.
+        /// </summary>
+        public abstract void StopGeneration();
+
+        /// <summary>
+        /// Stop the engine.
+        /// </summary>
+        public abstract void Dispose();
+
+        /// <summary>
+        /// Invoke <see cref="OnProgress"/>, send a snapshot of progression.
+        /// </summary>
+        /// <param name="engineType">The engine sending this progress update</param>
+        /// <param name="id">ID of the user query to assign the result to</param>
+        /// <param name="progress">Ratio of completion</param>
+        /// <param name="status">Current version of the text/image/etc under generation</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        protected void UpdateProgress(EngineType engineType, int id, float progress, string status) => OnProgress?.Invoke(engineType, id, progress, status);
+    }
+}
