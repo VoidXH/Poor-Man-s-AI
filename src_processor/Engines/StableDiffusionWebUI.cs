@@ -84,11 +84,11 @@ namespace PoorMansAI.Engines {
         }
 
         /// <inheritdoc/>
-        public override string Generate(int id, string prompt) {
+        public override string Generate(Command command) {
             generating = true;
-            prompt = PromptTransformer.Transform(prompt).ToString();
-            progressReporter = new Timer(ProgressCheck, id, 0, 500);
-            string result = HTTP.POST(Server + "/sdapi/v1/txt2img", prompt, Config.imageGenTimeout);
+            string procPrompt = PromptTransformer.Transform(command.Prompt).ToString();
+            progressReporter = new Timer(ProgressCheck, command, 0, 500);
+            string result = HTTP.POST(Server + "/sdapi/v1/txt2img", procPrompt, Config.imageGenTimeout);
             generating = false;
             lock (locker) {
                 progressReporter?.Dispose();
@@ -121,7 +121,7 @@ namespace PoorMansAI.Engines {
         /// <summary>
         /// Periodically check and forward image generation progress.
         /// </summary>
-        void ProgressCheck(object id) {
+        void ProgressCheck(object commandIn) {
             lock (locker) {
                 if (progressChecked) {
                     return;
@@ -134,12 +134,12 @@ namespace PoorMansAI.Engines {
                 JsonNode parsed = JsonNode.Parse(result),
                     progress = parsed["progress"];
                 if (progress != null) {
-                    int commandId = (int)id;
+                    Command command = (Command)commandIn;
                     float parsedProgress = progress.GetValue<float>();
                     string parsedResult = parsed["current_image"]?.ToString();
                     lock (locker) {
                         if (progressReporter != null && generating) {
-                            UpdateProgress(EngineType.Image, commandId, parsedProgress, parsedResult);
+                            UpdateProgress(command, parsedProgress, parsedResult);
                         }
                     }
                 }

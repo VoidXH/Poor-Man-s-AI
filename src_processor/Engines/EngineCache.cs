@@ -109,18 +109,18 @@ namespace PoorMansAI.Engines {
         /// Run a <paramref name="command"/> of a given <paramref name="id"/> through the corresponding <paramref name="engine"/>.
         /// </summary>
         /// <returns>The output of the generation.</returns>
-        public string Generate(EngineType engine, int id, string command) {
-            if (engine == EngineType.Mode) {
-                Mode = (EngineCacheMode)int.Parse(command);
+        public string Generate(Command command) {
+            if (command.EngineType == EngineType.Mode) {
+                Mode = (EngineCacheMode)int.Parse(command.Prompt);
                 HTTP.POST(HTTP.Combine(Config.publicWebserver, "/models.php"), [
-                    new KeyValuePair<string, string>("active", command)
+                    new KeyValuePair<string, string>("active", command.Prompt)
                 ], cookies);
                 return null;
             }
 
-            return engine switch {
-                EngineType.Chat => chatEngine?.Generate(id, command) ?? "Chat engine is not loaded.",
-                EngineType.Image => imageEngine?.Generate(id, command) ?? File.ReadAllText("Data/OfflineImage.txt"),
+            return command.EngineType switch {
+                EngineType.Chat => chatEngine?.Generate(command) ?? "Chat engine is not loaded.",
+                EngineType.Image => imageEngine?.Generate(command) ?? File.ReadAllText("Data/OfflineImage.txt"),
                 _ => null
             };
         }
@@ -147,6 +147,6 @@ namespace PoorMansAI.Engines {
         /// <summary>
         /// Allow for lazy subscriptions.
         /// </summary>
-        void CallOnProgress(EngineType engineType, int id, float progress, string status) => OnProgress?.Invoke(engineType, id, progress, status);
+        void CallOnProgress(Command command, float progress, string status) => OnProgress?.Invoke(command, progress, status);
     }
 }

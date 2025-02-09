@@ -8,11 +8,10 @@ namespace PoorMansAI.Engines {
         /// <summary>
         /// Snapshot of progression.
         /// </summary>
-        /// <param name="engineType">The engine sending this progress update</param>
-        /// <param name="id">ID of the user query to assign the result to</param>
+        /// <param name="command">All data about the user's query</param>
         /// <param name="progress">Ratio of completion</param>
         /// <param name="status">Current version of the text/image/etc under generation</param>
-        public delegate void Progress(EngineType engineType, int id, float progress, string status);
+        public delegate void Progress(Command command, float progress, string status);
 
         /// <summary>
         /// Progress is periodically reported for subscribed users.
@@ -22,9 +21,8 @@ namespace PoorMansAI.Engines {
         /// <summary>
         /// Start the text/image/etc generation with a full prompt. This function blocks until the generation is done.
         /// </summary>
-        /// <param name="id">ID of the user query to assign the result to</param>
-        /// <param name="prompt">What the user wants</param>
-        public abstract string Generate(int id, string prompt);
+        /// <param name="command">All data about the user's query</param>
+        public abstract string Generate(Command command);
 
         /// <summary>
         /// Stop the generation process of the current instance.
@@ -39,11 +37,10 @@ namespace PoorMansAI.Engines {
         /// <summary>
         /// Invoke <see cref="OnProgress"/>, send a snapshot of progression.
         /// </summary>
-        /// <param name="engineType">The engine sending this progress update</param>
-        /// <param name="id">ID of the user query to assign the result to</param>
+        /// <param name="command">All data about the user's query</param>
         /// <param name="progress">Ratio of completion</param>
         /// <param name="status">Current version of the text/image/etc under generation</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        protected void UpdateProgress(EngineType engineType, int id, float progress, string status) => OnProgress?.Invoke(engineType, id, progress, status);
+        protected void UpdateProgress(Command command, float progress, string status) => OnProgress?.Invoke(command, progress, status);
     }
 }

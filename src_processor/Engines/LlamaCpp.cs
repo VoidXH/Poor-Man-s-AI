@@ -73,9 +73,9 @@ namespace PoorMansAI.Engines {
         }
 
         /// <inheritdoc/>
-        public override string Generate(int id, string prompt) {
-            int split = prompt.IndexOf('|');
-            (string modelPath, string systemMessage) = models[prompt[..split]];
+        public override string Generate(Command command) {
+            int split = command.Prompt.IndexOf('|');
+            (string modelPath, string systemMessage) = models[command.Prompt[..split]];
             if (model != modelPath) {
                 model = modelPath;
                 instance.Kill(true);
@@ -88,7 +88,7 @@ namespace PoorMansAI.Engines {
                 ["content"] = systemMessage
             });
 
-            string[] chat = prompt[(split + 1)..].Split('|');
+            string[] chat = command.Prompt[(split + 1)..].Split('|');
             for (int i = 0; i < chat.Length; i++) {
                 messages.Add(new JsonObject {
                     ["role"] = i % 2 == 0 ? "user" : "assistant",
@@ -105,7 +105,7 @@ namespace PoorMansAI.Engines {
             canceller = new();
             string result;
             try {
-                result = HTTP.POST(Server + "/v1/chat/completions", root.ToJsonString(), x => UpdateProgress(EngineType.Chat, id, .5f, x),
+                result = HTTP.POST(Server + "/v1/chat/completions", root.ToJsonString(), x => UpdateProgress(command, .5f, x),
                     Config.serverPollInterval / 3 /* final callback also limits */, Parse, canceller.Token, Config.textGenTimeout);
             } catch (Exception e) {
                 result = e.ToString();

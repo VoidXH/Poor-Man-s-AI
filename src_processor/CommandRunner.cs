@@ -35,11 +35,6 @@ namespace PoorMansAI {
         bool executing;
 
         /// <summary>
-        /// Used for making sure we don't waste bandwidth for reporting the same exact result as before.
-        /// </summary>
-        string lastStatus;
-
-        /// <summary>
         /// Don't allow progress updates to the server too often.
         /// </summary>
         DateTime lastMessage;
@@ -76,13 +71,9 @@ namespace PoorMansAI {
             if (result != null) {
                 JsonNode commands = JsonNode.Parse(result);
                 foreach (JsonNode entry in commands["commands"].AsArray()) {
-                    int id = int.Parse(entry["id"].GetValue<string>());
-                    lastStatus = null;
-                    string command = entry["command"].GetValue<string>();
-                    int split = command.IndexOf('|');
-                    EngineType engineType = Enum.Parse<EngineType>(command[..split]);
-                    string output = engine.Generate(engineType, id, command[(split + 1)..]);
-                    ProgressUpdate(engineType, id, 1, output);
+                    Command command = new(entry);
+                    string output = engine.Generate(command);
+                    ProgressUpdate(command, 1, output);
                 }
             }
 
@@ -103,7 +94,7 @@ namespace PoorMansAI {
         /// <summary>
         /// Send updates to the server. Prevents DoS, but makes sure the final progress is always sent.
         /// </summary>
-        void ProgressUpdate(EngineType engineType, int id, float progress, string status) {
+        void ProgressUpdate(Command command, float progress, string status) {
             lock (runner) {
                 if (progress <= 0.01) {
                     return; // First real update only
@@ -115,20 +106,18 @@ namespace PoorMansAI {
                 }
 
                 bool repeat = finished;
-                string statusToSend = lastStatus != status ? status : null;
-                lastStatus = status;
                 do {
                     string commandUrl = "/commands.php?" + EnginesToUpdate();
                     string result = HTTP.POST(HTTP.Combine(Config.publicWebserver, commandUrl), [
-                        new("update", id.ToString()),
-                        new("result", statusToSend),
+                        new("update", command.ID.ToString()),
+                        new("result", command.Update(status)),
                         new("progress", Math.Floor(progress * 100).ToString(CultureInfo.InvariantCulture))
                     ], cookies);
                     repeat &= result == null;
                     if (repeat) {
                         Thread.Sleep(Config.serverPollInterval);
                     } else if (result == "STOP") { // Canceled
-                        engine.StopGeneration(engineType);
+                        engine.StopGeneration(command.EngineType);
                     }
                 } while (repeat);
                 lastMessage = DateTime.Now;
