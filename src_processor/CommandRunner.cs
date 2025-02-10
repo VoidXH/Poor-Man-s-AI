@@ -72,30 +72,11 @@ namespace PoorMansAI {
                 try {
                     JsonNode parsed = JsonNode.Parse(result);
                     IEnumerable<Command> commands = parsed["commands"].AsArray().Select(x => new Command(x));
-                    IEnumerable<IGrouping<EngineType, Command>> groupsPre = commands.GroupBy(command => command.EngineType);
-                    IEnumerable<(EngineType engine, Command[] commands)> groups = groupsPre.Select(g => (g.Key, g.ToArray()));
-                    Command[] cpu = groups.FirstOrDefault(x => RunsOnCPU(x.engine)).commands;
-                    Command[] gpu = groups.FirstOrDefault(x => RunsOnGPU(x.engine)).commands;
-                    Command[] control = groups.Where(x => !RunsOnCPU(x.engine) && !RunsOnGPU(x.engine)).SelectMany(x => x.commands).ToArray();
 
-                    RunGroup(control);
-                    Task onCPU = null;
-                    if (cpu != null) {
-                        onCPU = Task.Run(() => RunGroup(cpu));
-                    }
-                    Task onGPU = null;
-                    if (gpu != null) {
-                        onGPU = Task.Run(() => RunGroup(gpu));
-                    }
-                    try {
-                        onCPU?.Wait();
-                    } catch (Exception e) { // If CPU fails, GPU could still run
-                        Console.Error.WriteLine(e);
-                    }
-                    try {
-                        onGPU?.Wait();
-                    } catch (Exception e) {
-                        Console.Error.WriteLine(e);
+                    if (Config.unified) {
+                        RunGroup(commands);
+                    } else {
+                        RunParallel(commands);
                     }
                 } catch (Exception e) {
                     Console.Error.WriteLine(e);
@@ -119,10 +100,41 @@ namespace PoorMansAI {
         /// <summary>
         /// Process a specific set of <paramref name="commands"/> on their corresponding engine.
         /// </summary>
-        void RunGroup(Command[] commands) {
-            for (int i = 0; i < commands.Length; i++) {
-                string output = engine.Generate(commands[i]);
-                ProgressUpdate(commands[i], 1, output);
+        void RunGroup(IEnumerable<Command> commands) {
+            foreach (Command command in commands) {
+                string output = engine.Generate(command);
+                ProgressUpdate(command, 1, output);
+            }
+        }
+
+        /// <summary>
+        /// Run <see cref="Command"/>s at the same time on the CPU and on the GPU.
+        /// </summary>
+        void RunParallel(IEnumerable<Command> commands) {
+            IEnumerable<IGrouping<EngineType, Command>> groupsPre = commands.GroupBy(command => command.EngineType);
+            IEnumerable<(EngineType engine, Command[] commands)> groups = groupsPre.Select(g => (g.Key, g.ToArray()));
+            Command[] cpu = groups.FirstOrDefault(x => RunsOnCPU(x.engine)).commands;
+            Command[] gpu = groups.FirstOrDefault(x => RunsOnGPU(x.engine)).commands;
+            Command[] control = groups.Where(x => !RunsOnCPU(x.engine) && !RunsOnGPU(x.engine)).SelectMany(x => x.commands).ToArray();
+
+            RunGroup(control);
+            Task onCPU = null;
+            if (cpu != null) {
+                onCPU = Task.Run(() => RunGroup(cpu));
+            }
+            Task onGPU = null;
+            if (gpu != null) {
+                onGPU = Task.Run(() => RunGroup(gpu));
+            }
+            try {
+                onCPU?.Wait();
+            } catch (Exception e) { // If CPU fails, GPU could still run
+                Console.Error.WriteLine(e);
+            }
+            try {
+                onGPU?.Wait();
+            } catch (Exception e) {
+                Console.Error.WriteLine(e);
             }
         }
 

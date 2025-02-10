@@ -24,6 +24,11 @@
         internal static readonly string adminPassword = Values["AdminPassword"];
 
         /// <summary>
+        /// CPU and GPU use the same memory.
+        /// </summary>
+        internal static readonly bool unified = bool.Parse(Values["Unified"]);
+
+        /// <summary>
         /// The config file in the application folder with the highest weight.
         /// </summary>
         internal static Dictionary<string, string> Values {
