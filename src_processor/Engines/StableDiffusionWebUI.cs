@@ -94,7 +94,15 @@ namespace PoorMansAI.Engines {
                 progressReporter?.Dispose();
                 progressReporter = null;
             }
-            return result != null ? JsonNode.Parse(result)["images"][0].ToString() : null;
+            if (result != null) {
+                try {
+                    return JsonNode.Parse(result)["images"][0].ToString();
+                } catch (Exception e) {
+                    Console.Error.WriteLine(e);
+                    return null;
+                }
+            }
+            return null;
         }
 
         /// <inheritdoc/>

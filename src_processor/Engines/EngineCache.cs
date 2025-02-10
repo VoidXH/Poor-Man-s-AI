@@ -119,7 +119,7 @@ namespace PoorMansAI.Engines {
             }
 
             return command.EngineType switch {
-                EngineType.Chat => chatEngine?.Generate(command) ?? "Chat engine is not loaded.",
+                EngineType.Chat => chatEngine?.Generate(command) ?? "Chat engine is offline.",
                 EngineType.Image => imageEngine?.Generate(command) ?? File.ReadAllText("Data/OfflineImage.txt"),
                 _ => null
             };

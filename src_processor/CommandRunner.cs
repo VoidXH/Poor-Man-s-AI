@@ -69,11 +69,36 @@ namespace PoorMansAI {
             string commandUrl = "/commands.php?list&" + EnginesToUpdate();
             string result = HTTP.GET(HTTP.Combine(Config.publicWebserver, commandUrl), cookies);
             if (result != null) {
-                JsonNode commands = JsonNode.Parse(result);
-                foreach (JsonNode entry in commands["commands"].AsArray()) {
-                    Command command = new(entry);
-                    string output = engine.Generate(command);
-                    ProgressUpdate(command, 1, output);
+                try {
+                    JsonNode parsed = JsonNode.Parse(result);
+                    IEnumerable<Command> commands = parsed["commands"].AsArray().Select(x => new Command(x));
+                    IEnumerable<IGrouping<EngineType, Command>> groupsPre = commands.GroupBy(command => command.EngineType);
+                    IEnumerable<(EngineType engine, Command[] commands)> groups = groupsPre.Select(g => (g.Key, g.ToArray()));
+                    Command[] cpu = groups.FirstOrDefault(x => RunsOnCPU(x.engine)).commands;
+                    Command[] gpu = groups.FirstOrDefault(x => RunsOnGPU(x.engine)).commands;
+                    Command[] control = groups.Where(x => !RunsOnCPU(x.engine) && !RunsOnGPU(x.engine)).SelectMany(x => x.commands).ToArray();
+
+                    RunGroup(control);
+                    Task onCPU = null;
+                    if (cpu != null) {
+                        onCPU = Task.Run(() => RunGroup(cpu));
+                    }
+                    Task onGPU = null;
+                    if (gpu != null) {
+                        onGPU = Task.Run(() => RunGroup(gpu));
+                    }
+                    try {
+                        onCPU?.Wait();
+                    } catch (Exception e) { // If CPU fails, GPU could still run
+                        Console.Error.WriteLine(e);
+                    }
+                    try {
+                        onGPU?.Wait();
+                    } catch (Exception e) {
+                        Console.Error.WriteLine(e);
+                    }
+                } catch (Exception e) {
+                    Console.Error.WriteLine(e);
                 }
             }
 
@@ -89,6 +114,30 @@ namespace PoorMansAI {
             engine.Dispose();
             runner.Dispose();
             GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Process a specific set of <paramref name="commands"/> on their corresponding engine.
+        /// </summary>
+        void RunGroup(Command[] commands) {
+            for (int i = 0; i < commands.Length; i++) {
+                string output = engine.Generate(commands[i]);
+                ProgressUpdate(commands[i], 1, output);
+            }
+        }
+
+        /// <summary>
+        /// Returns if an <see cref="EngineType"/> can only run on the CPU.
+        /// </summary>
+        bool RunsOnCPU(EngineType engine) {
+            return engine == EngineType.Chat;
+        }
+
+        /// <summary>
+        /// Returns if an <see cref="EngineType"/> can run on the GPU.
+        /// </summary>
+        bool RunsOnGPU(EngineType engine) {
+            return engine == EngineType.Image;
         }
 
         /// <summary>
