@@ -44,8 +44,8 @@ namespace PoorMansAI {
         /// </summary>
         public CommandRunner() {
             // Login
-            cookies = HTTP.GetCookies(HTTP.Combine(Config.publicWebserver, "/commands.php"), [
-                new KeyValuePair<string, string>("username", Config.adminUsername),
+            cookies = HTTP.GetCookies(HTTP.Combine(Config.publicWebserver, "/login.php"), [
+                new KeyValuePair<string, string>("name", Config.adminUsername),
                 new KeyValuePair<string, string>("password", Config.adminPassword)
             ]);
 

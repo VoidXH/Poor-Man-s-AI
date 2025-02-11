@@ -85,11 +85,11 @@ namespace PoorMansAI.VoidMoA {
         /// <summary>
         /// Characters that separate keywords.
         /// </summary>
-        static readonly char[] keywordSplits = [' ', ',', '.', ';'];
+        static readonly char[] keywordSplits = [' ', ',', '.', '!', ';', '/'];
 
         /// <summary>
         /// Characters that separate selectors.
         /// </summary>
-        static readonly char[] selectorSplits = [',', '.', ';'];
+        static readonly char[] selectorSplits = [',', '.', '!', ';', '/'];
     }
 }
