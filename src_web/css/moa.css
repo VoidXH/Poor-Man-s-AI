@@ -1,0 +1,10 @@
+img {
+  max-width: 100%;
+}
+
+@media (min-width: 768px) {
+  .back {
+    position: fixed;
+    z-index: 1000;
+  }
+}

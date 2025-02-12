@@ -28,9 +28,6 @@ namespace PoorMansAI.VoidMoA {
             }
             result.Model = Config.GetSafetensorFilenameWithoutExtension(maxVotes == 0 ? Config.defaultArtist : artists[maxVotesFor].url);
             result.NegativePrompt = maxVotes == 0 ? Config.defaultNegative : artists[maxVotesFor].negative;
-            if (HasSelector(ref selectors, Config.nsfwSelectors) + HasKeyword(keywords, Config.nsfwKeywords) == 0) {
-                result.NegativePrompt += result.NegativePrompt.Length == 0 ? "nsfw" : ", nsfw";
-            }
 
             int widescreen = HasSelector(ref selectors, Config.hSelectors) + HasKeyword(keywords, Config.hKeywords);
             int portrait = HasSelector(ref selectors, Config.vSelectors) + HasKeyword(keywords, Config.vKeywords);

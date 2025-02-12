@@ -107,16 +107,6 @@
         public static readonly string[] hdSelectors = ReadKeywordList("HDSelectors");
 
         /// <summary>
-        /// Keywords for disabling NSFW protection.
-        /// </summary>
-        public static readonly string[] nsfwKeywords = ReadKeywordList("NSFWKeywords");
-
-        /// <summary>
-        /// Selectors for disabling NSFW protection.
-        /// </summary>
-        public static readonly string[] nsfwSelectors = ReadKeywordList("NSFWSelectors");
-
-        /// <summary>
         /// Stable Diffusion checkpoints are stored in this folder.
         /// </summary>
         public static readonly string artists = Values["Artists"];

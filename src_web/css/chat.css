@@ -1,0 +1,57 @@
+code {
+  color: #0094BF;
+}
+
+pre code {
+  color: #0094BF;
+}
+
+.card {
+  height: 100%;
+}
+
+.chatbox {
+  padding: 10px;
+  font-size: 14px;
+  overflow-y: auto;
+}
+
+.message {
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-bottom: 10px;
+}
+
+.message .username {
+  margin: 5px;
+}
+
+.message .text {
+  padding: 10px;
+  border-radius: 15px;
+  background-color: #0094BF;
+  max-width: 70%;
+}
+
+.reply {
+  align-items: flex-start;
+}
+
+.reply .text {
+  background-color: #222;
+  max-width: 70%;
+}
+
+@media (max-width: 767px) {
+  .card-header {
+    flex-direction: column;
+  }
+
+  .container {
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+}

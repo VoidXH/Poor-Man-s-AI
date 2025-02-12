@@ -1,0 +1,14 @@
+.login {
+  display: flex;
+  align-items: center;
+}
+.register {
+  text-align: right;
+  margin-left: auto;
+}
+
+@media (max-width: 767px) {
+  .login {
+    flex-direction: column;
+  }
+}
