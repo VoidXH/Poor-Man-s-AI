@@ -1,4 +1,5 @@
 var sentMessages = 0;
+var newMessage = false;
 var hist = Array();
 
 const escape = (x) => x.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;').replaceAll('\n', '<br>');
@@ -58,7 +59,10 @@ function onPartialResult(progress, result) {
       '<div class="collapse' + (prevThink ? ' show' : '') + '" id="think' + sentMessages + '" style="border: 1px solid white; width: auto;">' + marked.parse(split.think) + '</div>';
   }
   $('#msg' + sentMessages).html(think + marked.parse(split.result));
-  $(".chatbox").animate({ scrollTop: $(".chatbox").prop("scrollHeight") }, 500);
+  if (newMessage) {
+    $(".chatbox").animate({ scrollTop: $(".chatbox").prop("scrollHeight") }, 500);
+    newMessage = false;
+  }
 }
 
 function onFinalResult(progress, result) {
@@ -85,6 +89,7 @@ function send() {
         hist = hist.slice(-8);
     }
     sentMessages++;
+    newMessage = true;
     hist.push(input);
     sendCommand('Chat', getModel() + '|' + hist.map(str => str.replaceAll('|', '&vert;')).join('|'));
     $(".chatbox").append("<div class='message'><span class='username'>" + you + "</span><span class='text'>" + escape(input) + "</span></div>");
