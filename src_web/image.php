@@ -32,7 +32,7 @@ $offline = time() - getAIVar("moa-available") > 10;
 ?>
   <form id="image-form" class="mb-3" autocomplete="off">
     <div class="mb-3">
-      <input type="text" class="form-control" id="prompt" name="prompt" placeholder="Enter prompt..." required>
+      <input type="text" class="form-control" id="prompt" name="prompt" placeholder="Enter prompt..." autofocus required>
     </div>
     <div class="mb-3 input-group">
       <div class="input-group-prepend">
