@@ -14,6 +14,8 @@ document.getElementById("num-images").addEventListener("input", function () {
   }
 });
 
+var debug = false;
+
 var prompt;
 var numImages;
 var currentImage;
@@ -40,7 +42,15 @@ function updateProgressBar(progress) {
 
 function onPartialResult(progress, result) {
   updateProgressBar(progress);
-  if (result) $('#image-partial').html(displayImg(result, prompt));
+  if (result) {
+    const div = $('#image-partial');
+    const img = displayImg(result, prompt);
+    if (debug) {
+      div.prepend(img);
+    } else {
+      div.html(img);
+    }
+  }
 }
 
 function onFinalResult(progress, result) {
@@ -51,7 +61,9 @@ function onFinalResult(progress, result) {
     generateNextImage();
   }
   $('#image-results').prepend(displayImg(result, prompt));
-  $('#image-partial').html('');
+  if (!debug) {
+    $('#image-partial').html('');
+  }
 }
 
 function generate() {
