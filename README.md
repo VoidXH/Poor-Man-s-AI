@@ -7,6 +7,19 @@ processing the prompts.
 [This is how an example installation looks like](https://ai.sbence.hu), you'll
 have something similar after a very easy installation process.
 
+## Distinguishing tech
+Poor Man's AI has a few tricks up its sleeve either first introduced in this
+software or rarely found in the wild.
+
+### Mixture-of-Artists (MoA)
+The image generation part is based on allowing model swapping on demand. Prompts
+can contain specific keywords or selectors that guide the image generator to
+specific models, like the "photo" keyword could trigger the use of a model
+trained on photos only to produce perfectly photorealistic results. When using
+Stable Diffusion 1.5 models, this could mean that even terabytes of models can
+result in a maximum VRAM usage of 6 GB with very fast generation speeds that
+include model loading.
+
 ## How to install
 Poor Man's AI is split into two parts: the Website and the Processor. They can
 be downloaded, handled, and updated separately. The Website runs on any web
