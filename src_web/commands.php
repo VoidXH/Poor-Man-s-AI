@@ -84,7 +84,7 @@ if ($method === "GET") {
 
   if (isset($_POST["command"])) {
     require("proc/addon.php");
-    addon("command");
+    addon("command_before");
     $stmt = execute("INSERT INTO ai_commands (command, command_ts, progress) VALUES (?, NOW(), 0)", $_POST["command"]);
     echo $stmt->insert_id;
     $stmt->close();
@@ -94,6 +94,7 @@ if ($method === "GET") {
       $stmt->close();
       die;
     }
+    addon("command_after");
   }
 
   if (isset($_POST["stop"])) {

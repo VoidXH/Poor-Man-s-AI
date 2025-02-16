@@ -3,6 +3,10 @@ Your own chatbot and image generating AI service with the easiest possible
 setup: a website available from everywhere you need, and a computer that handles
 processing the prompts.
 
+## Try it!
+[This is how an example installation looks like](https://ai.sbence.hu), you'll
+have something similar after a very easy installation process.
+
 ## How to install
 Poor Man's AI is split into two parts: the Website and the Processor. They can
 be downloaded, handled, and updated separately. The Website runs on any web
@@ -58,6 +62,9 @@ connected to one.
   website, just go to its img folder, and create new diffbgXX.jpg or gptbgXX.jpg
   files with the images you want to use. XX is a number one larger than the
   previous largest in the folder.
+* Developers can easily add addons to the Website's predefined extension points
+  to easily publish them in a compatible format. More about addons in
+  [their folder](./addons_web/README.md).
 
 ## Licence
 By downloading the software and/or its source code, you are accepting these
