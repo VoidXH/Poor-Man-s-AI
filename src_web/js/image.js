@@ -18,6 +18,8 @@ var prompt;
 var numImages;
 var currentImage;
 
+const displayImg = (result, prompt) => '<img src="data:image/png;base64,' + result + '" title="' + prompt + '" class="img-fluid p-3" />';
+
 function activate(running) {
   $('#generate-btn').prop('disabled', running);
   $('#help-btn').prop('disabled', running);
@@ -38,7 +40,7 @@ function updateProgressBar(progress) {
 
 function onPartialResult(progress, result) {
   updateProgressBar(progress);
-  if (result) $('#image-partial').html('<img src="data:image/png;base64,' + result + '" class="img-fluid mt-3" />');
+  if (result) $('#image-partial').html(displayImg(result, prompt));
 }
 
 function onFinalResult(progress, result) {
@@ -48,7 +50,7 @@ function onFinalResult(progress, result) {
   } else {
     generateNextImage();
   }
-  $('#image-results').prepend('<img src="data:image/png;base64,' + result + '" class="img-fluid p-3" />');
+  $('#image-results').prepend(displayImg(result, prompt));
   $('#image-partial').html('');
 }
 
