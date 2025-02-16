@@ -1,6 +1,7 @@
 # Addons for the Website
 This is the folder of example addons. In each subfolder, an addon is present
 with description, install instructions, and source code. Examples are:
+* [Censor](./Censor/README.md): prevents image generation with some words.
 * [Usage tracker](./Usage%20tracker/README.md): graphs server load over time.
 
 ## Development
