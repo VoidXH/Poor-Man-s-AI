@@ -12,7 +12,15 @@ namespace PoorMansAI.Configuration {
         /// </summary>
         public static void Prepare() {
             bool prepTextSent = false;
+            PrepareStableDiffusionWebUI(ref prepTextSent);
+            PrepareLLMs(ref prepTextSent);
+            PrepareArtists(ref prepTextSent);
+        }
 
+        /// <summary>
+        /// Downloads and unpacks Stable Diffusion WebUI.
+        /// </summary>
+        static void PrepareStableDiffusionWebUI(ref bool prepTextSent) {
             string root = Config.webUIRoot;
             if (!Directory.Exists(root)) {
                 Directory.CreateDirectory(root);
@@ -25,9 +33,6 @@ namespace PoorMansAI.Configuration {
                 Extract(tempFile, root);
                 File.Delete(tempFile);
             }
-
-            PrepareLLMs(ref prepTextSent);
-            PrepareArtists(ref prepTextSent);
         }
 
         /// <summary>
@@ -155,11 +160,11 @@ namespace PoorMansAI.Configuration {
                     continue;
                 }
                 try {
-                    SevenZipArchive handle = SevenZipArchive.Open(archive);
-                    handle.Entries.First(x => x.Key == entry.Key).WriteToDirectory(output, options);
-                    handle.Dispose();
+                    entry.WriteToDirectory(output, options);
                 } catch {
-                    Console.WriteLine($"[WARN] Couldn't extract {toExtract[i].Key}.");
+                    if (!File.Exists(path) || new FileInfo(path).Length != entry.Size) {
+                        Console.WriteLine($"[WARN] Couldn't extract {toExtract[i].Key}.");
+                    }
                 }
 
                 if (nextUpdate < DateTime.Now || i == c) {
