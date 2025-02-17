@@ -47,7 +47,13 @@ namespace PoorMansAI.Engines {
         /// Image generating neural network runner.
         /// </summary>
         public StableDiffusionWebUI() {
-            string dir = Path.Combine(Config.webUIRoot, "system");
+            string root = Path.GetFullPath(Config.webUIRoot);
+            string[] foldersInRoot = Directory.GetDirectories(root);
+            if (foldersInRoot.Length == 1) {
+                root = foldersInRoot[0];
+            }
+
+            string dir = Path.Combine(root, "system");
             Environment.SetEnvironmentVariable("PATH", string.Join(';', Path.Combine(dir, "git", "bin"), Path.Combine(dir, "python"),
                 Path.Combine(dir, "python", "Scripts"), Environment.GetEnvironmentVariable("PATH")));
             Environment.SetEnvironmentVariable("PY_LIBS", Path.Combine(dir, "python", "Scripts", "Lib") + ';' +
@@ -63,7 +69,7 @@ namespace PoorMansAI.Engines {
                 $"--ckpt-dir \"{Path.GetFullPath(Config.artists)}\" " +
                 $"--embeddings-dir \"{Path.GetFullPath(Config.embeddings)}\"");
             Environment.SetEnvironmentVariable("SD_WEBUI_LOG_LEVEL", "WARNING"); // Performance + we handle it
-            dir = Path.Combine(Config.webUIRoot, "webui");
+            dir = Path.Combine(root, "webui");
             instance = Process.Start(new ProcessStartInfo {
                 FileName = "cmd",
                 WorkingDirectory = dir,

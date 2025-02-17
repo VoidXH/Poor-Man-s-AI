@@ -6,6 +6,9 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
 	<ItemGroup>
+	  <PackageReference Include="SharpCompress" Version="0.39.0" />
+	</ItemGroup>
+	<ItemGroup>
 	  <None Update="Configuration\16 GB GPU.ini">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>

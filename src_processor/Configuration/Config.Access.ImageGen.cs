@@ -7,6 +7,11 @@
         public static readonly string webUIRoot = Values["WebUIRoot"];
 
         /// <summary>
+        /// Stable Diffusion WebUI release build download path.
+        /// </summary>
+        public static readonly string webUIDownload = Values["WebUIDownload"];
+
+        /// <summary>
         /// Use this port for image generation.
         /// </summary>
         public static readonly string webUIPort = Values["WebUIPort"];

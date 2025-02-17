@@ -31,6 +31,12 @@ replies with chat messages or generated images. It needs to be a mildly powerful
 play, the default settings already provide a pretty powerful setup, you only
 need to configure some accounts.
 
+### System requirements
+Poor Man's AI requires the following:
+- SSD storage: 40 GB - HDDs don't provide sufficient performance
+- GPU memory: 6 GB
+- System memory: 8 GB
+
 ### Website
 The downloadable Website is a zip file containing what you will eventually need
 to upload to your chosen web hosting provider. But first, you have to prepare a
@@ -56,12 +62,18 @@ connected to one.
    is a bit lower in VRAM. Open that file with Notepad. What each setting does
    is written in the file. When you're done, don't forget to save the changes to
    this file.
-1. Start the Processor application (PoorMansAI.exe). It will take a little time
-   to download everything before the first launch, but subsequent startups will
-   be quick. When you don't see any download progress bars, and it says
-   something like `Application startup complete` or `Model loaded in 3.0s` on
-   the bottom few lines, you're ready to use your own AI service through your
-   own website.
+1. Start the Processor application (PoorMansAI.exe). At first launch, it might
+   take an hour to download and extract every dependency. This only happens at
+   the first launch, subsequent startups are fast. When you don't see any
+   download progress bars, and it says something like `Application startup
+   complete` or `Model loaded in 3.0s` on the bottom few lines, you're ready to
+   use your own AI service through your own website.
+
+Note: extraction of Stable Diffusion WebUI can be *really* slow. To speed it up,
+wait until the Processor has downloaded it, then close it and go to its cache
+folder (set in the config files), and extract to the same folder with something
+like 7-Zip. After it's done and you relaunch the Processor, it will continue the
+first time startup from the same point.
 
 ### Fixing broken installations
 * **Processor:** Every model and setting is stored in the unzipped folder that
