@@ -25,7 +25,7 @@ $offline = time() - getAIVar("moa-available") > 10;
   if ($offline) {
 ?>
   <div class="alert alert-danger" role="alert">
-    Shhh! The image generating computer is sleeping and can"t work now. If the home page said it"s online, it might be in <i>chat-only</i> mode and the admin could switch it back to <i>image + chat</i>. But reading is available until it comes back: <a class="btn btn-success" href="image_help.php">Help</a>
+    Shhh! The image generating computer is sleeping and can't work now. If the home page said it's online, it might be in <i>chat-only</i> mode and the admin could switch it back to <i>image + chat</i>. But reading is available until it comes back: <a class="btn btn-success" href="image_help.php">Help</a>
   </div>
 <?php } else {
   addon("image");
