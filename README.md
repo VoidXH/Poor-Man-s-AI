@@ -7,6 +7,24 @@ processing the prompts.
 [This is how an example installation looks like](https://ai.sbence.hu), you'll
 have something similar after a very easy installation process.
 
+![Home](docs/home.jpg)
+
+The home page hosts the AI selector, currently chat and image generation. Users
+can register, and registration or full access can be opened on demand. Admins
+can change the server from high quality chat-only mode to image generation and
+a bit downsized chat on the side. 
+
+![Home](docs/chat.jpg)
+
+The chat is split to multiple models, called by friendly names, and switching
+between them is instant. You can even swap "personalities" mid-conversation.
+
+![Home](docs/image.jpg)
+
+Image generation is fast and easy. Models are swapped based on prompt (see Poor
+Man's AI's MoA technology), resulting in better prompt following than standalone
+models.
+
 ## Distinguishing tech
 Poor Man's AI has a few tricks up its sleeve either first introduced in this
 software or rarely found in the wild.
