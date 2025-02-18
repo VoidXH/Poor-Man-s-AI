@@ -129,7 +129,7 @@ namespace PoorMansAI.Engines {
         /// Relaunch with the currently selected <see cref="model"/>.
         /// </summary>
         void Launch() {
-            string workingDir = Config.Values[LLM ? "LlamaCppGPURoot" : "LlamaCppCPURoot"],
+            string workingDir = LLM ? Config.llamaCppGPURoot : Config.llamaCppCPURoot,
                 ngl = LLM ? " -ngl 999" : string.Empty,
                 args = $"-m \"{model}\" --port {Config.Values["LlamaCppPort"]}{ngl}";
             ProcessStartInfo info = new() {

@@ -1,4 +1,6 @@
-﻿using SharpCompress.Archives;
+﻿using System.IO.Compression;
+
+using SharpCompress.Archives;
 using SharpCompress.Archives.SevenZip;
 using SharpCompress.Common;
 
@@ -12,9 +14,52 @@ namespace PoorMansAI.Configuration {
         /// </summary>
         public static void Prepare() {
             bool prepTextSent = false;
+            PrepareLlamaCpp(ref prepTextSent);
             PrepareStableDiffusionWebUI(ref prepTextSent);
             PrepareLLMs(ref prepTextSent);
             PrepareArtists(ref prepTextSent);
+        }
+
+        /// <summary>
+        /// Downloads and unpacks llama.cpp versions.
+        /// </summary>
+        static void PrepareLlamaCpp(ref bool prepTextSent) {
+            PrepareLlamaCppSingle(Config.llamaCppCPURoot, Config.llamaCppCPUDownload, ref prepTextSent);
+            PrepareLlamaCppSingle(Config.llamaCppGPURoot, Config.llamaCppGPUDownload, ref prepTextSent);
+            if (OperatingSystem.IsWindows()) {
+                string successMarker = Path.Combine(Config.llamaCppGPURoot, "_cudart present.txt");
+                if (!File.Exists(successMarker)) {
+                    string tempFile = Path.Combine(Config.llamaCppGPURoot, "cudart.zip");
+                    if (!File.Exists(tempFile)) {
+                        CheckFile(Config.llamaCppCUDADownload, tempFile, ref prepTextSent);
+                    }
+                    Console.WriteLine($"Extracting {Path.GetFileName(tempFile)}...");
+                    ZipFile.ExtractToDirectory(tempFile, Config.llamaCppGPURoot);
+                    File.Delete(tempFile);
+                    File.Create(successMarker).Dispose();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Downloads and unpacks llama.cpp for a single target device (CPU or GPU).
+        /// </summary>
+        /// <param name="bin">Folder to extract the binaries to</param>
+        /// <param name="download">URL of the build</param>
+        /// <param name="prepTextSent">Downloads needed text was displayed to user</param>
+        static void PrepareLlamaCppSingle(string bin, string download, ref bool prepTextSent) {
+            if (!Directory.Exists(bin)) {
+                Directory.CreateDirectory(bin);
+            }
+            string tempFile = Path.Combine(bin, "llama.zip");
+            if (Directory.Exists(bin) && (File.Exists(tempFile) || Directory.GetFiles(bin).Length == 0)) {
+                if (!File.Exists(tempFile)) {
+                    CheckFile(download, tempFile, ref prepTextSent);
+                }
+                Console.WriteLine($"Extracting {Path.GetFileName(tempFile)}...");
+                ZipFile.ExtractToDirectory(tempFile, bin);
+                File.Delete(tempFile);
+            }
         }
 
         /// <summary>
