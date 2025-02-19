@@ -40,6 +40,10 @@ $llmClass = $mode == 2 ? "btn-primary" : "btn-secondary";
       <span class="input-group-text bg-success text-white">Online</span>
     </div>
     <div class="input-group-append">
+<?php
+require("proc/addon.php");
+addon("adminbtn");
+?>
       <button class="btn <?=$moaClass ?>" type="button" onclick="enableMoA()">Image + SLM</button>
       <button class="btn <?=$llmClass ?>" type="button" onclick="enableLLM()">LLM</button>
     </div>

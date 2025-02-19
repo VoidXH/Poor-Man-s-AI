@@ -92,9 +92,9 @@ if ($method === "GET") {
     if ($uid) {
       $stmt = execute("UPDATE ai_users SET prompts = prompts + 1 WHERE id = ?", $uid);
       $stmt->close();
-      die;
     }
     addon("command_after");
+    die;
   }
 
   if (isset($_POST["stop"])) {
