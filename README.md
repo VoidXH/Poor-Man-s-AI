@@ -87,11 +87,9 @@ connected to one.
    complete` or `Model loaded in 3.0s` on the bottom few lines, you're ready to
    use your own AI service through your own website.
 
-Note: extraction of Stable Diffusion WebUI can be *really* slow. To speed it up,
-wait until the Processor has downloaded it, then close it and go to its cache
-folder (set in the config files), and extract to the same folder with something
-like 7-Zip. After it's done and you relaunch the Processor, it will continue the
-first time startup from the same point.
+Note: extraction of Stable Diffusion WebUI can slow down over 99%. This is
+normal, and large files are being extracted. The full extraction should not take
+longer than 10 minutes.
 
 ### Fixing broken installations
 * **Processor:** Every model and setting is stored in the unzipped folder that

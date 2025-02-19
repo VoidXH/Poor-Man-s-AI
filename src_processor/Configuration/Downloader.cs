@@ -3,6 +3,7 @@
 using SharpCompress.Archives;
 using SharpCompress.Archives.SevenZip;
 using SharpCompress.Common;
+using SharpCompress.Readers;
 
 namespace PoorMansAI.Configuration {
     /// <summary>
@@ -191,30 +192,32 @@ namespace PoorMansAI.Configuration {
         static void Extract(string archive, string output) {
             Console.WriteLine($"Extracting {Path.GetFileName(archive)}...");
             using SevenZipArchive release = SevenZipArchive.Open(archive);
-            SevenZipArchiveEntry[] toExtract = release.Entries.Where(entry => !entry.IsDirectory).ToArray();
+            using IReader reader = release.ExtractAllEntries();
 
             ExtractionOptions options = new() {
                 ExtractFullPath = true,
                 Overwrite = true
             };
             DateTime nextUpdate = default;
-            for (int i = 0, c = toExtract.Length - 1; i <= c; i++) {
-                SevenZipArchiveEntry entry = toExtract[i];
+            int extracted = 0,
+                count = release.Entries.Count;
+            while (reader.MoveToNextEntry()) {
+                IEntry entry = reader.Entry;
                 string path = Path.Combine(output, entry.Key);
                 if (File.Exists(path) && new FileInfo(path).Length == entry.Size) {
                     continue;
                 }
                 try {
-                    entry.WriteToDirectory(output, options);
+                    reader.WriteEntryToDirectory(output, options);
                 } catch {
                     if (!File.Exists(path) || new FileInfo(path).Length != entry.Size) {
-                        Console.WriteLine($"[WARN] Couldn't extract {toExtract[i].Key}.");
+                        Console.WriteLine($"[WARN] Couldn't extract {entry.Key}.");
                     }
                 }
 
-                if (nextUpdate < DateTime.Now || i == c) {
+                if (nextUpdate < DateTime.Now || ++extracted == count) {
                     nextUpdate = DateTime.Now + TimeSpan.FromSeconds(1);
-                    ProgressBar(i, toExtract.Length);
+                    ProgressBar(extracted, count);
                 }
             }
             Console.WriteLine("\nExtraction completed.");
