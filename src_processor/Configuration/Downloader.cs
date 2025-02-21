@@ -1,6 +1,5 @@
 ﻿using System.IO.Compression;
 
-using SharpCompress.Archives;
 using SharpCompress.Archives.SevenZip;
 using SharpCompress.Common;
 using SharpCompress.Readers;
