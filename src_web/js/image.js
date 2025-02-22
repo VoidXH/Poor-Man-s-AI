@@ -41,7 +41,10 @@ function updateProgressBar(progress) {
 }
 
 function onPartialResult(progress, result) {
-  if (progress < -1) {
+  if (progress == -1) {
+    $("#message").html("MoA selection in progress...");
+    return;
+  } else if (progress < -1) {
     $("#message").html("Position in queue: " + (-1 - progress));
     return;
   }

@@ -48,12 +48,12 @@ if ($method === "GET") {
     require("proc/addon.php");
     addon("check");
     $id = $_GET["check"];
-    $stmt = execute("SELECT progress, result FROM ai_commands WHERE id = ?", $id);
-    $stmt->bind_result($progress, $result);
+    $stmt = execute("SELECT command_ts, progress, result FROM ai_commands WHERE id = ?", $id);
+    $stmt->bind_result($command_ts, $progress, $result);
     $stmt->fetch();
     $stmt->close();
     if ($progress == 0) {
-      $result = $sqlink->query("SELECT COUNT(*) FROM ai_commands WHERE progress != 100");
+      $result = $sqlink->query("SELECT COUNT(*) FROM ai_commands WHERE command_ts < '$command_ts' AND progress != 100");
       $row = $result->fetch_assoc();
       echo (-1 - $row["COUNT(*)"]) . "|";
       die;
@@ -91,7 +91,8 @@ if ($method === "GET") {
   if (isset($_POST["command"])) {
     require("proc/addon.php");
     addon("command_before");
-    $stmt = execute("INSERT INTO ai_commands (command, command_ts, progress) VALUES (?, NOW(), 0)", $_POST["command"]);
+    $commandTS = $admin ? "'".date("Y-m-d H:i:s", strtotime((1 - $commandClear)." minutes"))."'" : "NOW()";
+    $stmt = execute("INSERT INTO ai_commands (command, command_ts, progress) VALUES (?, $commandTS, 0)", $_POST["command"]);
     echo $stmt->insert_id;
     $stmt->close();
 
