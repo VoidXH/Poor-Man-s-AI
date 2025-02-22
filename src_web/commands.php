@@ -51,12 +51,18 @@ if ($method === "GET") {
     $stmt = execute("SELECT progress, result FROM ai_commands WHERE id = ?", $id);
     $stmt->bind_result($progress, $result);
     $stmt->fetch();
-    echo $progress . "|" . $result;
     $stmt->close();
+    if ($progress == 0) {
+      $result = $sqlink->query("SELECT COUNT(*) FROM ai_commands WHERE progress != 100");
+      $row = $result->fetch_assoc();
+      echo (-1 - $row["COUNT(*)"]) . "|";
+      die;
+    }
+    echo $progress . "|" . $result;
 
     if ($progress == 100) {
       $stmt = execute("DELETE FROM ai_commands WHERE id = ?", $id);
-    } else {
+    } else if ($result != null) {
       $stmt = execute("UPDATE ai_commands SET result = NULL WHERE id = ?", $id);
     }
     $stmt->close();

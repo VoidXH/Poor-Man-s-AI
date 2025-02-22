@@ -1,5 +1,5 @@
-document.getElementById('image-form').addEventListener('keydown', function(event) {
-  if (event.key === 'Enter' && !document.getElementById('generate-btn').disabled) {
+document.getElementById("image-form").addEventListener("keydown", function(event) {
+  if (event.key === "Enter" && !document.getElementById("generate-btn").disabled) {
     generate();
     event.preventDefault();
   }
@@ -20,30 +20,34 @@ var prompt;
 var numImages;
 var currentImage;
 
-const displayImg = (result, prompt) => '<img src="data:image/png;base64,' + result + '" title="' + prompt + '" class="img-fluid p-3" />';
+const displayImg = (result, prompt) => "<img src='data:image/png;base64," + result + "' title='" + prompt + "' class='img-fluid p-3' />";
 
 function activate(running) {
-  $('#generate-btn').prop('disabled', running);
-  $('#help-btn').prop('disabled', running);
-  $('#stop-btn').prop('disabled', !running);
+  $("#generate-btn").prop("disabled", running);
+  $("#help-btn").prop("disabled", running);
+  $("#stop-btn").prop("disabled", !running);
 }
 
 function generateNextImage() {
-  sendCommand('Image', prompt);
+  sendCommand("Image", prompt);
 }
 
 function updateProgressBar(progress) {
-  const displayedProgress = Math.ceil((currentImage * 100 + progress) / numImages) + '%';
+  const displayedProgress = Math.ceil((currentImage * 100 + progress) / numImages) + "%";
   if (progress > 0) {
-    $('#progress-bar').css('width', displayedProgress).text(displayedProgress);
-    $('#message').html('');
+    $("#progress-bar").css("width", displayedProgress).text(displayedProgress);
+    $("#message").html("");
   }
 }
 
 function onPartialResult(progress, result) {
+  if (progress < -1) {
+    $("#message").html("Position in queue: " + (-1 - progress));
+    return;
+  }
   updateProgressBar(progress);
   if (result) {
-    const div = $('#image-partial');
+    const div = $("#image-partial");
     const img = displayImg(result, prompt);
     if (debug) {
       div.prepend(img);
@@ -60,24 +64,24 @@ function onFinalResult(progress, result) {
   } else {
     generateNextImage();
   }
-  $('#image-results').prepend(displayImg(result, prompt));
+  $("#image-results").prepend(displayImg(result, prompt));
   if (!debug) {
-    $('#image-partial').html('');
+    $("#image-partial").html("");
   }
 }
 
 function generate() {
   activate(true);
-  $('#message').html('MoA selection in progress...');
-  $('#progress-bar').css('width', '0%');
-  prompt = $('#prompt').val();
-  numImages = $('#num-images').val();
+  $("#message").html("Connecting...");
+  $("#progress-bar").css("width", "0%");
+  prompt = $("#prompt").val();
+  numImages = $("#num-images").val();
   currentImage = 0;
   generateNextImage();
 }
 
 function stop() {
-  $('#stop-btn').prop('disabled', true);
+  $("#stop-btn").prop("disabled", true);
   numImages = currentImage + 1;
-  $.post('commands.php', { stop: workingCommandId });
+  $.post("commands.php", { stop: workingCommandId });
 }

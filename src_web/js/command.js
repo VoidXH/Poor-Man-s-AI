@@ -1,6 +1,8 @@
-// VoidAI command API. Called functions must be implemented for a progress between 0-100 and the partial or full result:
+// Poor Man's AI command API. Called functions must be implemented for a progress between 0-100 and the partial or full result:
 // - onPartialResult(progress, result)
 // - onFinalResult(progress, result)
+// If progress == -1: canceled command
+// If progress < -1: queue pos = -1 - progress
 // Also include JQuery.
 
 var interval; // timer callback
