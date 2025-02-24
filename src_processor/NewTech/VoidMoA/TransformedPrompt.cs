@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace PoorMansAI.VoidMoA {
+namespace PoorMansAI.NewTech.VoidMoA {
     /// <summary>
     /// Prompt created by <see cref="PromptTransformer"/>, extracted positive and negative prompts and a selected model.
     /// </summary>

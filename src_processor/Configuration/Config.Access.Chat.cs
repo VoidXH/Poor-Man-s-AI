@@ -12,6 +12,16 @@
         public static readonly string llamaCppGPURoot = Values["LlamaCppGPURoot"];
 
         /// <summary>
+        /// Folder of extra knowledge for the chat.
+        /// </summary>
+        public static readonly string contextDocTree = Values["ContextDocTree"];
+
+        /// <summary>
+        /// Load all loosely matching context docs.
+        /// </summary>
+        public static readonly bool fullContext = bool.Parse(Values["FullContext"]);
+
+        /// <summary>
         /// llama.cpp CPU release build download path.
         /// </summary>
         public static readonly string llamaCppCPUDownload = Values["LlamaCppCPUDownload"];

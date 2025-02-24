@@ -57,6 +57,7 @@ namespace PoorMansAI.Engines {
                 }
 
                 mode = value;
+                Logger.Info($"Ready in {mode} mode.");
             }
         }
         EngineCacheMode mode;
@@ -100,7 +101,7 @@ namespace PoorMansAI.Engines {
             try {
                 Mode = (EngineCacheMode)int.Parse(mode);
             } catch {
-                Console.Error.WriteLine("Invalid login credentials.");
+                Logger.Error("Invalid login credentials.");
                 throw;
             }
         }

@@ -4,6 +4,8 @@ using SharpCompress.Archives.SevenZip;
 using SharpCompress.Common;
 using SharpCompress.Readers;
 
+using VoidX.WPF;
+
 namespace PoorMansAI.Configuration {
     /// <summary>
     /// Downloads all files required by the <see cref="Config"/> file.
@@ -33,7 +35,7 @@ namespace PoorMansAI.Configuration {
                     if (!File.Exists(tempFile)) {
                         CheckFile(Config.llamaCppCUDADownload, tempFile, ref prepTextSent);
                     }
-                    Console.WriteLine($"Extracting {Path.GetFileName(tempFile)}...");
+                    Logger.Info($"Extracting {Path.GetFileName(tempFile)}...");
                     ZipFile.ExtractToDirectory(tempFile, Config.llamaCppGPURoot);
                     File.Delete(tempFile);
                     File.Create(successMarker).Dispose();
@@ -56,7 +58,7 @@ namespace PoorMansAI.Configuration {
                 if (!File.Exists(tempFile)) {
                     CheckFile(download, tempFile, ref prepTextSent);
                 }
-                Console.WriteLine($"Extracting {Path.GetFileName(tempFile)}...");
+                Logger.Info($"Extracting {Path.GetFileName(tempFile)}...");
                 ZipFile.ExtractToDirectory(tempFile, bin);
                 File.Delete(tempFile);
             }
@@ -115,7 +117,7 @@ namespace PoorMansAI.Configuration {
             }
 
             if (!prepTextSent) {
-                Console.WriteLine("Some model files have to be downloaded before launch.");
+                Logger.Info("Some model files have to be downloaded before launch.");
                 prepTextSent = true;
             }
             Download(url, path).Wait();
@@ -156,12 +158,12 @@ namespace PoorMansAI.Configuration {
         /// </summary>
         static async Task Download(string url, string path) {
             string fileName = Path.GetFileName(path);
-            Console.WriteLine($"Downloading {fileName}:");
+            Logger.Info($"Downloading {fileName}:");
             const int bufferSize = 8192;
             using HttpClient client = new();
             HttpResponseMessage response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
             if (!response.IsSuccessStatusCode) {
-                Console.WriteLine($"Failed to download {fileName}. HTTP Status: {response.StatusCode}");
+                Logger.Error($"Failed to download {fileName}. HTTP Status: {response.StatusCode}");
                 return;
             }
 
@@ -182,14 +184,15 @@ namespace PoorMansAI.Configuration {
                 }
             }
 
-            Console.WriteLine("\nDownload completed.");
+            Console.WriteLine();
+            Logger.Info("Download completed.");
         }
 
         /// <summary>
         /// Extract an <paramref name="archive"/> file to an <paramref name="output"/> directory.
         /// </summary>
         static void Extract(string archive, string output) {
-            Console.WriteLine($"Extracting {Path.GetFileName(archive)}...");
+            Logger.Info($"Extracting {Path.GetFileName(archive)}...");
             using SevenZipArchive release = SevenZipArchive.Open(archive);
             using IReader reader = release.ExtractAllEntries();
 
@@ -210,7 +213,7 @@ namespace PoorMansAI.Configuration {
                     reader.WriteEntryToDirectory(output, options);
                 } catch {
                     if (!File.Exists(path) || new FileInfo(path).Length != entry.Size) {
-                        Console.WriteLine($"[WARN] Couldn't extract {entry.Key}.");
+                        Logger.Warning($"Couldn't extract {entry.Key}.");
                     }
                 }
 
@@ -219,7 +222,8 @@ namespace PoorMansAI.Configuration {
                     ProgressBar(extracted, count);
                 }
             }
-            Console.WriteLine("\nExtraction completed.");
+            Console.WriteLine();
+            Logger.Info("Extraction completed.");
         }
 
         /// <summary>

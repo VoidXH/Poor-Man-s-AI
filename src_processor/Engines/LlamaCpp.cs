@@ -4,6 +4,7 @@ using System.Text.Json.Nodes;
 using VoidX.WPF;
 
 using PoorMansAI.Configuration;
+using PoorMansAI.NewTech.ContextDocTree;
 
 namespace PoorMansAI.Engines {
     /// <summary>
@@ -24,6 +25,11 @@ namespace PoorMansAI.Engines {
         /// Path of each selectable model.
         /// </summary>
         readonly Dictionary<string, (string path, string systemMessage)> models = [];
+
+        /// <summary>
+        /// Handles context documents.
+        /// </summary>
+        readonly ContextDocFinder contextDocs = new();
 
         /// <summary>
         /// Running llama.cpp server.
@@ -90,9 +96,14 @@ namespace PoorMansAI.Engines {
 
             string[] chat = command.Prompt[(split + 1)..].Split('|');
             for (int i = 0; i < chat.Length; i++) {
+                bool user = i % 2 == 0;
+                string message = chat[i].Replace("&vert;", "|").Replace("\"", "\\\"");
+                if (user) {
+                    message = contextDocs.TransformPrompt(message);
+                }
                 messages.Add(new JsonObject {
-                    ["role"] = i % 2 == 0 ? "user" : "assistant",
-                    ["content"] = chat[i].Replace("&vert;", "|").Replace("\"", "\\\"")
+                    ["role"] = user ? "user" : "assistant",
+                    ["content"] = message
                 });
             }
 

@@ -1,6 +1,9 @@
 ﻿using PoorMansAI;
 using PoorMansAI.Configuration;
 
+using VoidX.WPF;
+
+Logger.MinLogLevel = (LogLevel)Enum.Parse(typeof(LogLevel), Config.Values["LogLevel"]);
 Downloader.Prepare(); // Download required models
 
 // Process commands until closed

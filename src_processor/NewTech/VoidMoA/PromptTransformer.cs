@@ -1,6 +1,6 @@
 ﻿using PoorMansAI.Configuration;
 
-namespace PoorMansAI.VoidMoA {
+namespace PoorMansAI.NewTech.VoidMoA {
     /// <summary>
     /// Extracts suggested model and negative prompt from a general prompt.
     /// </summary>

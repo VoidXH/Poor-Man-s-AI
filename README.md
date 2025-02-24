@@ -3,6 +3,12 @@ Your own chatbot and image generating AI service with the easiest possible
 setup: a website available from everywhere you need, and a computer that handles
 processing the prompts.
 
+### Table of Contents
+1. [Try it!](#try-it)
+1. [Distinguishing tech](#distinguishing-tech)
+1. [How to install](#how-to-install)
+1. [Licence](#licence)
+
 ## Try it!
 [This is how an example installation looks like](https://ai.sbence.hu), you'll
 have something similar after a very easy installation process.
@@ -37,6 +43,25 @@ trained on photos only to produce perfectly photorealistic results. When using
 Stable Diffusion 1.5 models, this could mean that even terabytes of models can
 result in a maximum VRAM usage of 6 GB with very fast generation speeds that
 include model loading.
+
+### Context Doc Tree
+Extra knowledge can easily be added to models by copying documents containing
+said knowledge to the Context Doc Tree: each subfolder is a new keyword the
+prompt has to contain, and the file name is the final trigger. Let's say the
+user asks:
+```
+How do I decode object-based audio files with Cavern?
+```
+Let's say that in the Context Doc Tree folder set in the configuration, there is
+a `Cavern` subfolder. The parser finds it, and checks its contents: there's
+`DCP.html`, `Listener.md`, and `object.txt` inside. We have a match:
+`object.txt`, which will become part of the prompt, and any running model can
+learn from it.
+
+What if the needed context is in a different file? That requires a large context
+window. If the context window is large enough, all files from all subfolders
+until the final keyword is reached can be loaded by editing the configuration
+accordingly. 
 
 ## How to install
 Poor Man's AI is split into two parts: the Website and the Processor. They can
@@ -82,10 +107,8 @@ connected to one.
    this file.
 1. Start the Processor application (PoorMansAI.exe). At first launch, it might
    take an hour to download and extract every dependency. This only happens at
-   the first launch, subsequent startups are fast. When you don't see any
-   download progress bars, and it says something like `Application startup
-   complete` or `Model loaded in 3.0s` on the bottom few lines, you're ready to
-   use your own AI service through your own website.
+   the first launch, subsequent startups are fast. When you see `[INFO] Ready in
+   ... mode.`, you're ready to use your own AI service through your own website.
 
 Note: extraction of Stable Diffusion WebUI can slow down over 99%. This is
 normal, and large files are being extracted. The full extraction should not take

@@ -3,7 +3,7 @@ using System.Text.Json.Nodes;
 
 using VoidX.WPF;
 
-using PoorMansAI.VoidMoA;
+using PoorMansAI.NewTech.VoidMoA;
 
 using Config = PoorMansAI.Configuration.Config;
 using Timer = System.Threading.Timer;
