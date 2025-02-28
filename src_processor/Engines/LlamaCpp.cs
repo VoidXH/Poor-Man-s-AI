@@ -95,10 +95,10 @@ namespace PoorMansAI.Engines {
             });
 
             string[] chat = command.Prompt[(split + 1)..].Split('|');
-            for (int i = 0; i < chat.Length; i++) {
+            for (int i = 0, last = chat.Length - 1; i <= last; i++) {
                 bool user = i % 2 == 0;
                 string message = chat[i].Replace("&vert;", "|").Replace("\"", "\\\"");
-                if (user) {
+                if (user && (!Config.augmentLatestOnly || i == last)) {
                     message = contextDocs.TransformPrompt(message);
                 }
                 messages.Add(new JsonObject {

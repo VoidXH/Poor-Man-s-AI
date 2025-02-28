@@ -115,11 +115,11 @@ normal, and large files are being extracted. The full extraction should not take
 longer than 10 minutes.
 
 ### Fixing broken installations
+* **Website:** Delete sql.php from the server and navigate to install.php again.
 * **Processor:** Every model and setting is stored in the unzipped folder that
   might have broken your installation. Just delete and redownload or unzip again
   to fix issues caused by misconfiguration or half-done downloads. Make sure to
   backup your settings.
-* **Website:** Delete sql.php from the server and navigate to install.php again.
 
 ### Miscellaneous
 * To add a new background to the chat or image generator components on your

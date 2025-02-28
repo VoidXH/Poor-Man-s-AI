@@ -22,6 +22,11 @@
         public static readonly bool fullContext = bool.Parse(Values["FullContext"]);
 
         /// <summary>
+        /// Only search context docs for the latest prompt.
+        /// </summary>
+        public static readonly bool augmentLatestOnly = bool.Parse(Values["AugmentLatestOnly"]);
+
+        /// <summary>
         /// llama.cpp CPU release build download path.
         /// </summary>
         public static readonly string llamaCppCPUDownload = Values["LlamaCppCPUDownload"];
