@@ -1,4 +1,4 @@
-<a class="btn btn-info" href="?load">Load</a>
+<a class="btn btn-secondary" href="?load">Load</a>
 <?php
 if (isset($_GET["load"])) {
   $date = $_GET["load"];

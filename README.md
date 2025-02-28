@@ -85,12 +85,10 @@ The downloadable Website is a zip file containing what you will eventually need
 to upload to your chosen web hosting provider. But first, you have to prepare a
 website. This tutorial is for the easiest method using a web hosting provider
 and not for complete self hosting.
-1. Download and unzip the Website.
 1. Get a web hosting account with PHP and MySQL, free ones are fine.
-1. Open `__config.php` with any text editor, like Notepad, and edit it according
-   to your needs. What each setting does is written in the file. When you're
-   done, don't forget to save the changes to this file.
-1. Upload every folder and PHP file to the root of your web hosting server.
+1. Download and unzip the Website.
+1. Upload every folder and PHP file from the unzipped download to the root of
+   your web hosting server.
 1. Go to <your website>/install.php, fill in the login data for your MySQL
    server that came with your web hosting account, provide an admin username and
    password, then click "Install". If it's successful, it will redirect you to

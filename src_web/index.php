@@ -11,8 +11,8 @@ $diff_bg = $diff_bgs[array_rand($diff_bgs)];
 $time = time();
 $online = $time - getAIVar("llm-available") <= 10 || $time - getAIVar("moa-available") <= 10;
 $mode = getAIVar("mode");
-$moaClass = $mode == 5 ? "btn-primary" : "btn-secondary";
-$llmClass = $mode == 2 ? "btn-primary" : "btn-secondary";
+$moaClass = $mode == 5 ? "text-primary" : "text-secondary";
+$llmClass = $mode == 2 ? "text-primary" : "text-secondary";
 ?>
 <html lang="en">
 <head>
@@ -44,8 +44,14 @@ $llmClass = $mode == 2 ? "btn-primary" : "btn-secondary";
 require("proc/addon.php");
 addon("adminbtn");
 ?>
-      <button class="btn <?=$moaClass ?>" type="button" onclick="enableMoA()">Image + SLM</button>
-      <button class="btn <?=$llmClass ?>" type="button" onclick="enableLLM()">LLM</button>
+      <a class="btn btn-secondary" href="config.php">Config</a>
+      <div class="btn btn-primary m-0 p-0 dropdown show">
+        <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="modeList" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Mode</a>
+        <div class="dropdown-menu" aria-labelledby="modeList">
+          <a class="<?=$moaClass ?> dropdown-item" onclick="enableMoA()">Image + SLM</a>
+          <a class="<?=$llmClass ?> dropdown-item" onclick="enableLLM()">LLM</a>
+        </div>
+      </div>
     </div>
     <?php } else if ($open && !$uid) { ?>
     <div class="input-group-prepend">
@@ -69,6 +75,10 @@ addon("adminbtn");
   </div>
   <?php } ?>
   <script src="<?=$jqueryPath ?>"></script>
+  <?php if ($admin) { ?>
+  <script src="<?=$popperPath ?>"></script>
+  <script src="<?=$bootstrapJSPath ?>"></script>
+  <?php } ?>
   <script src="js/command.js"></script>
   <script src="js/index.js"></script>
 </body>
