@@ -55,7 +55,6 @@ function onPartialResult(progress, result) {
   } else if (progress == 0 || result.length == 0) {
     return;
   }
-  console.log(result);
   const split = splitThink(result);
   let think = "";
   if (split.think.length != 0) {
@@ -91,7 +90,10 @@ function send() {
   if (input) {
     activate(true);
     if (hist.length > 8) {
-        hist = hist.slice(-8);
+      hist = hist.slice(-8);
+    }
+    if (sentMessages == 0) {
+      reset();
     }
     sentMessages++;
     newMessage = true;
@@ -102,6 +104,11 @@ function send() {
     $("#input").val("");
     $(".chatbox").animate({ scrollTop: $(".chatbox").prop("scrollHeight") }, 500);
   }
+}
+
+function starter(prompt) {
+  $("#input").val(prompt);
+  send();
 }
 
 function stop() {
