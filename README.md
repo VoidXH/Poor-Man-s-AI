@@ -45,23 +45,9 @@ result in a maximum VRAM usage of 6 GB with very fast generation speeds that
 include model loading.
 
 ### Context Doc Tree
-Extra knowledge can easily be added to models by copying documents containing
-said knowledge to the Context Doc Tree: each subfolder is a new keyword the
-prompt has to contain, and the file name is the final trigger. Let's say the
-user asks:
-```
-How do I decode object-based audio files with Cavern?
-```
-Let's say that in the Context Doc Tree folder set in the configuration, there is
-a `Cavern` subfolder. The parser finds it, and checks its contents: there's
-`DCP.html`, `Listener.md`, and `object.txt` inside. We have a match:
-`object.txt`, which will become part of the prompt, and any running model can
-learn from it.
-
-What if the needed context is in a different file? That requires a large context
-window. If the context window is large enough, all files from all subfolders
-until the final keyword is reached can be loaded by editing the configuration
-accordingly. 
+The knowledge of the chatbot doesn't have to be present in the model: you can
+take your text files and increase its knowledge with factual information that
+will be loaded when a corresponding prompt is asked.
 
 ## How to install
 Poor Man's AI is split into two parts: the Website and the Processor. They can
@@ -118,6 +104,26 @@ longer than 10 minutes.
   might have broken your installation. Just delete and redownload or unzip again
   to fix issues caused by misconfiguration or half-done downloads. Make sure to
   backup your settings.
+  
+### Improving chat knowledge base
+Extra knowledge can easily be added to models by copying documents containing
+said knowledge to the Context Doc Tree: each subfolder is a new keyword the
+prompt has to contain, and the file name is the final trigger. Let's say the
+user asks:
+```
+How do I decode object-based audio files with Cavern?
+```
+Let's say that in the Context Doc Tree folder set in the configuration, there is
+a `Cavern` subfolder. The parser finds it, and checks its contents: there's
+`DCP.html`, `Listener.md`, and `object.txt` inside. We have a match:
+`object.txt`, which will become part of the prompt, and any running model can
+learn from it.
+
+What if the needed context is in a different file? That requires a large context
+window. If the context window is large enough, all files from all subfolders
+until the final keyword is reached can be loaded by editing the configuration
+accordingly. You can also set multiple keywords to a file, for example, calling
+one `license, licence, terms.md`.
 
 ### Miscellaneous
 * To add a new background to the chat or image generator components on your

@@ -78,7 +78,7 @@ namespace PoorMansAI.NewTech.ContextDocTree {
                 } else {
                     for (int i = 0; i < keywords.Length; i++) {
                         if (Array.BinarySearch(entries, keywords[i]) >= 0) {
-                            string[] files = Directory.GetFiles(path, keywords[i] + '*');
+                            string[] files = Directory.GetFiles(path, $"*{keywords[i]}*");
                             for (int j = 0; j < files.Length; j++) {
                                 result.AppendLine(File.ReadAllText(files[j]));
                             }
@@ -97,7 +97,11 @@ namespace PoorMansAI.NewTech.ContextDocTree {
             string[] subfolders = Directory.GetDirectories(folder);
             Dictionary<string, ContextDocTreeNode> children = [];
             for (int i = 0; i < subfolders.Length; i++) {
-                children.Add(Path.GetFileName(subfolders[i]).ToLowerInvariant(), new ContextDocTreeNode(subfolders[i], ref filesSoFar));
+                ContextDocTreeNode node = new(subfolders[i], ref filesSoFar);
+                string[] keywords = Path.GetFileName(subfolders[i]).ToLowerInvariant().Split(',', StringSplitOptions.TrimEntries);
+                for (int j = 0; j < keywords.Length; j++) {
+                    children.Add(keywords[j], node);
+                }
             }
             Children = children;
 
@@ -106,8 +110,11 @@ namespace PoorMansAI.NewTech.ContextDocTree {
             for (int i = 0; i < files.Length; i++) {
                 if (Array.BinarySearch(textFileFormats, Path.GetExtension(files[i])) >= 0) {
                     string fileName = Path.GetFileNameWithoutExtension(files[i]);
-                    entries.Add(fileName.ToLowerInvariant());
-                    Logger.Debug("Context doc added: {0}.", fileName);
+                    string[] keywords = fileName.ToLowerInvariant().Split(',', StringSplitOptions.TrimEntries);
+                    for (int j = 0; j < keywords.Length; j++) {
+                        entries.Add(keywords[j]);
+                        Logger.Debug("Context doc added: {0} as {1}.", fileName, keywords[j]);
+                    }
                 } else {
                     Logger.Warning(Path.GetFileName(files[i]) + " was skipped because it's not in a supported format.");
                 }
