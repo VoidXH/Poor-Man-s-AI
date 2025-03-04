@@ -13,7 +13,11 @@ $online = $time - getAIVar("llm-available") <= 10 || $time - getAIVar("moa-avail
 $mode = getAIVar("mode");
 $moaClass = $mode == 5 ? "text-primary" : "text-secondary";
 $llmClass = $mode == 2 ? "text-primary" : "text-secondary";
-?>
+
+function online() {
+  global $online; ?>
+<span class="input-group-text bg-<?=$online ? "success" : "danger" ?> text-white"><?=$online ? "On" : "Off" ?>line</span>
+<?php } ?>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -35,9 +39,9 @@ $llmClass = $mode == 2 ? "text-primary" : "text-secondary";
     <div class="spinner"></div>
   </div>
   <div class="server input-group mt-3">
-    <?php if ($online && $admin) { ?>
+    <?php if ($admin) { ?>
     <div class="input-group-prepend">
-      <span class="input-group-text bg-success text-white">Online</span>
+      <?php online(); ?>
     </div>
     <div class="input-group-append">
 <?php
@@ -45,6 +49,7 @@ require("proc/addon.php");
 addon("adminbtn");
 ?>
       <a class="btn btn-secondary" href="config.php">Config</a>
+      <?php if ($online) { ?>
       <div class="btn btn-primary m-0 p-0 dropdown show">
         <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="modeList" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Mode</a>
         <div class="dropdown-menu" aria-labelledby="modeList">
@@ -52,17 +57,18 @@ addon("adminbtn");
           <a class="<?=$llmClass ?> dropdown-item" onclick="enableLLM()">LLM</a>
         </div>
       </div>
+      <?php } ?>
     </div>
     <?php } else if ($open && !$uid) { ?>
     <div class="input-group-prepend">
-      <span class="input-group-text bg-<?=$online ? "success" : "danger" ?> text-white"><?=$online ? "On" : "Off" ?>line</span>
+      <?php online(); ?>
     </div>
     <div class="input-group-append">
       <a class="btn btn-primary" href="login.php">Login</a>
     </div>
-    <?php } else { ?>
-    <span class="input-group-text bg-<?=$online ? "success" : "danger" ?> text-white"><?=$online ? "On" : "Off" ?>line</span>
-    <?php } ?>
+    <?php } else {
+      online();
+    } ?>
   </div>
   <?php if ($uid) { ?>
   <div class="input-group profile m-3">
