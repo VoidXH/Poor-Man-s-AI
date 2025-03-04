@@ -1,19 +1,31 @@
 body {
-    background-color: #222;
-    color: #fff;
+  background-color: #222;
+  color: #fff;
 }
 
 .card {
-    background-color: #333;
-    color: #fff;
+  background-color: #333;
+  color: #fff;
 }
 
 .close {
-    color: #fff;
+  color: #fff;
 }
 
 .alert-info {
-    background-color: #8b4513;
-    border-color: #75430e;
-    color: #fff;
+  background-color: #8b4513;
+  border-color: #75430e;
+  color: #fff;
+}
+
+.btn {
+  border-radius: 1.25rem;
+}
+
+.form-control {
+  border-radius: 1.25rem;
+}
+
+.input-group-text {
+  border-radius: 1.25rem;
 }

@@ -25,6 +25,7 @@ function online() {
   <title><?=$siteName ?></title>
   <link rel="stylesheet" href="<?=$bootstrapPath ?>">
   <link rel="stylesheet" href="css/index.css">
+  <link rel="stylesheet" href="css/dark.css">
   <style>
     .gpt { background-image: url('<?=$gpt_bg ?>'); }
     .moa { background-image: url('<?=$diff_bg ?>'); }

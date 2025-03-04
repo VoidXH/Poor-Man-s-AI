@@ -30,7 +30,7 @@ pre code {
 
 .message .text {
   padding: 10px;
-  border-radius: 15px;
+  border-radius: 1.25rem;
   background-color: #0094BF;
   max-width: 70%;
 }

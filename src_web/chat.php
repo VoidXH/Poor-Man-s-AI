@@ -59,7 +59,7 @@ $slm = $time - getAIVar("moa-available") <= 10;
     <div class="card-footer">
       <?php if (!$offline) { ?>
       <div class="input-group">
-        <textarea class="form-control" id="input" placeholder="Message <?=$chatName ?>..." autofocus></textarea>
+        <textarea class="form-control" id="input" placeholder="Ask <?=$chatName ?> anything..." autofocus></textarea>
         <div class="input-group-append">
           <button class="btn btn-danger" id="stop" style="display:none;" onclick="stop()">Stop</button>
           <button class="btn btn-primary" id="send" onclick="send()">Send</button>
