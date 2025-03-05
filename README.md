@@ -7,6 +7,7 @@ processing the prompts.
 1. [Try it!](#try-it)
 1. [Distinguishing tech](#distinguishing-tech)
 1. [How to install](#how-to-install)
+1. [Advanced configuration](#advanced-configuration)
 1. [Licence](#licence)
 
 ## Try it!
@@ -104,6 +105,15 @@ longer than 10 minutes.
   might have broken your installation. Just delete and redownload or unzip again
   to fix issues caused by misconfiguration or half-done downloads. Make sure to
   backup your settings.
+
+## Advanced configuration
+### Conversation starters
+These are the example buttons visible when you open the chat on the Website.
+They are contained in the Website's `__chat.php` file. Open it with any text
+editor, and make a copy of or change any example lines. If you don't know PHP,
+just make sure your new line looks just like the others, in the ["title",
+"message"] format. One thing to note: when you type the `'` character, it can
+break the website's code when it's inserted, so type `\'` instead.
   
 ### Improving chat knowledge base
 Extra knowledge can easily be added to models by copying documents containing
