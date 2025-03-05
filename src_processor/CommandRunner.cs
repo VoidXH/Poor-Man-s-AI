@@ -168,12 +168,18 @@ namespace PoorMansAI {
 
                 bool repeat = finished;
                 do {
-                    string commandUrl = "/commands.php?" + EnginesToUpdate();
+                    string commandUrl = "/cmd/update.php?" + EnginesToUpdate();
                     string result = HTTP.POST(HTTP.Combine(Config.publicWebserver, commandUrl), [
-                        new("update", command.ID.ToString()),
-                        new("result", command.Update(status)),
+                        new("id", command.ID.ToString()),
+                        new("result", command.Update(status, repeat)),
                         new("progress", Math.Floor(progress * 100).ToString(CultureInfo.InvariantCulture))
                     ], cookies);
+
+                    if (result != null && result.StartsWith("RETRY", StringComparison.InvariantCulture)) {
+                        Logger.Warning("Server asked for the result to be sent again. Reason: " + result[5..].TrimStart());
+                        repeat = true;
+                    }
+
                     repeat &= result == null;
                     if (repeat) {
                         Thread.Sleep(Config.serverPollInterval);

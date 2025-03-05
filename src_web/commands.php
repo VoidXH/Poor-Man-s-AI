@@ -8,7 +8,6 @@
   POST:
     command: creates a job and prints its ID
     stop: stops a job by ID
-    update: update job progress: "update" -> job ID, "result" -> new status message, "progress" -> new progress message
 */
 
 require("__config.php");
@@ -69,25 +68,6 @@ if ($method === "GET") {
     die;
   }
 } else if ($method === "POST") {
-  if ($admin) {
-    if (isset($_POST["update"])) {
-      $id = intval($_POST["update"]);
-      $newProgress = intval($_POST["progress"]);
-      $stmt = execute("SELECT progress FROM ai_commands WHERE id = ?", $id);
-      $stmt->bind_result($progress);
-      $stmt->fetch();
-      $stmt->close();
-      if ($progress == -1 && $newProgress != 100) {
-          echo "STOP";
-          die;
-      }
-
-      $stmt = execute("UPDATE ai_commands SET result = ?, progress = ?, result_ts = NOW() WHERE id = ?", $_POST["result"], $newProgress, $id);
-      $stmt->close();
-      die;
-    }
-  }
-
   if (isset($_POST["command"])) {
     require("proc/addon.php");
     addon("command_before");

@@ -40,11 +40,12 @@ namespace PoorMansAI {
         }
 
         /// <summary>
-        /// Check if this status was already sent to the server. If yes, it will be nullified to prevent redundantly used bandwidth.
+        /// Check if this status was already sent to the server. If yes, it will be nullified to prevent redundantly used bandwidth,
+        /// unless giving a result is <paramref name="forced"/>.
         /// </summary>
         /// <returns>What needs to be sent to the server.</returns>
-        public string Update(string status) {
-            if (lastStatus == status) {
+        public string Update(string status, bool forced) {
+            if (lastStatus == status && !forced) {
                 return null;
             }
             lastStatus = status;
