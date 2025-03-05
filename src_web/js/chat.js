@@ -72,6 +72,7 @@ function onPartialResult(progress, result) {
 function onFinalResult(progress, result) {
   onPartialResult(progress, result);
   activate(false);
+  $('#input').focus();
   hist.push(result);
 }
 
