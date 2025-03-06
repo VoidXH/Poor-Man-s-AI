@@ -107,7 +107,7 @@ namespace PoorMansAI.Engines {
         }
 
         /// <summary>
-        /// Run a <paramref name="command"/> of a given <paramref name="id"/> through the corresponding <paramref name="engine"/>.
+        /// Run a <paramref name="command"/> through the corresponding engine.
         /// </summary>
         /// <returns>The output of the generation.</returns>
         public string Generate(Command command) {
@@ -116,7 +116,7 @@ namespace PoorMansAI.Engines {
                 HTTP.POST(HTTP.Combine(Config.publicWebserver, "/models.php"), [
                     new KeyValuePair<string, string>("active", command.Prompt)
                 ], cookies);
-                return null;
+                return "OK";
             }
 
             return command.EngineType switch {

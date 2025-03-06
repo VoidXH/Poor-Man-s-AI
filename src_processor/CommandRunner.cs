@@ -102,7 +102,7 @@ namespace PoorMansAI {
         /// </summary>
         void RunGroup(IEnumerable<Command> commands) {
             foreach (Command command in commands) {
-                string output = engine.Generate(command);
+                string output = engine.Generate(command) ?? "Error.";
                 ProgressUpdate(command, 1, output);
             }
         }
