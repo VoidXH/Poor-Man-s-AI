@@ -3,6 +3,7 @@ var newMessage = false;
 var hist = Array();
 
 const escape = (x) => x.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;").replaceAll("\n", "<br>");
+const isWorking = () => $("#send").prop("disabled");
 
 $(document).ready(function() {
   $("#chat, #think, #code").click(function() {
@@ -90,21 +91,44 @@ function send() {
   const input = $("#input").val();
   if (input) {
     activate(true);
-    if (hist.length > 8) {
-      hist = hist.slice(-8);
-    }
     if (sentMessages == 0) {
       reset();
     }
     sentMessages++;
     newMessage = true;
     hist.push(input);
-    sendCommand("Chat", getModel() + "|" + hist.map(str => str.replaceAll("|", "&vert;")).join("|"));
-    $(".chatbox").append("<div class='message'><span class='username'>" + you + "</span><span class='text'>" + escape(input) + "</span></div>");
-    $(".chatbox").append("<div class='message reply'><span class='username'>" + gpt + "</span><span id='msg" + sentMessages + "' class='text'>...</span></div>");
+    const toSend = hist.length > 8 ? hist.slice(-8) : hist;
+    sendCommand("Chat", getModel() + "|" + toSend.map(str => str.replaceAll("|", "&vert;")).join("|"));
+    $(".chatbox").append("<div id='out" + sentMessages + "' class='message'><p class='username'>" + you + "</p><p class='text'>" + escape(input) + "</p><button class='btn btn-secondary btn-sm option' onclick='edit(" + sentMessages + ")'>&#9999; Edit</button></div>");
+    $(".chatbox").append("<div id='in" + sentMessages + "' class='message reply'><p class='username'>" + gpt + "</p><p id='msg" + sentMessages + "' class='text'>...</p><button class='btn btn-secondary btn-sm option' onclick='regenerate(" + sentMessages + ")'>&#128260; Regenerate</button></div>");
     $("#input").val("");
     $(".chatbox").animate({ scrollTop: $(".chatbox").prop("scrollHeight") }, 500);
   }
+}
+
+function clearChat(from) {
+  for (let i = from + 1, sents = hist.length / 2; i <= sents; i++) {
+    $("#out" + i).remove();
+    $("#in" + i).remove();
+  }
+  hist = hist.slice(0, 2 * from);
+  sentMessages = from;
+}
+
+function edit(id) {
+  if (isWorking()) {
+    alert("This option is only available when " + gpt + "'s answering is not in progress.");
+    return;
+  }
+  const userMessage = hist[2 * (id - 1)];
+  clearChat(id - 1);
+  $("#input").val(userMessage);
+}
+
+function regenerate(id) {
+  edit(id);
+  if (isWorking()) return;
+  send();
 }
 
 function starter(prompt) {

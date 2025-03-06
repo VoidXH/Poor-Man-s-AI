@@ -35,6 +35,11 @@ pre code {
   max-width: 70%;
 }
 
+.message .option {
+  margin-top: -1.6rem;
+  font-size: 11px;
+}
+
 .reply {
   align-items: flex-start;
 }
