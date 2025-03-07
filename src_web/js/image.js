@@ -73,6 +73,10 @@ function onFinalResult(progress, result) {
   }
 }
 
+function onHTTPError(errorCode) {
+  $("#message").html("Temporary error (HTTP " + errorCode + "), retrying...");
+}
+
 function generate() {
   activate(true);
   $("#message").html("Connecting...");

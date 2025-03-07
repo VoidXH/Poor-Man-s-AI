@@ -97,7 +97,12 @@ namespace PoorMansAI.Engines {
         /// </summary>
         public EngineCache(CookieCollection cookies) {
             this.cookies = cookies;
-            string mode = HTTP.GET(HTTP.Combine(Config.publicWebserver, "/models.php?active"), cookies);
+            string GetMode() => HTTP.GET(HTTP.Combine(Config.publicWebserver, "/models.php?active"), cookies);
+            string mode = GetMode();
+            while (mode == null) {
+                Logger.Warning("Couldn't fetch the active model, retrying...");
+                mode = GetMode();
+            }
             try {
                 Mode = (EngineCacheMode)int.Parse(mode);
             } catch {

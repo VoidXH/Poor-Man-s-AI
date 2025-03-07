@@ -1,6 +1,7 @@
 // Poor Man's AI command API. Called functions must be implemented for a progress between 0-100 and the partial or full result:
 // - onPartialResult(progress, result)
 // - onFinalResult(progress, result)
+// - onHTTPError(errorCode)
 // If progress == -1: canceled command
 // If progress < -1: queue pos = -1 - progress
 // Also include JQuery.
@@ -18,6 +19,10 @@ function sendCommand(type, prompt) {
         $.get('commands.php?check=' + id, function(data) {
           fetching = false;
           progressCheck(id, data);
+        })
+        .fail((jqXHR, textStatus, errorThrown) => {
+          fetching = false;
+          onHTTPError(jqXHR.status);
         });
       }
     }, 1500);

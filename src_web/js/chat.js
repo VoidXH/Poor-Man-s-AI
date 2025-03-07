@@ -77,6 +77,10 @@ function onFinalResult(progress, result) {
   hist.push(result);
 }
 
+function onHTTPError(errorCode) {
+  onPartialResult(50, "Temporary error (HTTP " + errorCode + "), retrying...");
+}
+
 function getModel() {
   var res;
   $("#model button").each(function() {
