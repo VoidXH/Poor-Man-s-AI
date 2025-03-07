@@ -3,7 +3,7 @@
   Command handling endpoints
   --------------------------
   GET:
-    ?list: list all unfinished jobs, optionally update submodule online statuses
+    ?list: list all unfinished jobs, optionally update Processor availability
     ?check=ID: get the progress and status message for a job with an ID, separated by |
   POST:
     command: creates a job and prints its ID
@@ -14,12 +14,14 @@ require("__config.php");
 require("_check.php");
 require("proc/ai_vars.php");
 
-// Update submodule online statuses
-if (isset($_GET["llm"])) {
-  setAIVar("llm-available", time());
-}
-if (isset($_GET["moa"])) {
-  setAIVar("moa-available", time());
+if ($admin) {
+  // Update Processor availability
+  if (isset($_GET["llm"])) {
+    setAIVar("llm-available", time());
+  }
+  if (isset($_GET["moa"])) {
+    setAIVar("moa-available", time());
+  }
 }
 
 // Delete old unprocessed entries
