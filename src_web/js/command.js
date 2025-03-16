@@ -10,13 +10,13 @@ var interval; // timer callback
 var workingCommandId; // slow internet debounce
 var fetching = false; // one poll at a time
 
-function sendCommand(type, prompt) {
-  $.post('commands.php', { command: type + '|' + prompt }, function(id) {
+function sendCommand(type, prompt, path = "") {
+  $.post(path + "commands.php", { command: type + '|' + prompt }, function(id) {
     workingCommandId = id;
     interval = setInterval(() => {
       if (!fetching) {
         fetching = true;
-        $.get('commands.php?check=' + id, function(data) {
+        $.get(path + "commands.php?check=" + id, function(data) {
           fetching = false;
           progressCheck(id, data);
         })

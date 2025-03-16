@@ -2,6 +2,8 @@ var sentMessages = 0;
 var newMessage = false;
 var hist = Array();
 
+const customPath = typeof pmaiPath !== "undefined" ? pmaiPath : "";
+
 const escape = (x) => x.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;").replaceAll("\n", "<br>");
 const isWorking = () => $("#send").prop("disabled");
 
@@ -102,7 +104,7 @@ function send() {
     newMessage = true;
     hist.push(input);
     const toSend = hist.length > 8 ? hist.slice(-8) : hist;
-    sendCommand("Chat", getModel() + "|" + toSend.map(str => str.replaceAll("|", "&vert;")).join("|"));
+    sendCommand("Chat", getModel() + "|" + toSend.map(str => str.replaceAll("|", "&vert;")).join("|"), customPath);
     $(".chatbox").append("<div id='out" + sentMessages + "' class='message'><p class='username'>" + you + "</p><p class='text'>" + escape(input) + "</p><button class='btn btn-secondary btn-sm option' onclick='edit(" + sentMessages + ")'>&#9999; Edit</button></div>");
     $(".chatbox").append("<div id='in" + sentMessages + "' class='message reply'><p class='username'>" + gpt + "</p><p id='msg" + sentMessages + "' class='text'>...</p><button class='btn btn-secondary btn-sm option' onclick='regenerate(" + sentMessages + ")'>&#128260; Regenerate</button></div>");
     $("#input").val("");
@@ -142,7 +144,7 @@ function starter(prompt) {
 
 function stop() {
   $("#stop").prop("disabled", true);
-  $.post("commands.php", { stop: workingCommandId });
+  $.post(customPath + "commands.php", { stop: workingCommandId });
 }
 
 $("#input").keypress(function(e) {
