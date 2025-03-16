@@ -39,6 +39,7 @@ namespace PoorMansAI.NewTech.ContextDocTree {
         /// <summary>
         /// Find all relevant context docs, and insert them to the prompt.
         /// </summary>
+        /// <param name="prompt">Prompt to augment</param>
         public string TransformPrompt(string prompt) {
             if (!active) {
                 return prompt;

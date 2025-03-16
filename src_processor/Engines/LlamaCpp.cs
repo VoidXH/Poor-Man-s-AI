@@ -91,7 +91,7 @@ namespace PoorMansAI.Engines {
             JsonArray messages = [];
             messages.Add(new JsonObject {
                 ["role"] = "system",
-                ["content"] = systemMessage
+                ["content"] = contextDocs.TransformPrompt(systemMessage)
             });
 
             string[] chat = command.Prompt[(split + 1)..].Split('|');
