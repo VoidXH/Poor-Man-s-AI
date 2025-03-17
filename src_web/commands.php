@@ -81,6 +81,8 @@ if ($method === "GET") {
     if ($uid) {
       $stmt = execute("UPDATE ai_users SET prompts = prompts + 1 WHERE id = ?", $uid);
       $stmt->close();
+    } else {
+      setAIVar("unreg-use", intval(getAIVar("unreg-use")) + 1);
     }
     addon("command_after");
     die;

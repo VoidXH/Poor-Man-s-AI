@@ -35,7 +35,8 @@ $install = [
 "INSERT INTO `ai_vars` (`key`, `value`) VALUES
 ('llm-available',	'0'),
 ('moa-available',	'0'),
-('mode',	'5')"
+('mode',	'5'),
+('unreg-use',	'0')"
 ];
 
 if ($_POST["db_db"]) {
