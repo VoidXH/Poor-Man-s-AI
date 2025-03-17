@@ -57,6 +57,7 @@ $offline = time() - getAIVar("moa-available") > 10;
   <div id="image-results" class="text-center"></div>
 <?php } ?>
 </div>
+<a class="br" href="https://github.com/VoidXH/Poor-Man-s-AI"><img src="img/github.svg"></a>
 <script src="<?=$jqueryPath ?>"></script>
 <script src="js/command.js"></script>
 <script src="js/image.js"></script>

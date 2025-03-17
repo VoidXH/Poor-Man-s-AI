@@ -12,6 +12,13 @@ body, html {
   font-family: Arial, sans-serif;
 }
 
+.br {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 998;
+}
+
 .server {
   height: calc(1.5em + .75rem + 2px);
   position: absolute;

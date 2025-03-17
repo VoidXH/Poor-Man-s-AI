@@ -74,6 +74,7 @@ $slm = $time - getAIVar("moa-available") <= 10;
     </div>
   </div>
 </div>
+<a class="br" href="https://github.com/VoidXH/Poor-Man-s-AI"><img src="img/github.svg"></a>
 <script>
 const you = "<?=htmlspecialchars($uid ? $_COOKIE['username'] : 'You') ?>";
 const gpt = "<?=htmlspecialchars($chatName) ?>";

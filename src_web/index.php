@@ -39,6 +39,7 @@ function online() {
   <div id="loading-overlay" class="overlay">
     <div class="spinner"></div>
   </div>
+  <a class="br" href="https://github.com/VoidXH/Poor-Man-s-AI"><img src="img/github.svg"></a>
   <div class="server input-group mt-3">
     <?php if ($admin) { ?>
     <div class="input-group-prepend">
