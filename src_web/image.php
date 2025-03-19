@@ -3,7 +3,7 @@ require("__config.php");
 require("_check.php");
 require("proc/addon.php");
 require("proc/ai_vars.php");
-$offline = time() - getAIVar("moa-available") > 10;
+$offline = time() - getAIVar("moa-available") > $procTimeout;
 ?>
 <html lang="en">
 <head>

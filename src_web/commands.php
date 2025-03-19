@@ -15,13 +15,23 @@ require("_check.php");
 require("proc/ai_vars.php");
 
 if ($admin) {
-  // Update Processor availability
-  if (isset($_GET["llm"])) {
-    setAIVar("llm-available", time());
+  function availability($engine) {
+    if (isset($_GET[$engine])) {
+      $now = time();
+      $lastTime = getAIVar($engine . "-available", $now);
+      $newWeight = intval($_GET[$engine]);
+      $lastWeight = intval(getAIVar($engine . "-weight"));
+      if ($lastWeight <= $newWeight || $lastTime + $procTimeout < $now) {
+        setAIVar($engine . "-available", time());
+        setAIVar($engine . "-weight", $newWeight);
+        return true;
+      }
+    }
+    return false;
   }
-  if (isset($_GET["moa"])) {
-    setAIVar("moa-available", time());
-  }
+
+  $llm = availability("llm");
+  $moa = availability("moa");
 }
 
 // Delete old unprocessed entries
@@ -35,10 +45,16 @@ if ($method === "GET") {
       $result = $sqlink->query("SELECT id, command FROM ai_commands WHERE progress != 100 ORDER BY command_ts ASC");
       $commands = [];
       while ($row = mysqli_fetch_assoc($result)) {
-        $commands[] = [
-          "id" => $row["id"],
-          "command" => $row["command"]
-        ];
+        $command = $row["command"];
+        $idx = strpos($command, '|');
+        if ($idx === false) continue;
+        $type = substr($command, 0, $idx);
+        if (($llm && $type == "Chat") || ($moa && $type == "Image")) {
+          $commands[] = [
+            "id" => $row["id"],
+            "command" => $command
+          ];
+        }
       }
       echo json_encode(["commands" => $commands]);
       die;

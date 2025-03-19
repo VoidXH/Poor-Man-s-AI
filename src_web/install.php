@@ -34,7 +34,9 @@ $install = [
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8",
 "INSERT INTO `ai_vars` (`key`, `value`) VALUES
 ('llm-available',	'0'),
+('llm-weight',	'0'),
 ('moa-available',	'0'),
+('moa-weight',	'0'),
 ('mode',	'5'),
 ('unreg-use',	'0')"
 ];

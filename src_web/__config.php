@@ -21,6 +21,8 @@
   $slmWarning = true;
   // Minutes to delete unprocessed commands after:
   $commandClear = 3;
+  // Seconds of no connection after the Processor is considered offline:
+  $procTimeout = 10;
 
   // To enable zooming on phones, just remove the last parameter from this:
   $viewport = '<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">';

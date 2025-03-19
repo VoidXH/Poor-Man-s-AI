@@ -5,8 +5,8 @@ require("_check.php");
 require("proc/ai_vars.php");
 
 $time = time();
-$offline = $time - getAIVar("llm-available") > 10;
-$slm = $time - getAIVar("moa-available") <= 10;
+$offline = $time - getAIVar("llm-available") > $procTimeout;
+$slm = $time - getAIVar("moa-available") <= $procTimeout;
 ?>
 <html lang="en">
 <head>

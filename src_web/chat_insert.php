@@ -1,4 +1,5 @@
 <?php
+require_once("__config.php");
 require_once("sql.php");
 require_once("proc/ai_vars.php");
 
@@ -9,7 +10,7 @@ function aiChatInternal($pmaiPath, $name, $modelName, $fullInclude, $online) {
 <link rel="stylesheet" href="<?=$bootstrapPath ?>">
 <?php }
 require("__config.php");
-if (time() - getAIVar("llm-available") <= 10) { ?>
+if (time() - getAIVar("llm-available") <= $procTimeout) { ?>
 <div id="model" style="display: none;">
   <button class="btn-primary"><?=$modelName ?></button>
 </div>
