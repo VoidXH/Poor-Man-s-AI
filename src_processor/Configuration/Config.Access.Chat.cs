@@ -49,7 +49,7 @@
         /// <summary>
         /// If chat replies are not done in this many seconds, cancel the generation.
         /// </summary>
-        public static readonly int textGenTimeout = int.Parse(Values["TextGenTimeout"]);
+        public static readonly int chatTimeout = int.Parse(Values["ChatTimeout"]);
 
         /// <summary>
         /// Enumerates the user-set models and returns the prefix for each of them.
