@@ -117,7 +117,7 @@ namespace PoorMansAI.Engines {
             string result;
             try {
                 result = HTTP.POST(Server + "/v1/chat/completions", root.ToJsonString(), x => UpdateProgress(command, .5f, x),
-                    Config.serverPollInterval / 3 /* final callback also limits */, Parse, canceller.Token, Config.textGenTimeout);
+                    Config.serverPollInterval / 3 /* final callback also limits */, Parse, canceller.Token, Config.chatTimeout);
             } catch (Exception e) {
                 Console.Error.WriteLine(e);
                 result = null;

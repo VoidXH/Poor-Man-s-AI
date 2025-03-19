@@ -14,6 +14,16 @@
         public static readonly int serverPollInterval = int.Parse(Values["ServerPollInterval"]);
 
         /// <summary>
+        /// Priority of the chat engine across all distributed nodes.
+        /// </summary>
+        public static readonly int chatWeight = int.Parse(Values["ChatWeight"]);
+
+        /// <summary>
+        /// Priority of the chat engine across all distributed nodes.
+        /// </summary>
+        public static readonly int imageGenWeight = int.Parse(Values["ImageGenWeight"]);
+
+        /// <summary>
         /// Command poller user's name.
         /// </summary>
         internal static readonly string adminUsername = Values["AdminUsername"];
@@ -41,9 +51,11 @@
                 int maxWeight = int.MinValue;
                 foreach (var iniFile in configs) {
                     Dictionary<string, string> data = ParseINI(iniFile);
-                    if (data.TryGetValue("Weight", out string value) && int.TryParse(value, out int weight)) {
-                        if (weight > maxWeight) {
-                            maxWeight = weight;
+                    if (data.TryGetValue("ChatWeight", out string chatWeightString) && data.TryGetValue("ImageGenWeight", out string imageGenWeightString) &&
+                        int.TryParse(chatWeightString, out int chatWeight) && int.TryParse(imageGenWeightString, out int imageGenWeight)) {
+                        int bigger = Math.Max(chatWeight, imageGenWeight);
+                        if (bigger > maxWeight) {
+                            maxWeight = bigger;
                             result = data;
                         }
                     }

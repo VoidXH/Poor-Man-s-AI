@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Net;
+using System.Text;
 using System.Text.Json.Nodes;
 
 using VoidX.WPF;
@@ -195,15 +196,17 @@ namespace PoorMansAI {
         /// The commands.php endpoint updates the last available time of running engines. These are the GET parameters to update all running engines.
         /// </summary>
         string EnginesToUpdate() {
-            string result = string.Empty;
-            if (engine.CanGenerateText) {
-                result += "llm";
+            StringBuilder result = new();
+            if (engine.CanGenerateText && Config.chatWeight >= 0) {
+                result.Append("llm=").Append(Config.chatWeight);
             }
-            if (engine.CanGenerateImages) {
-                if (result.Length != 0) result += '&';
-                result += "moa";
+            if (engine.CanGenerateImages && Config.imageGenWeight >= 0) {
+                if (result.Length != 0) {
+                    result.Append('&');
+                }
+                result.Append("moa=").Append(Config.imageGenWeight);
             }
-            return result;
+            return result.ToString();
         }
     }
 }
