@@ -91,7 +91,7 @@ namespace PoorMansAI.Engines {
             JsonArray messages = [];
             messages.Add(new JsonObject {
                 ["role"] = "system",
-                ["content"] = contextDocs.TransformPrompt(systemMessage)
+                ["content"] = Config.augmentWithSystemPrompt ? systemMessage : contextDocs.TransformPrompt(systemMessage)
             });
 
             string[] chat = command.Prompt[(split + 1)..].Split('|');
@@ -99,7 +99,7 @@ namespace PoorMansAI.Engines {
                 bool user = i % 2 == 0;
                 string message = chat[i].Replace("&vert;", "|").Replace("\"", "\\\"");
                 if (user && (!Config.augmentLatestOnly || i == last)) {
-                    message = contextDocs.TransformPrompt(message);
+                    message = contextDocs.TransformPrompt(message, Config.augmentWithSystemPrompt ? systemMessage : null);
                 }
                 messages.Add(new JsonObject {
                     ["role"] = user ? "user" : "assistant",

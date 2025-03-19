@@ -40,12 +40,18 @@ namespace PoorMansAI.NewTech.ContextDocTree {
         /// Find all relevant context docs, and insert them to the prompt.
         /// </summary>
         /// <param name="prompt">Prompt to augment</param>
-        public string TransformPrompt(string prompt) {
+        /// <param name="extra">Additional keywords to augment</param>
+        public string TransformPrompt(string prompt, string extra = null) {
             if (!active) {
                 return prompt;
             }
 
             string[] keywords = prompt.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+            if (extra != null) {
+                string[] extraKeywords = extra.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+                Array.Resize(ref keywords, keywords.Length + extraKeywords.Length);
+                extraKeywords.CopyTo(keywords, keywords.Length - extraKeywords.Length);
+            }
             for (int i = 0; i < keywords.Length; i++) {
                 keywords[i] = keywords[i].ToLowerInvariant();
             }

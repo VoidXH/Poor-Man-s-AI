@@ -27,6 +27,11 @@
         public static readonly bool augmentLatestOnly = bool.Parse(Values["AugmentLatestOnly"]);
 
         /// <summary>
+        /// Also add the system prompt to each augmentation evaluation.
+        /// </summary>
+        public static readonly bool augmentWithSystemPrompt = bool.Parse(Values["AugmentWithSystemPrompt"]);
+
+        /// <summary>
         /// llama.cpp CPU release build download path.
         /// </summary>
         public static readonly string llamaCppCPUDownload = Values["LlamaCppCPUDownload"];
