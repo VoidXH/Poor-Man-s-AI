@@ -65,28 +65,48 @@ namespace PoorMansAI.Engines {
             Environment.SetEnvironmentVariable("PYTHON", string.Empty);
             Environment.SetEnvironmentVariable("GIT", string.Empty);
             Environment.SetEnvironmentVariable("VENV_DIR", string.Empty);
-            Environment.SetEnvironmentVariable("COMMANDLINE_ARGS", $"--api --nowebui --port {Config.webUIPort} " +
-                $"--ckpt-dir \"{Path.GetFullPath(Config.artists)}\" " +
-                $"--embeddings-dir \"{Path.GetFullPath(Config.embeddings)}\"");
-            Environment.SetEnvironmentVariable("SD_WEBUI_LOG_LEVEL", "WARNING"); // Performance + we handle it
-            dir = Path.Combine(root, "webui");
-            instance = Process.Start(new ProcessStartInfo {
-                FileName = "cmd",
-                WorkingDirectory = dir,
-                Arguments = $"/C \"{Path.Combine(dir, "webui.bat")}\"",
-                UseShellExecute = false
-            });
 
-            // Give 60 seconds for startup - if fails, kill it
+            dir = Path.Combine(root, "webui");
+            string args = $"--api --nowebui --port {Config.webUIPort} " +
+                $"--ckpt-dir \"{Path.GetFullPath(Config.artists)}\" " +
+                $"--embeddings-dir \"{Path.GetFullPath(Config.embeddings)}\"";
+            if (OperatingSystem.IsWindows()) {
+                Environment.SetEnvironmentVariable("COMMANDLINE_ARGS", args);
+            } else {
+                File.WriteAllText(Path.Combine(dir, "webui-user.sh"), "export COMMANDLINE_ARGS=" +
+                    $"\"--skip-torch-cuda-test --upcast-sampling --no-half-vae --use-cpu interrogate {args.Replace('"', '\'')}\"");
+            }
+            Environment.SetEnvironmentVariable("SD_WEBUI_LOG_LEVEL", "WARNING"); // Performance + we handle it
+
+            ProcessStartInfo info = new() {
+                WorkingDirectory = dir,
+                UseShellExecute = false
+            };
+            if (OperatingSystem.IsWindows()) {
+                info.FileName = Path.Combine(dir, "webui.bat");
+            } else {
+                Process chmod = Process.Start(new ProcessStartInfo() {
+                    FileName = "/bin/bash",
+                    Arguments = $"-c \"chmod +x '{Path.Combine(dir, "webui.sh")}'\"",
+                    UseShellExecute = false
+                });
+                chmod.WaitForExit();
+                info.FileName = Path.Combine(dir, "webui.sh");
+            }
+            instance = Process.Start(info);
+
+            // Wait for startup
             DateTime tryUntil = DateTime.Now + TimeSpan.FromSeconds(60);
-            while (DateTime.Now < tryUntil) {
+            while (true) {
+                if (DateTime.Now >= tryUntil) {
+                    Logger.Warning("Image engine failed to start in 60 seconds.");
+                    tryUntil = DateTime.MaxValue;
+                }
                 if (HTTP.GET(Server + "/sdapi/v1/progress") != null) {
                     return;
                 }
                 Thread.Sleep(100);
             }
-            Dispose();
-            Console.Error.WriteLine("Image engine failed to start in 60 seconds.");
         }
 
         /// <inheritdoc/>

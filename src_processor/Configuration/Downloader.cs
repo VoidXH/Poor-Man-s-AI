@@ -54,7 +54,7 @@ namespace PoorMansAI.Configuration {
                 Directory.CreateDirectory(bin);
             }
             string tempFile = Path.Combine(bin, "llama.zip");
-            if (Directory.Exists(bin) && (File.Exists(tempFile) || Directory.GetFiles(bin).Length == 0)) {
+            if (Directory.Exists(bin) && (File.Exists(tempFile) || (Directory.GetFiles(bin).Length + Directory.GetDirectories(bin).Length) == 0)) {
                 if (!File.Exists(tempFile)) {
                     CheckFile(download, tempFile, ref prepTextSent);
                 }

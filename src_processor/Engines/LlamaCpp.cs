@@ -141,19 +141,18 @@ namespace PoorMansAI.Engines {
         /// </summary>
         void Launch() {
             string workingDir = LLM ? Config.llamaCppGPURoot : Config.llamaCppCPURoot,
-                ngl = LLM ? " -ngl 999" : string.Empty,
-                args = $"-m \"{model}\" --port {Config.Values["LlamaCppPort"]}{ngl}";
+                ngl = LLM ? " -ngl 999" : string.Empty;
             ProcessStartInfo info = new() {
                 WorkingDirectory = workingDir,
+                Arguments = $"-m \"{model}\" --port {Config.Values["LlamaCppPort"]}{ngl}",
                 UseShellExecute = false
             };
             if (OperatingSystem.IsWindows()) {
-                info.FileName = "cmd";
-                info.Arguments = $"/C llama-server.exe " + args;
+                info.FileName = Path.Combine(workingDir, "llama-server.exe");
             } else {
-                info.FileName = "bash";
-                info.Arguments = $"-c './llama-server' " + args;
+                info.FileName = Path.Combine(workingDir, "build/bin/llama-server");
             }
+            Logger.Info("Arguments: " + info.Arguments);
             instance = Process.Start(info);
 
             // Give 30 seconds for startup - if fails, kill it
