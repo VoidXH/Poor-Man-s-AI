@@ -22,6 +22,16 @@
         public static readonly int imageGenTimeout = int.Parse(Values["ImageGenTimeout"]);
 
         /// <summary>
+        /// Number of times the image is refined for better results.
+        /// </summary>
+        public static readonly int imageGenSteps = int.Parse(Values["ImageGenSteps"]);
+
+        /// <summary>
+        /// How close the prompts are followed, read your models' recommendation.
+        /// </summary>
+        public static readonly int imageGenGuidance = int.Parse(Values["ImageGenGuidance"]);
+
+        /// <summary>
         /// Base image size for non-HD generations, width.
         /// </summary>
         public static readonly int imageSizeW = ResX("ImageSize");

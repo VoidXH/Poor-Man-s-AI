@@ -1,5 +1,7 @@
 ﻿using System.Text.Json;
 
+using PoorMansAI.Configuration;
+
 namespace PoorMansAI.NewTech.VoidMoA {
     /// <summary>
     /// Prompt created by <see cref="PromptTransformer"/>, extracted positive and negative prompts and a selected model.
@@ -38,7 +40,8 @@ namespace PoorMansAI.NewTech.VoidMoA {
             negative_prompt = NegativePrompt,
             width = Width,
             height = Height,
-            steps = 20,
+            steps = Config.imageGenSteps,
+            cfg_scale = Config.imageGenGuidance,
             override_settings = new {
                 sd_model_checkpoint = Model
             }
