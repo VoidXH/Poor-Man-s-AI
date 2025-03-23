@@ -49,7 +49,10 @@ if ($method === "GET") {
         $idx = strpos($command, '|');
         if ($idx === false) continue;
         $type = substr($command, 0, $idx);
-        if (($llm && $type == "Chat") || ($moa && $type == "Image")) {
+        if ($type == "Chat") $add = $llm;
+        else if ($type == "Image") $add = $moa;
+        else $add = true;
+        if ($add) {
           $commands[] = [
             "id" => $row["id"],
             "command" => $command

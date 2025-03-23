@@ -64,6 +64,7 @@ function editBool($name, $var) {
   editBool("Allow the registration of new users", "regOn");
   editBool("Show the SLM warning when applicable", "slmWarning");
   editVar("Minutes to delete unprocessed commands after", "commandClear", true);
+  editVar("Seconds the processor is offline after", "procTimeout", true);
 ?>
   <h1>Developer</h1>
 <?php

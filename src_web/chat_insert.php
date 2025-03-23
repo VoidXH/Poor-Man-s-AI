@@ -4,13 +4,13 @@ require_once("sql.php");
 require_once("proc/ai_vars.php");
 
 function aiChatInternal($pmaiPath, $name, $modelName, $fullInclude, $online) {
+  global $open, $procTimeout, $bootstrapPath, $jqueryPath, $bootstrapJSPath, $markedPath;
 ?>
 <link rel="stylesheet" href="<?=$pmaiPath ?>/css/chat.css">
 <?php if ($fullInclude) { ?>
 <link rel="stylesheet" href="<?=$bootstrapPath ?>">
 <?php }
-require("__config.php");
-if (time() - getAIVar("llm-available") <= $procTimeout) { ?>
+if (time() - getAIVar("llm-available") <= $procTimeout && $open) { ?>
 <div id="model" style="display: none;">
   <button class="btn-primary"><?=$modelName ?></button>
 </div>
@@ -48,15 +48,17 @@ const pmaiPath = "<?=$pmaiPath ?>/";
 }
 
 function aiChat($pmaiPath, $name, $modelName, $fullInclude) {
-  aiChatInternal($pmaiPath, $name, $modelName, $fullInclude, time() - getAIVar("llm-available") <= 10);
+  global $procTimeout;
+  aiChatInternal($pmaiPath, $name, $modelName, $fullInclude, time() - getAIVar("llm-available") <= $procTimeout);
 }
 
 function aiChatPopup($pmaiPath, $name, $modelName, $fullInclude) {
+  global $open, $procTimeout;
 ?>
 <link rel="stylesheet" href="<?=$pmaiPath ?>/css/chat_insert.css">
 <?php
-  $online = time() - getAIVar("llm-available") <= 10;
-  if ($online) { ?>
+  $online = time() - getAIVar("llm-available") <= $procTimeout;
+  if ($online && $open) { ?>
 <button class="btn btn-secondary btn-lg btn-float br" onclick="$('#chatwin').show()">Chat with <?=$name ?></button>
 <div class="chatwin" id="chatwin">
 <?php aiChatInternal($pmaiPath, $name, $modelName, $fullInclude, $online); ?>

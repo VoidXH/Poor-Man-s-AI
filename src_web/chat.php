@@ -45,7 +45,7 @@ $slm = $time - getAIVar("moa-available") <= $procTimeout;
 <?php if ($offline) { ?>
       <div class="alert alert-danger" role="alert">Shhh! The chatting computer is sleeping and can't work now. Wait until it wakes up!</div>
 <?php } else {
- if ($slm) { ?>
+ if ($slm && $slmWarning) { ?>
       <div class="alert alert-warning" role="alert">The server is currently running the chat on CPU. The quality and generation speed of answers may be worse.</div>
 <?php } ?>
       <div class="message reply">
