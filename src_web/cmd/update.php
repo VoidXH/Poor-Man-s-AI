@@ -1,6 +1,5 @@
 <?php // POST endpoint: update job progress: "id" -> job ID, "result" -> new status text (or base64 binary), "progress" -> new progress (1-100)
-require("../__config.php");
-require("../_check.php");
+require_once("availability.php");
 
 if ($admin && isset($_POST["id"])) {
   $id = intval($_POST["id"]);

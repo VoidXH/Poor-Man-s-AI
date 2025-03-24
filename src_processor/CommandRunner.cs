@@ -67,7 +67,7 @@ namespace PoorMansAI {
                 executing = true;
             }
 
-            string commandUrl = "/commands.php?list&" + EnginesToUpdate();
+            string commandUrl = "/cmd/list.php?" + EnginesToUpdate();
             string result = HTTP.GET(HTTP.Combine(Config.publicWebserver, commandUrl), cookies);
             if (result != null) {
                 try {
@@ -193,7 +193,7 @@ namespace PoorMansAI {
         }
 
         /// <summary>
-        /// The commands.php endpoint updates the last available time of running engines. These are the GET parameters to update all running engines.
+        /// Some endpoints update the last available time of running engines. These are the GET parameters to update all running engines.
         /// </summary>
         string EnginesToUpdate() {
             StringBuilder result = new();

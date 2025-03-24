@@ -1,5 +1,5 @@
 <?php
-require("__config.php");
+require_once("__config.php");
 require_once("proc/sqlink.php");
 require_once("sql.php");
 

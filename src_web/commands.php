@@ -1,69 +1,19 @@
 <?php
 /*
-  Command handling endpoints
-  --------------------------
+  User command handling endpoints
+  -------------------------------
   GET:
-    ?list: list all unfinished jobs, optionally update Processor availability
     ?check=ID: get the progress and status message for a job with an ID, separated by |
   POST:
     command: creates a job and prints its ID
     stop: stops a job by ID
 */
 
-require("__config.php");
-require("_check.php");
-require("proc/ai_vars.php");
-
-if ($admin) {
-  function availability($engine) {
-    if (isset($_GET[$engine])) {
-      $now = time();
-      $lastTime = getAIVar($engine . "-available", $now);
-      $newWeight = intval($_GET[$engine]);
-      $lastWeight = intval(getAIVar($engine . "-weight"));
-      if ($lastWeight <= $newWeight || $lastTime + $procTimeout < $now) {
-        setAIVar($engine . "-available", time());
-        setAIVar($engine . "-weight", $newWeight);
-        return true;
-      }
-    }
-    return false;
-  }
-
-  $llm = availability("llm");
-  $moa = availability("moa");
-}
-
-// Delete old unprocessed entries
-$time = date("Y-m-d H:i:s", strtotime("-$commandClear minutes"));
-$sqlink->query("DELETE FROM ai_commands WHERE command_ts < \"$time\"");
+require_once("__config.php");
+require_once("_check.php");
 
 $method = $_SERVER["REQUEST_METHOD"];
 if ($method === "GET") {
-  if ($admin) {
-    if (isset($_GET["list"])) {
-      $result = $sqlink->query("SELECT id, command FROM ai_commands WHERE progress != 100 ORDER BY command_ts ASC");
-      $commands = [];
-      while ($row = mysqli_fetch_assoc($result)) {
-        $command = $row["command"];
-        $idx = strpos($command, '|');
-        if ($idx === false) continue;
-        $type = substr($command, 0, $idx);
-        if ($type == "Chat") $add = $llm;
-        else if ($type == "Image") $add = $moa;
-        else $add = true;
-        if ($add) {
-          $commands[] = [
-            "id" => $row["id"],
-            "command" => $command
-          ];
-        }
-      }
-      echo json_encode(["commands" => $commands]);
-      die;
-    }
-  }
-
   if (isset($_GET["check"])) {
     require("proc/addon.php");
     addon("check");
@@ -101,6 +51,7 @@ if ($method === "GET") {
       $stmt = execute("UPDATE ai_users SET prompts = prompts + 1 WHERE id = ?", $uid);
       $stmt->close();
     } else {
+      require_once("proc/ai_vars.php");
       setAIVar("unreg-use", intval(getAIVar("unreg-use")) + 1);
     }
     addon("command_after");
@@ -108,9 +59,9 @@ if ($method === "GET") {
   }
 
   if (isset($_POST["stop"])) {
-      $stmt = execute("UPDATE ai_commands SET progress = -1 WHERE id = ?", $_POST["stop"]);
-      $stmt->close();
-      die;
+    $stmt = execute("UPDATE ai_commands SET progress = -1 WHERE id = ?", $_POST["stop"]);
+    $stmt->close();
+    die;
   }
 }
 ?>
