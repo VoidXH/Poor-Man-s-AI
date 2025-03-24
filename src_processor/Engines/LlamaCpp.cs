@@ -152,7 +152,7 @@ namespace PoorMansAI.Engines {
             } else {
                 info.FileName = Path.Combine(workingDir, "build/bin/llama-server");
             }
-            Logger.Info("Arguments: " + info.Arguments);
+            Logger.Debug("Llama.cpp launched with: " + info.Arguments);
             instance = Process.Start(info);
 
             // Give 30 seconds for startup - if fails, kill it

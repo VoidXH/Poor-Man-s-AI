@@ -1,4 +1,6 @@
-﻿namespace PoorMansAI.Configuration {
+﻿using System.Globalization;
+
+namespace PoorMansAI.Configuration {
     // Parsed config values related to image generation
     partial class Config {
         /// <summary>
@@ -29,7 +31,7 @@
         /// <summary>
         /// How close the prompts are followed, read your models' recommendation.
         /// </summary>
-        public static readonly int imageGenGuidance = int.Parse(Values["ImageGenGuidance"]);
+        public static readonly float imageGenGuidance = float.Parse(Values["ImageGenGuidance"].Replace(',', '.'), CultureInfo.InvariantCulture);
 
         /// <summary>
         /// Base image size for non-HD generations, width.

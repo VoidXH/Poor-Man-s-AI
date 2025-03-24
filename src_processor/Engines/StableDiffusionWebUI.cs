@@ -73,8 +73,8 @@ namespace PoorMansAI.Engines {
             if (OperatingSystem.IsWindows()) {
                 Environment.SetEnvironmentVariable("COMMANDLINE_ARGS", args);
             } else {
-                File.WriteAllText(Path.Combine(dir, "webui-user.sh"), "export COMMANDLINE_ARGS=" +
-                    $"\"--skip-torch-cuda-test --upcast-sampling --no-half-vae --use-cpu interrogate {args.Replace('"', '\'')}\"");
+                File.WriteAllText(Path.Combine(dir, "webui-user.sh"),
+                    $"export COMMANDLINE_ARGS=\"{macArgs} {args.Replace('"', '\'')}\"");
             }
             Environment.SetEnvironmentVariable("SD_WEBUI_LOG_LEVEL", "WARNING"); // Performance + we handle it
 
@@ -183,5 +183,10 @@ namespace PoorMansAI.Engines {
                 progressChecked = false;
             }
         }
+
+        /// <summary>
+        /// Recommended command line arguments when Stable Diffusion WebUI is ran on a Mac.
+        /// </summary>
+        const string macArgs = "--skip-torch-cuda-test --upcast-sampling --use-cpu interrogate";
     }
 }
