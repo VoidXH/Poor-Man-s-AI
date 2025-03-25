@@ -8,6 +8,7 @@ require_once("../__config.php");
 require_once("../proc/ai_vars.php");
 
 function availability($engine) {
+    global $procTimeout;
     if (isset($_GET[$engine])) {
         $now = time();
         $lastTime = getAIVar($engine . "-available", $now);
