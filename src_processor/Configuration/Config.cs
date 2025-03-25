@@ -39,6 +39,11 @@
         internal static readonly bool unified = bool.Parse(Values["Unified"]);
 
         /// <summary>
+        /// Class names of enabled extensions.
+        /// </summary>
+        internal static string[] extensions = Values["Extensions"].Split(',');
+
+        /// <summary>
         /// The config file in the application folder with the highest weight.
         /// </summary>
         internal static Dictionary<string, string> Values {
