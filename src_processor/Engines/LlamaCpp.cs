@@ -34,7 +34,7 @@ namespace PoorMansAI.Engines {
         /// <summary>
         /// Running llama.cpp server.
         /// </summary>
-        Process instance;
+        Watchdog runner;
 
         /// <summary>
         /// Can cancel generation.
@@ -61,7 +61,7 @@ namespace PoorMansAI.Engines {
 
             LLM = llm;
             model = models[config["Model1"]].path;
-            Launch();
+            runner = new(Launch);
         }
 
         /// <summary>
@@ -84,8 +84,8 @@ namespace PoorMansAI.Engines {
             (string modelPath, string systemMessage) = models[command.Prompt[..split]];
             if (model != modelPath) {
                 model = modelPath;
-                instance.Kill(true);
-                Launch();
+                runner.Dispose();
+                runner = new(Launch);
             }
 
             JsonArray messages = [];
@@ -132,14 +132,14 @@ namespace PoorMansAI.Engines {
 
         /// <inheritdoc/>
         public override void Dispose() {
-            instance.Kill(true);
+            runner.Dispose();
             GC.SuppressFinalize(this);
         }
 
         /// <summary>
         /// Relaunch with the currently selected <see cref="model"/>.
         /// </summary>
-        void Launch() {
+        Process Launch() {
             string workingDir = LLM ? Config.llamaCppGPURoot : Config.llamaCppCPURoot,
                 ngl = LLM ? " -ngl 999" : string.Empty;
             ProcessStartInfo info = new() {
@@ -153,17 +153,18 @@ namespace PoorMansAI.Engines {
                 info.FileName = Path.Combine(workingDir, "build/bin/llama-server");
             }
             Logger.Debug("Llama.cpp launched with: " + info.Arguments);
-            instance = Process.Start(info);
+            Process instance = Process.Start(info);
 
             // Give 30 seconds for startup - if fails, kill it
             DateTime tryUntil = DateTime.Now + TimeSpan.FromSeconds(30);
             while (DateTime.Now < tryUntil) {
                 if (HTTP.GET(Server + "/health")?.Contains("ok") ?? false) {
-                    return;
+                    return instance;
                 }
                 Thread.Sleep(100);
             }
             model = null;
+            return instance;
         }
     }
 }

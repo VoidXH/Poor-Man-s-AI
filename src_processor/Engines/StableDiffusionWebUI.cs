@@ -26,7 +26,7 @@ namespace PoorMansAI.Engines {
         /// <summary>
         /// Running Stable Diffusion WebUI server.
         /// </summary>
-        readonly Process instance;
+        readonly Watchdog runner;
 
         /// <summary>
         /// Periodically checks and forwards image generation progress.
@@ -46,43 +46,38 @@ namespace PoorMansAI.Engines {
         /// <summary>
         /// Image generating neural network runner.
         /// </summary>
-        public StableDiffusionWebUI() {
+        public StableDiffusionWebUI() => runner = new(Launch);
+
+        /// <summary>
+        /// Start a new Stable Diffusion WebUI instance.
+        /// </summary>
+        public static Process Launch() {
             string root = Path.GetFullPath(Config.webUIRoot);
             string[] foldersInRoot = Directory.GetDirectories(root);
             if (foldersInRoot.Length == 1) {
                 root = foldersInRoot[0];
             }
 
-            string dir = Path.Combine(root, "system");
-            Environment.SetEnvironmentVariable("PATH", string.Join(';', Path.Combine(dir, "git", "bin"), Path.Combine(dir, "python"),
-                Path.Combine(dir, "python", "Scripts"), Environment.GetEnvironmentVariable("PATH")));
-            Environment.SetEnvironmentVariable("PY_LIBS", Path.Combine(dir, "python", "Scripts", "Lib") + ';' +
-                Path.Combine(dir, "python", "Scripts", "Lib", "site-packages"));
-            Environment.SetEnvironmentVariable("PY_PIP", Path.Combine(dir, "python", "Scripts"));
-            Environment.SetEnvironmentVariable("SKIP_VENV", "1");
-            Environment.SetEnvironmentVariable("PIP_INSTALLER_LOCATION", Path.Combine(dir, "python", "get-pip.py"));
-            Environment.SetEnvironmentVariable("TRANSFORMERS_CACHE", Path.Combine(dir, "transformers-cache"));
-            Environment.SetEnvironmentVariable("PYTHON", string.Empty);
-            Environment.SetEnvironmentVariable("GIT", string.Empty);
-            Environment.SetEnvironmentVariable("VENV_DIR", string.Empty);
-
-            dir = Path.Combine(root, "webui");
+            string dir = Path.Combine(root, "webui");
             string args = $"--api --nowebui --port {Config.webUIPort} " +
                 $"--ckpt-dir \"{Path.GetFullPath(Config.artists)}\" " +
                 $"--embeddings-dir \"{Path.GetFullPath(Config.embeddings)}\"";
             if (OperatingSystem.IsWindows()) {
                 Environment.SetEnvironmentVariable("COMMANDLINE_ARGS", args);
             } else {
-                File.WriteAllText(Path.Combine(dir, "webui-user.sh"),
-                    $"export COMMANDLINE_ARGS=\"{macArgs} {args.Replace('"', '\'')}\"");
+                string userConfigPath = Path.Combine(dir, "webui-user.sh"),
+                    userConfig = $"export COMMANDLINE_ARGS=\"{macArgs} {args.Replace('"', '\'')}\"";
+                if (File.ReadAllText(userConfigPath) != userConfig) {
+                    File.WriteAllText(userConfigPath, userConfig);
+                }
             }
-            Environment.SetEnvironmentVariable("SD_WEBUI_LOG_LEVEL", "WARNING"); // Performance + we handle it
 
             ProcessStartInfo info = new() {
                 WorkingDirectory = dir,
                 UseShellExecute = false
             };
             if (OperatingSystem.IsWindows()) {
+                SetWindowsEnvironment(root);
                 info.FileName = Path.Combine(dir, "webui.bat");
             } else {
                 Process chmod = Process.Start(new ProcessStartInfo() {
@@ -93,7 +88,7 @@ namespace PoorMansAI.Engines {
                 chmod.WaitForExit();
                 info.FileName = Path.Combine(dir, "webui.sh");
             }
-            instance = Process.Start(info);
+            Process instance = Process.Start(info);
 
             // Wait for startup
             DateTime tryUntil = DateTime.Now + TimeSpan.FromSeconds(60);
@@ -103,10 +98,29 @@ namespace PoorMansAI.Engines {
                     tryUntil = DateTime.MaxValue;
                 }
                 if (HTTP.GET(Server + "/sdapi/v1/progress") != null) {
-                    return;
+                    return instance;
                 }
                 Thread.Sleep(100);
             }
+        }
+
+        /// <summary>
+        /// Setup the batch environment for the <paramref name="root"/> folder of Stable Diffusion WebUI.
+        /// </summary>
+        static void SetWindowsEnvironment(string root) {
+            string dir = Path.Combine(root, "system");
+            Environment.SetEnvironmentVariable("PATH", string.Join(';', Path.Combine(dir, "git", "bin"), Path.Combine(dir, "python"),
+                    Path.Combine(dir, "python", "Scripts"), Environment.GetEnvironmentVariable("PATH")));
+            Environment.SetEnvironmentVariable("PY_LIBS", Path.Combine(dir, "python", "Scripts", "Lib") + ';' +
+                Path.Combine(dir, "python", "Scripts", "Lib", "site-packages"));
+            Environment.SetEnvironmentVariable("PY_PIP", Path.Combine(dir, "python", "Scripts"));
+            Environment.SetEnvironmentVariable("SKIP_VENV", "1");
+            Environment.SetEnvironmentVariable("PIP_INSTALLER_LOCATION", Path.Combine(dir, "python", "get-pip.py"));
+            Environment.SetEnvironmentVariable("TRANSFORMERS_CACHE", Path.Combine(dir, "transformers-cache"));
+            Environment.SetEnvironmentVariable("PYTHON", string.Empty);
+            Environment.SetEnvironmentVariable("GIT", string.Empty);
+            Environment.SetEnvironmentVariable("VENV_DIR", string.Empty);
+            Environment.SetEnvironmentVariable("SD_WEBUI_LOG_LEVEL", "WARNING"); // Performance + we handle it
         }
 
         /// <inheritdoc/>
@@ -148,7 +162,7 @@ namespace PoorMansAI.Engines {
             while (generating) {
                 Thread.Sleep(100);
             }
-            instance.Kill(true);
+            runner.Dispose();
             GC.SuppressFinalize(this);
         }
 

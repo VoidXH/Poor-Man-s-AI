@@ -16,14 +16,14 @@ namespace PoorMansAI {
     /// </summary>
     public class CommandRunner : IDisposable {
         /// <summary>
+        /// Cookies received when logged in successfully.
+        /// </summary>
+        internal readonly CookieCollection cookies;
+
+        /// <summary>
         /// Provides access to the running engines.
         /// </summary>
         readonly EngineCache engine;
-
-        /// <summary>
-        /// Cookies received when logged in successfully.
-        /// </summary>
-        readonly CookieCollection cookies;
 
         /// <summary>
         /// Periodically checks the command queue.
