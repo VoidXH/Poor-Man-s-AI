@@ -72,7 +72,8 @@ The downloadable Website is a zip file containing what you will eventually need
 to upload to your chosen web hosting provider. But first, you have to prepare a
 website. This tutorial is for the easiest method using a web hosting provider
 and not for complete self hosting.
-1. Get a web hosting account with PHP and MySQL, free ones are fine.
+1. Get a web hosting account with PHP and MySQL, free ones are fine. If you want
+   to run completely locally, get XAMPP as a web hosting software.
 1. Download and unzip the Website.
 1. Upload every folder and PHP file from the unzipped download to the root of
    your web hosting server.
