@@ -48,6 +48,14 @@ Parameters are the following:
   Bootstrap's CSS + JS and JQuery, set this to `false`. If set to `true`, these
   will also be included next to the chat dependencies.
 
+## Using multiple Processors from multiple computers
+The `ChatWeight` and `ImageGenWeight` parameters are shared between computers.
+If you launch the Processor on one computer with a weight of 2, and with 1 on
+another, only the higher weight will process anything. When setting a weight to
+-1, it will not process anything. You can set up image-only and chat-only nodes
+this way. When multiple computers log in with the same weight, they share the
+load for the corresponding engine.
+
 ## Miscellaneous
 * To add a new background to the chat or image generator components on your
   website, just go to its img folder, and create new diffbgXX.jpg or gptbgXX.jpg
