@@ -1,6 +1,10 @@
 <?php
 require("__config.php");
 require("_check.php");
+if ($forceLogin && !$uid) {
+    require_once("login.php");
+}
+
 require("proc/ai_vars.php");
 
 $gpt_bgs = glob("img/gptbg*.jpg");

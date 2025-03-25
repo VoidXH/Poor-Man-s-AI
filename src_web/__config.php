@@ -12,6 +12,9 @@
 
   // Allow anyone to use your website without registration (true or false):
   $open = true;
+  // Even if the site is open, require registration (true or false, checking
+  // this will allow users to still use embedded chats, but not the site):
+  $forceLogin = false;
   // Allow the registration of new users (true or false):
   $regOn = true;
 

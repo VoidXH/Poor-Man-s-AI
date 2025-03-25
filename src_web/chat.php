@@ -1,8 +1,12 @@
 <?php
-require("__config.php");
-require("__chat.php");
-require("_check.php");
-require("proc/ai_vars.php");
+require_once("__config.php");
+require_once("_check.php");
+if ($forceLogin && !$uid) {
+    require_once("login.php");
+}
+
+require_once("__chat.php");
+require_once("proc/ai_vars.php");
 
 $time = time();
 $offline = $time - getAIVar("llm-available") > $procTimeout;
