@@ -34,6 +34,11 @@ namespace PoorMansAI.Configuration {
         public static readonly float imageGenGuidance = float.Parse(Values["ImageGenGuidance"].Replace(',', '.'), CultureInfo.InvariantCulture);
 
         /// <summary>
+        /// Sampler method used for image generation.
+        /// </summary>
+        public static readonly string imageGenSampler = Values["ImageGenSampler"];
+
+        /// <summary>
         /// Base image size for non-HD generations, width.
         /// </summary>
         public static readonly int imageSizeW = ResX("ImageSize");

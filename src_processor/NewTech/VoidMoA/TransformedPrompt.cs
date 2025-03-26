@@ -42,6 +42,7 @@ namespace PoorMansAI.NewTech.VoidMoA {
             height = Height,
             steps = Config.imageGenSteps,
             cfg_scale = Config.imageGenGuidance,
+            sampler_index = Config.imageGenSampler,
             override_settings = new {
                 sd_model_checkpoint = Model
             }
