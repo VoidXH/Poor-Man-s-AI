@@ -21,15 +21,22 @@ namespace PoorMansAI.Extensions {
         /// </summary>
         void PeriodicAction() {
             IPAddress[] ips = Dns.GetHostEntry(Dns.GetHostName()).AddressList;
-            IPAddress localIP = ips.FirstOrDefault(x => x.AddressFamily == AddressFamily.InterNetwork);
+            IPAddress localIP = ips.FirstOrDefault(x => x.AddressFamily == AddressFamily.InterNetwork && x.ToString() != "127.0.0.1");
             if (localIP == null) {
+                Logger.Warning("No local IPv4 address was found. This might be temporary until a new network is connected.");
                 return;
             }
 
-            HTTP.POST(HTTP.Combine(Config.publicWebserver, "/cmd/setvar.php"), [
+            Logger.Debug("Updating local IP to {0}...", localIP);
+            string result = HTTP.POST(HTTP.Combine(Config.publicWebserver, "/cmd/setvar.php"), [
                 new KeyValuePair<string, string>("key", "local-ip"),
                 new KeyValuePair<string, string>("value", localIP.ToString())
             ], cookies);
+            if (result != string.Empty) {
+                Logger.Error("Failed to update local IP: " + result);
+            } else {
+                Logger.Debug("Updated local IP.");
+            }
         }
     }
 }
