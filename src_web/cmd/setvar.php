@@ -7,7 +7,7 @@ if (!$admin) {
 }
 
 $key = $_POST["key"];
-$stmt->execute("SELECT 1 FROM ai_vars WHERE key_column = ? LIMIT 1", $key);
+$stmt = execute("SELECT 1 FROM ai_vars WHERE `key` = ? LIMIT 1", $key);
 $exists = $stmt->get_result()->num_rows != 0;
 $stmt->close();
 

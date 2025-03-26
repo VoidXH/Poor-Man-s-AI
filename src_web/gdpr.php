@@ -16,6 +16,7 @@ require("__config.php");
   </div>
   <p>Our commitment to protecting your privacy is paramount. We handle your data with care, ensuring that your information is secure and used solely for the purpose of providing our services. This policy outlines the types of data we collect and manage, along with measures to safeguard your information.</p>
   <h4>Data We Collect</h4>
+  <p>Data is only collected for registered users. For non-registered users, no data is permanently stored, and the lifecycle of their prompts is stated under <i>Handling of Prompts</i>.</p>
   <ul>
     <li><b>Username:</b> We collect your username to identify your account and provide access to our services.</li>
     <li><b>Password:</b> Your password is stored securely using advanced hashing technology (salted SHA-256), ensuring it is highly protected against unauthorized access, even in the case of a data breach.
