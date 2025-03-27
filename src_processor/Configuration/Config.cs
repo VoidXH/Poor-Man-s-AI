@@ -80,7 +80,7 @@
             }
             string[] result = source.Split(',');
             for (int i = 0; i < result.Length; i++) {
-                result[i] = result[i].Trim();
+                result[i] = result[i].Trim().ToLowerInvariant();
             }
             return result;
         }

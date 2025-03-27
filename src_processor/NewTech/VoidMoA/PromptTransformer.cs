@@ -11,9 +11,9 @@ namespace PoorMansAI.NewTech.VoidMoA {
         public static TransformedPrompt Transform(string prompt) {
             TransformedPrompt result = new();
             // Every single word
-            string[] keywords = prompt.Split(keywordSplits, StringSplitOptions.RemoveEmptyEntries).Select(x => x.ToLower()).ToArray();
+            string[] keywords = [.. prompt.Split(keywordSplits, StringSplitOptions.RemoveEmptyEntries).Select(x => x.ToLowerInvariant())];
             // Potential resolution or other property selectors
-            string[] selectors = prompt.Split(selectorSplits, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim().ToLower()).ToArray();
+            string[] selectors = [.. prompt.Split(selectorSplits, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim().ToLowerInvariant())];
 
             ArtistConfiguration[] artists = Config.artistConfigs;
             int[] votes = new int[artists.Length];

@@ -8,8 +8,6 @@ using VoidX.WPF;
 using PoorMansAI.Configuration;
 using PoorMansAI.Engines;
 
-using Timer = System.Threading.Timer;
-
 namespace PoorMansAI {
     /// <summary>
     /// Processes the commands of the server's command queue.
@@ -28,12 +26,12 @@ namespace PoorMansAI {
         /// <summary>
         /// Periodically checks the command queue.
         /// </summary>
-        readonly Timer runner;
+        readonly Thread runner;
 
         /// <summary>
-        /// Command processing in progress, don't allow the <see cref="runner"/> to perform another event.
+        /// Stops the command <see cref="runner"/> on <see cref="Dispose"/>.
         /// </summary>
-        bool executing;
+        readonly CancellationTokenSource canceller;
 
         /// <summary>
         /// Don't allow progress updates to the server too often.
@@ -53,47 +51,45 @@ namespace PoorMansAI {
             // Start command processing
             engine = new(cookies);
             engine.OnProgress += ProgressUpdate;
-            runner = new(ProcessCommands, null, 0, Config.serverPollInterval);
+            canceller = new();
+            runner = new(new ThreadStart(ProcessCommands));
+            runner.Start();
         }
 
         /// <summary>
         /// Periodically checks the command queue.
         /// </summary>
-        void ProcessCommands(object _) {
-            lock (runner) {
-                if (executing) {
-                    Logger.Debug("Command processing is already in progress.");
-                    return;
-                }
-                executing = true;
-            }
+        void ProcessCommands() {
+            while (!canceller.IsCancellationRequested) {
+                DateTime processingStarted = DateTime.Now;
+                string commandUrl = "/cmd/list.php?" + EnginesToUpdate(),
+                    result = HTTP.GET(HTTP.Combine(Config.publicWebserver, commandUrl), cookies);
+                if (result != null) {
+                    try {
+                        JsonNode parsed = JsonNode.Parse(result);
+                        IEnumerable<Command> commands = parsed["commands"].AsArray().Select(x => new Command(x));
 
-            string commandUrl = "/cmd/list.php?" + EnginesToUpdate();
-            string result = HTTP.GET(HTTP.Combine(Config.publicWebserver, commandUrl), cookies);
-            if (result != null) {
-                try {
-                    JsonNode parsed = JsonNode.Parse(result);
-                    IEnumerable<Command> commands = parsed["commands"].AsArray().Select(x => new Command(x));
-
-                    if (commands.Any()) {
-                        if (Config.unified) {
-                            RunGroup(commands);
+                        if (commands.Any()) {
+                            if (Config.unified) {
+                                RunGroup(commands);
+                            } else {
+                                RunParallel(commands);
+                            }
+                            Logger.Debug("All commands processed.");
                         } else {
-                            RunParallel(commands);
+                            Logger.Debug("No new commands.");
                         }
-                        Logger.Debug("All commands processed.");
-                    } else {
-                        Logger.Debug("No new commands.");
+                    } catch (Exception e) {
+                        Logger.Error("Error while processing commands: " + e);
                     }
-                } catch (Exception e) {
-                    Console.Error.WriteLine(e);
+                } else {
+                    Logger.Debug("Couldn't query the list of commands from the Website.");
                 }
-            } else {
-                Logger.Debug("Couldn't query the list of commands from the Website.");
-            }
 
-            lock (runner) {
-                executing = false;
+                int waitFosMS = Config.serverPollInterval - (int)(DateTime.Now - processingStarted).TotalMilliseconds;
+                if (waitFosMS > 0) {
+                    Thread.Sleep(waitFosMS);
+                }
             }
         }
 
@@ -102,7 +98,8 @@ namespace PoorMansAI {
         /// </summary>
         public void Dispose() {
             engine.Dispose();
-            runner.Dispose();
+            canceller.Cancel();
+            runner.Join();
             GC.SuppressFinalize(this);
         }
 
