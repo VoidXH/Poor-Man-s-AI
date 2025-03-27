@@ -33,7 +33,8 @@ namespace PoorMansAI.Extensions {
                 new KeyValuePair<string, string>("value", localIP.ToString())
             ], cookies);
             if (result != string.Empty) {
-                Logger.Error("Failed to update local IP: " + result);
+                result ??= "connection error or timeout";
+                Logger.Warning("Failed to update local IP: " + result);
             } else {
                 Logger.Debug("Updated local IP.");
             }

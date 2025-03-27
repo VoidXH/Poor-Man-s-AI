@@ -62,6 +62,7 @@ namespace PoorMansAI {
         void ProcessCommands(object _) {
             lock (runner) {
                 if (executing) {
+                    Logger.Debug("Command processing is already in progress.");
                     return;
                 }
                 executing = true;
@@ -74,14 +75,21 @@ namespace PoorMansAI {
                     JsonNode parsed = JsonNode.Parse(result);
                     IEnumerable<Command> commands = parsed["commands"].AsArray().Select(x => new Command(x));
 
-                    if (Config.unified) {
-                        RunGroup(commands);
+                    if (commands.Any()) {
+                        if (Config.unified) {
+                            RunGroup(commands);
+                        } else {
+                            RunParallel(commands);
+                        }
+                        Logger.Debug("All commands processed.");
                     } else {
-                        RunParallel(commands);
+                        Logger.Debug("No new commands.");
                     }
                 } catch (Exception e) {
                     Console.Error.WriteLine(e);
                 }
+            } else {
+                Logger.Debug("Couldn't query the list of commands from the Website.");
             }
 
             lock (runner) {
