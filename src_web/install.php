@@ -10,7 +10,7 @@ $install = [
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `command` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `command_ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `result` text COLLATE utf8mb4_unicode_ci,
+  `result` mediumtext COLLATE utf8mb4_unicode_ci,
   `result_ts` timestamp NULL DEFAULT NULL,
   `progress` int(11) DEFAULT '0',
   PRIMARY KEY (`id`)
