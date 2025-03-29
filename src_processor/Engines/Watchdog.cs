@@ -60,8 +60,8 @@ namespace PoorMansAI.Engines {
         /// <inheritdoc/>
         public void Dispose() {
             launcher = null;
-            watcher?.Join();
             instance?.Kill(true);
+            watcher?.Join();
         }
     }
 }

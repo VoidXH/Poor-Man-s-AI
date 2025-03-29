@@ -3,3 +3,4 @@ src_processor/.vs/
 src_processor/bin/
 src_processor/obj/
 src_processor/Configuration/custom.ini
+src_processor/Extensions/_Local.cs

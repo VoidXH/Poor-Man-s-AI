@@ -6,6 +6,7 @@ if ($forceLogin && !$uid) {
 }
 
 require_once("__chat.php");
+require_once("proc/addon.php");
 require_once("proc/ai_vars.php");
 
 $time = time();
@@ -69,12 +70,13 @@ $slm = $time - getAIVar("moa-available") <= $procTimeout;
           <button class="btn btn-primary" id="send" onclick="send()">Send</button>
         </div>
       </div>
-      <?php }
-      if ($uid) { ?>
+      <?php if ($uid) { ?>
       <p class="text-center mt-3"><small><?=$chatName ?> can make mistakes. Check important info.</small></p>
       <?php } else { ?>
       <p class="text-center mt-3"><small>By chatting with <?=$chatName ?>, you state that you have read the <a href="tos.php">Terms of Service</a> and the <a href="gdpr.php">Privacy Policy</a>, and agree to both.</small></p>
-      <?php } ?>
+      <?php }
+      addon("chat_footer");
+      } ?>
     </div>
   </div>
 </div>

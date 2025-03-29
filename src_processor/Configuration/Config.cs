@@ -41,7 +41,7 @@
         /// <summary>
         /// Class names of enabled extensions.
         /// </summary>
-        internal static string[] extensions = Values["Extensions"].Split(',');
+        internal static string[] extensions = Values["Extensions"].Split(',', StringSplitOptions.TrimEntries);
 
         /// <summary>
         /// The config file in the application folder with the highest weight.

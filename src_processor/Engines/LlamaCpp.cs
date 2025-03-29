@@ -4,6 +4,7 @@ using System.Text.Json.Nodes;
 using VoidX.WPF;
 
 using PoorMansAI.Configuration;
+using PoorMansAI.Extensions;
 using PoorMansAI.NewTech.ContextDocTree;
 
 namespace PoorMansAI.Engines {
@@ -124,6 +125,7 @@ namespace PoorMansAI.Engines {
             }
             canceller.Dispose();
             canceller = null;
+            Extension.RunChatPostprocessActions(messages, ref result);
             return result;
         }
 

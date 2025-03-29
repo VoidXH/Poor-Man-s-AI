@@ -17,6 +17,8 @@ Service or the Privacy Policy, update those too.
 
 The extension points can be inserted to a set of locations. Use `<location
 name.php>` as a file name, where locations names can be the following:
+* `adminbtn`: for admins, to the left of admin-only header buttons.
+* `chat_footer`: on the chat page, below the text input.
 * `check`: before a check command (POST request) is processed and status is
   reported.
 * `command_after`: after a command command (POST request) was processed and a
