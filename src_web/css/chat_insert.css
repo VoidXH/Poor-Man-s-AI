@@ -6,7 +6,7 @@
 }
 
 .chatwin {
-  width: 300px;
+  width: 350px;
   height: 500px;
   position: fixed;
   bottom: 0;
@@ -15,5 +15,18 @@
   border: 3px solid #000000bf;
   border-radius: 1.25rem;
   z-index: 999;
+  display: none;
+}
+
+.reply {
+  color: #000;
+}
+
+.reply .text {
+  background-color: inherit;
+  max-width: inherit;
+}
+
+.reply .username {
   display: none;
 }

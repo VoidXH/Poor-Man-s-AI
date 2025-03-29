@@ -1,6 +1,7 @@
 <?php
 require_once("__config.php");
 require_once("sql.php");
+require_once("proc/addon.php");
 require_once("proc/ai_vars.php");
 
 function aiChatInternal($pmaiPath, $name, $modelName, $fullInclude, $online) {
@@ -29,6 +30,7 @@ if (time() - getAIVar("llm-available") <= $procTimeout && $open) { ?>
         <button class="btn btn-primary" id="send" onclick="send()">Send</button>
       </div>
     </div>
+    <?php addon("chat_insert"); ?>
   </div>
 </div>
 <script>
@@ -54,9 +56,6 @@ function aiChat($pmaiPath, $name, $modelName, $fullInclude) {
 
 function aiChatPopup($pmaiPath, $name, $modelName, $fullInclude) {
   global $open, $procTimeout;
-?>
-<link rel="stylesheet" href="<?=$pmaiPath ?>/css/chat_insert.css">
-<?php
   $online = time() - getAIVar("llm-available") <= $procTimeout;
   if ($online && $open) { ?>
 <button class="btn btn-secondary btn-lg btn-float br" onclick="$('#chatwin').show()">Chat with <?=$name ?></button>
@@ -64,6 +63,6 @@ function aiChatPopup($pmaiPath, $name, $modelName, $fullInclude) {
 <?php aiChatInternal($pmaiPath, $name, $modelName, $fullInclude, $online); ?>
 <button class="btn btn-danger btn-sm btn-float tr" onclick="$('#chatwin').hide()">X</button>
 </div>
-<?php }
-}
-?>
+<?php } ?>
+<link rel="stylesheet" href="<?=$pmaiPath ?>/css/chat_insert.css">
+<?php } ?>

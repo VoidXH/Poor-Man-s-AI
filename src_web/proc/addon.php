@@ -1,7 +1,7 @@
 <?php
 function addon($path) {
   global $sqlink, $admin, $uid;
-  $path = "addon/$path.php";
+  $path = __DIR__."/../addon/$path.php";
   if (file_exists($path)) {
     include($path);
   }
