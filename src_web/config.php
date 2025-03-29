@@ -66,6 +66,8 @@ function editBool($name, $var) {
     <p>Checking this will allow users to still use embedded chats, but not the site.</p>
     <?php editBool("Allow registration", "regOn"); ?>
     <h2>Behavior</h2>
+    <?php editVar("Chat models", "chatModels"); ?>
+    <p>The available models by name, as set up on the Processors.</p>
     <?php editBool("SLM warnings", "slmWarning"); ?>
     <p>Show SLM warnings in chat when in Image + SLM mode. Recommended to disable when the Processor has unified memory and the models are large enough (like 7B).</p>
 <?php

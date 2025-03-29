@@ -67,4 +67,8 @@ pre code {
     margin: 0;
     padding: 0;
   }
+
+  .reply .text {
+    max-width: 100%;
+  }
 }

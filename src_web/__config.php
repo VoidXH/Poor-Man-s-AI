@@ -18,6 +18,9 @@
   // Allow the registration of new users (true or false):
   $regOn = true;
 
+
+  // The available models by name, as set up on the Processors:
+  $chatModels = "Chat, Think, Code";
   // To disable showing "The quality and generation speed of answers will be
   // dramatically worse" warning in chats in SLM mode, because your VRAM is so
   // much that the reduced size models are still very large, set this to false:

@@ -39,11 +39,16 @@ $slm = $time - getAIVar("moa-available") <= $procTimeout;
         <div class="input-group-prepend">
           <label class="input-group-text">Model</label>
         </div>
-        <div class="input-group-append" id="model">
-          <button class="btn btn-primary" id="chat">Chat</button>
-          <button class="btn btn-secondary" id="think">Think</button>
-          <button class="btn btn-secondary" id="code">Code</button>
-        </div>
+        <?php
+        $models = preg_split('/\s*,\s*/', $chatModels);
+        echo "<div class=\"input-group-append\" id=\"model\">";
+          foreach ($models as $index => $model) {
+            $class = ($index == 0) ? "btn btn-primary" : "btn btn-secondary";
+            $id = strtolower($model);
+            echo "<button class=\"$class\" id=\"$id\">$model</button>";
+          }
+        echo "</div>";
+        ?>
       </div>
     </div>
     <div class="card-body chatbox">
