@@ -8,13 +8,13 @@ $install = [
 "DROP TABLE IF EXISTS `ai_commands`",
 "CREATE TABLE `ai_commands` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `command` text NOT NULL,
+  `command` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `command_ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `result` longtext,
+  `result` text COLLATE utf8mb4_unicode_ci,
   `result_ts` timestamp NULL DEFAULT NULL,
   `progress` int(11) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8",
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 "DROP TABLE IF EXISTS `ai_users`",
 "CREATE TABLE `ai_users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
