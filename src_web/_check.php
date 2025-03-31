@@ -1,4 +1,5 @@
 <?php
+require_once("__config.php");
 require_once("sql.php");
 require_once("proc/sqlink.php");
 if (isset($_COOKIE["username"]) && isset($_COOKIE["password"])) {

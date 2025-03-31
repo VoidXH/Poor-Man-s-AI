@@ -4,7 +4,6 @@ if (!$admin) {
     die;
 }
 
-require_once("../__config.php");
 require_once("../proc/ai_vars.php");
 
 function availability($engine) {

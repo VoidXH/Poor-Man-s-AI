@@ -1,5 +1,4 @@
 <?php
-require("__config.php");
 require("_check.php");
 if ($forceLogin && !$uid) {
     require_once("login.php");
@@ -54,7 +53,7 @@ function online() {
 require("proc/addon.php");
 addon("adminbtn");
 ?>
-      <a class="btn btn-secondary" href="config.php">Config</a>
+      <a class="btn btn-secondary" href="admin.php">Admin</a>
       <?php if ($online) { ?>
       <div class="btn btn-primary m-0 p-0 dropdown show">
         <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="modeList" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Mode</a>

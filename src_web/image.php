@@ -1,5 +1,4 @@
 <?php
-require_once("__config.php");
 require_once("_check.php");
 if ($forceLogin && !$uid) {
     require_once("login.php");

@@ -9,7 +9,6 @@
     stop: stops a job by ID
 */
 
-require_once("__config.php");
 require_once("_check.php");
 
 $method = $_SERVER["REQUEST_METHOD"];

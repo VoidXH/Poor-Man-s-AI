@@ -1,5 +1,4 @@
 <?php
-require("__config.php");
 require("_check.php");
 if (!$uid) {
   header("Location: index.php");

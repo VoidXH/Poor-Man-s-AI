@@ -24,7 +24,7 @@ if (time() - getAIVar("llm-available") <= $procTimeout && $open) { ?>
   </div>
   <div class="card-footer">
     <div class="input-group">
-      <textarea class="form-control" id="input" placeholder="Ask <?=$name ?> anything..." autofocus></textarea>
+      <textarea class="form-control" id="input" placeholder="Ask <?=$name ?> anything..." autofocus><?=$_GET["prefill"] ?></textarea>
       <div class="input-group-append">
         <button class="btn btn-danger" id="stop" style="display:none;" onclick="stop()">Stop</button>
         <button class="btn btn-primary" id="send" onclick="send()">Send</button>
@@ -51,7 +51,9 @@ const pmaiPath = "<?=$pmaiPath ?>/";
 
 function aiChat($pmaiPath, $name, $modelName, $fullInclude) {
   global $procTimeout;
-  aiChatInternal($pmaiPath, $name, $modelName, $fullInclude, time() - getAIVar("llm-available") <= $procTimeout);
+  $online = time() - getAIVar("llm-available") <= $procTimeout;
+  aiChatInternal($pmaiPath, $name, $modelName, $fullInclude, $online);
+  return $online;
 }
 
 function aiChatPopup($pmaiPath, $name, $modelName, $fullInclude) {
@@ -65,4 +67,7 @@ function aiChatPopup($pmaiPath, $name, $modelName, $fullInclude) {
 </div>
 <?php } ?>
 <link rel="stylesheet" href="<?=$pmaiPath ?>/css/chat_insert.css">
-<?php } ?>
+<?php
+  return $online;
+}
+?>
