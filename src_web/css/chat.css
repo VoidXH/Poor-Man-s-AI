@@ -43,8 +43,12 @@ pre code {
   max-width: 70%;
 }
 
-.message .option {
+.option {
   margin-top: -1.6rem;
+  font-size: 11px;
+}
+
+.option .btn {
   font-size: 11px;
 }
 

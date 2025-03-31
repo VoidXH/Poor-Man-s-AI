@@ -60,6 +60,8 @@ editVar("Image generator name", "moaName");
 <p class="mt-n3">Unprocessed commands will be deleted from the database after this many minutes while the Processor is online.</p>
 <?php editVar("Processor timeout", "procTimeout", true); ?>
 <p class="mt-n3">Seconds to consider the processor offline after it was last seen.</p>
+<?php editVar("Max wrong answers", "maxWrongAnswers"); ?>
+<p class="mt-n3">Number of conversations with disliked responses to keep (each one is maximized at 64 kB, so the default value of 1000 limits dislike storage to 64 MB).</p>
 <h2><br>For developers</h2>
 <?php
 editVar("Viewport", "viewport");

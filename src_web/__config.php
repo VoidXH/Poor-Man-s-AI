@@ -18,7 +18,6 @@
   // Allow the registration of new users (true or false):
   $regOn = true;
 
-
   // The available models by name, as set up on the Processors:
   $chatModels = "Chat, Think, Code";
   // To disable showing "The quality and generation speed of answers will be
@@ -29,6 +28,10 @@
   $commandClear = 3;
   // Seconds of no connection after the Processor is considered offline:
   $procTimeout = 15;
+  // Number of conversations with disliked responses to keep (each one is
+  // maximized at 64 kB, so the default value of 1000 limits dislike storage to
+  // 64 MB):
+  $maxWrongAnswers = 1000;
 
   // To enable zooming on phones, just remove the last parameter from this:
   $viewport = '<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">';

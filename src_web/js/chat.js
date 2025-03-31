@@ -6,6 +6,7 @@ const customPath = typeof pmaiPath !== "undefined" ? pmaiPath : "";
 
 const escape = (x) => x.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;").replaceAll("\n", "<br>");
 const isWorking = () => $("#send").prop("disabled");
+const warnWorking = () => alert("This option is only available when " + gpt + "'s answering is not in progress.");
 
 $(document).ready(function() {
   $("#chat, #think, #code").click(function() {
@@ -58,10 +59,10 @@ function onPartialResult(progress, result) {
   } else if (progress == 0 || result.length == 0) {
     return;
   }
-  const split = splitThink(result);
+  const split = splitThink(result.replaceAll("????", ""));
   let think = "";
   if (split.think.length != 0) {
-    const prevThink = $('#think' + sentMessages).hasClass('show');
+    const prevThink = $("#think" + sentMessages).hasClass("show");
     think = '<button class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#think' + sentMessages + '" aria-expanded="' + prevThink + '" aria-controls="think' + sentMessages + '">Show/hide thought process</button>' +
       '<div class="collapse' + (prevThink ? ' show' : '') + '" id="think' + sentMessages + '" style="border: 1px solid white; width: auto;">' + marked.parse(split.think) + '</div>';
   }
@@ -107,8 +108,12 @@ function send() {
     hist.push(input);
     const toSend = hist.length > 8 ? hist.slice(-8) : hist;
     sendCommand("Chat", getModel() + "|" + toSend.map(str => str.replaceAll("|", "&vert;")).join("|"), customPath);
-    $(".chatbox").append("<div id='out" + sentMessages + "' class='message'><p class='username'>" + you + "</p><p class='text'>" + escape(input) + "</p><button class='btn btn-secondary btn-sm option' onclick='edit(" + sentMessages + ")'>&#9999; Edit</button></div>");
-    $(".chatbox").append("<div id='in" + sentMessages + "' class='message reply'><p class='username'>" + gpt + "</p><p id='msg" + sentMessages + "' class='text'>...</p><button class='btn btn-secondary btn-sm option' onclick='regenerate(" + sentMessages + ")'>&#128260; Regenerate</button></div>");
+    $(".chatbox").append('<div id="out' + sentMessages + '" class="message"><p class="username">' + you + '</p><p class="text">' + escape(input) + '</p><button class="btn btn-secondary btn-sm option" onclick="edit(' + sentMessages + ')">&#9999; Edit</button></div>');
+    $(".chatbox").append('<div id="in' + sentMessages + '" class="message reply"><p class="username">' + gpt + '</p><p id="msg' + sentMessages + '" class="text">...</p><div class="option">' +
+        '<button class="btn btn-secondary btn-sm" onclick="regenerate(' + sentMessages + ')">&#128260; Regenerate</button>' +
+        '<button class="btn btn-secondary btn-sm ml-2" id="correct' + sentMessages + '" onclick="correct(' + sentMessages + ')">&#128077;</button>' +
+        '<button class="btn btn-secondary btn-sm ml-2" id="wrong' + sentMessages + '" onclick="wrong(' + sentMessages + ')">&#128078;</button>' +
+        '</div></div>');
     $("#input").val("");
     $(".chatbox").animate({ scrollTop: $(".chatbox").prop("scrollHeight") }, 500);
   }
@@ -125,7 +130,7 @@ function clearChat(from) {
 
 function edit(id) {
   if (isWorking()) {
-    alert("This option is only available when " + gpt + "'s answering is not in progress.");
+    warnWorking();
     return;
   }
   const userMessage = hist[2 * (id - 1)];
@@ -137,6 +142,23 @@ function regenerate(id) {
   edit(id);
   if (isWorking()) return;
   send();
+}
+
+function correct(id) {
+  if (isWorking()) {
+    warnWorking();
+    return;
+  }
+  $("#correct" + id).remove();
+  $("#wrong" + id).remove();
+}
+
+function wrong(id) {
+  correct(id);
+  if (isWorking()) return;
+  const message = hist.join('|');
+  const limited = message.length > 65536 ? message.slice(-65536) : message;
+  $.post(customPath + "cmd/dislike.php", { history: limited });
 }
 
 function starter(prompt) {
