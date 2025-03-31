@@ -22,7 +22,7 @@ require("__config.php");
     <li><b>Password:</b> Your password is securely stored using industry-standard cryptographic hashing techniques, designed to protect against unauthorized access, even in the case of a data breach. We recommend using a strong password of at least 12 characters to enhance security.</li>
     <li><b>Number of Prompts Sent:</b> We track the number of prompts you send to our AI models to improve our services and ensure optimal performance. This count is only a single number, is not linked to any personally identifiable information, and is used only internally.</li>
   </ul>
-  <p>Your prompts are only stored in a temporarily database, unless you press the <i>mark answer as wrong</i> button, displayed as a thumbs down emoji. The lifecycle of your prompts is stated under <i>Handling of Prompts</i>, and is not affected by using the page with a registration or not.</p>
+  <p>Your prompts are stored in the database only temporarily, unless you press the <i>mark answer as wrong</i> button, displayed as a thumbs down emoji. The lifecycle of your prompts is stated under <i>Handling of Prompts</i>, and is not affected by using the page with a registration or not.</p>
   <h4>Data Retention</h4>
   <p>We retain your data only as long as necessary to provide our services effectively. Once you delete your account, every single value described under <i>Data We Collect</i> is instantly removed from our database.</p>
   <h4>Data Sharing</h4>
@@ -41,7 +41,7 @@ require("__config.php");
   Any additional information stored alongside the prompts, such as the time the prompt was sent, whether it is a partial or final result, the last update to the result, and the progress percentage, is also removed once the final result is delivered to you.
   Deleting your account does not speed up this behavior: if you delete your account while a prompt is being processed, <?=$commandClear ?> minutes must pass while the server is online for the remaining prompts to be deleted.</p>
   <p>Pressing the <i>mark answer as wrong</i> button, which is displayed as a thumbs down emoji, will store the entire displayed chat in the database for manual review. The conversation might be used for checking factual errors, and improving the service to provide a correct response next time.
-  Deleting these chats after they have been addressed is the responsibility of the administrator.</p>
+  If the report is considered false or can't be addressed for any reason, it will be discared without any action being taken. Deleting these chats after they have been addressed is the responsibility of the administrator.</p>
   <a class="btn btn-success mb-3" onclick="history.back(-1);">Back</a>
 </div>
 </body>
