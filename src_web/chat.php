@@ -4,7 +4,6 @@ if ($forceLogin && !$uid) {
     require_once("login.php");
 }
 
-require_once("__chat.php");
 require_once("proc/addon.php");
 require_once("proc/ai_vars.php");
 
@@ -54,16 +53,17 @@ $slm = $time - getAIVar("moa-available") <= $procTimeout;
 <?php if ($offline) { ?>
       <div class="alert alert-danger" role="alert">Shhh! The chatting computer is sleeping and can't work now. Wait until it wakes up!</div>
 <?php } else {
- if ($slm && $slmWarning) { ?>
+  if ($slm && $slmWarning) { ?>
       <div class="alert alert-warning" role="alert">The server is currently running the chat on CPU. The quality and generation speed of answers may be worse.</div>
-<?php } ?>
-      <div class="message reply">
-        <p class="text">Hi! You can ask <?=$chatName ?> anything with the chat window or try these conversation starters:<br>
-        <?php foreach ($starters as $starter) {
-          echo " <a class=\"btn btn-secondary btn-sm mt-2 text\" onclick=\"starter('{$starter[1]}')\">{$starter[0]}</a>";
-        } ?></p>
-      </div>
-<?php } ?>
+<?php
+  }
+  if (isset($_POST["fill"])) {
+    require("proc/chat/fill.php");
+  } else {
+    require("proc/chat/starters.php");
+  }
+}
+?>
     </div>
     <div class="card-footer">
       <?php if (!$offline) { ?>

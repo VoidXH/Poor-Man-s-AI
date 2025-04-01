@@ -26,6 +26,12 @@ $install = [
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8",
+"DROP TABLE IF EXISTS `ai_reports`",
+"CREATE TABLE `ai_reports` (
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `data` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 "DROP TABLE IF EXISTS `ai_vars`",
 "CREATE TABLE `ai_vars` (
   `key` varchar(32) NOT NULL,

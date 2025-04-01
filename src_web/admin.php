@@ -29,10 +29,14 @@ function tabLink($i, $name) {
         <a class="nav-item nav-link" href="index.php" role="tab">Back</a>
         <?=tabLink(1, "Config") ?>
         <?=tabLink(2, "Var dump") ?>
+        <?=tabLink(3, "Dislikes") ?>
     </div>
     <?php switch($p) {
         case 2:
             require("admin/var_dump.php");
+            break;
+        case 3:
+            require("admin/dislikes.php");
             break;
         default:
             require("admin/config.php");
