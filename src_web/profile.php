@@ -1,39 +1,41 @@
 <?php
-require("_check.php");
+require('_check.php');
 if (!$uid) {
-  header("Location: index.php");
+  header('Location: index.php');
   die;
 }
 
-$name = $_COOKIE["username"];
-$pass = $_COOKIE["password"];
-if (isset($_POST["new"])) {
-  $new = $_POST["new"];
-  $new2 = $_POST["new2"];
+$name = $_COOKIE['username'];
+$pass = $_COOKIE['password'];
+if (isset($_POST['new'])) {
+  $new = $_POST['new'];
+  $new2 = $_POST['new2'];
   if ($new != $new2) {
     $match = true;
   } else {
     $result = $sqlink->query("SELECT name, password, salt FROM ai_users WHERE id = $uid")->fetch_assoc();
-    if ($result["name"] != $name || $result["password"] != $pass) die;
+    if ($result['name'] != $name || $result['password'] != $pass) die;
 
-    $current = hash("sha256", $result["salt"] . $_POST["current"]);
-    if ($current != $result["password"]) {
+    $current = hash('sha256', $result['salt'] . $_POST['current']);
+    if ($current != $result['password']) {
       $wrong = true;
     } else {
       $hash = hash('sha256', $result['salt'] . $new);
       if ($sqlink->query("UPDATE ai_users SET password = \"$hash\" WHERE id = $uid")) {
-        header("Location: login.php?pass");
+        header('Location: login.php?pass');
         die;
       }
     }
   }
 }
 
-$deleteKey = hash("sha256", $name.$pass);
-if ($_POST["key"] == $deleteKey && $sqlink->query("DELETE FROM ai_users WHERE id = $uid")) {
-  header("Location: login.php?del");
+$deleteKey = hash('sha256', $name.$pass);
+if ($_POST['key'] == $deleteKey && $sqlink->query("DELETE FROM ai_users WHERE id = $uid")) {
+  header('Location: login.php?del');
   die;
 }
+
+$prompts = $sqlink->query("SELECT prompts FROM ai_users WHERE id = $uid")->fetch_assoc()['prompts'];
 ?>
 <html>
 <head>
@@ -47,6 +49,8 @@ if ($_POST["key"] == $deleteKey && $sqlink->query("DELETE FROM ai_users WHERE id
 <body>
   <div class="container">
     <a href="index.php" class="btn btn-primary back mt-3">Back</a>
+    <h2><?=$name ?></h2>
+    <p>Number of prompts written: <b><?=$prompts ?></b></p>
     <div class="login mt-3">
       <form method="POST">
         <h2>Change password</h2>
