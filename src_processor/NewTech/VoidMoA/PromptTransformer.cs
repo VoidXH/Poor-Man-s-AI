@@ -10,6 +10,16 @@ namespace PoorMansAI.NewTech.VoidMoA {
         /// </summary>
         public static TransformedPrompt Transform(string prompt) {
             TransformedPrompt result = new();
+            const string base64Header = "data:image/png;base64,";
+            int pipe = prompt.IndexOf('|');
+            if (prompt.StartsWith(base64Header) && pipe != -1) {
+                result.Endpoint = "img2img";
+                result.ReferenceImages = [prompt[base64Header.Length..pipe]];
+                prompt = prompt[(pipe + 1)..];
+            } else {
+                result.Endpoint = "txt2img";
+            }
+
             // Every single word
             string[] keywords = [.. prompt.Split(keywordSplits, StringSplitOptions.RemoveEmptyEntries).Select(x => x.ToLowerInvariant())];
             // Potential resolution or other property selectors

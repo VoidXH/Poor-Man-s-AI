@@ -14,6 +14,11 @@ document.getElementById("num-images").addEventListener("input", function () {
   }
 });
 
+$("#reference").on("change", function (event) {
+  const fileName = event.target.files[0] ? event.target.files[0].name : "Choose file";
+  $(this).next(".custom-file-label").text(fileName);
+});
+
 var debug = false;
 
 var prompt;
@@ -74,17 +79,59 @@ function onFinalResult(progress, result) {
 }
 
 function onHTTPError(errorCode) {
+  if (errorCode == 503) {
+    $("#message").html("Server is overloaded. Please try again later by pressing&nbsp;<i>Generate Image</i>&nbsp;again.");
+    activate(false);
+    return;
+  }
   $("#message").html("Temporary error (HTTP " + errorCode + "), retrying...");
 }
 
-function generate() {
-  activate(true);
-  $("#message").html("Connecting...");
-  $("#progress-bar").css("width", "0%");
-  prompt = $("#prompt").val();
+function clearRef() {
+  $("#reference").val("");
+  $("#ref-file-name").html("Choose file");
+}
+
+function generateFinish() {
   numImages = $("#num-images").val();
   currentImage = 0;
   generateNextImage();
+}
+
+function generate() {
+  promptRead = $("#prompt").val();
+  if (promptRead.length == 0) {
+    $("#message").html("The prompt field is required.");
+    return;
+  }
+  activate(true);
+  $("#message").html("Connecting...");
+  $("#progress-bar").css("width", "0%");
+  prompt = promptRead;
+
+  const refImage = $("#reference")[0];
+  if (refImage.files.length == 0) {
+    generateFinish();
+    return;
+  }
+
+  const file = refImage.files[0];
+  const reader = new FileReader();
+  reader.onload = function (event) {
+    const img = new Image();
+    img.src = event.target.result;
+    img.onload = function () {
+      const canvas = $("<canvas>")[0];
+      canvas.width = 128;
+      canvas.height = 128;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      prompt = canvas.toDataURL("image/png") + "|" + prompt;
+      $(canvas).remove();
+      generateFinish();
+    };
+  };
+  reader.readAsDataURL(file);
 }
 
 function stop() {

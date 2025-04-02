@@ -33,19 +33,36 @@ $offline = time() - getAIVar("moa-available") > $procTimeout;
 <?php } else {
   addon("image");
 ?>
-  <form id="image-form" class="mb-3" autocomplete="off">
-    <div class="mb-3">
+  <form id="image-form" autocomplete="off">
+    <div class="input-group mb-3">
       <input type="text" class="form-control" id="prompt" name="prompt" placeholder="Enter prompt..." autofocus required>
-    </div>
-    <div class="mb-3 input-group">
-      <div class="input-group-prepend">
-        <span class="input-group-text">Number of images:</span>
+      <div class="input-group-append">
+        <button class="btn btn-secondary collapsed" type="button" data-toggle="collapse" data-target="#settings" aria-expanded="false" aria-controls="settings"><img src="img/sliders.svg"></button>
       </div>
-      <input type="number" class="form-control" id="num-images" name="num-images" min="1" max="10" value="1" required>
+    </div>
+    <div id="settings" class="collapse">
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Number of images:</span>
+        </div>
+        <input type="number" class="form-control" id="num-images" name="num-images" min="1" max="10" value="1" required>
+      </div>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Reference image (optional):</span>
+        </div>
+        <div class="custom-file">
+          <input type="file" class="custom-file-input" id="reference" accept="image/*">
+          <label class="custom-file-label" for="reference" id="ref-file-name">Choose file</label>
+        </div>
+        <div class="input-group-append">
+          <button type="button" class="btn btn-secondary" onclick="clearRef()">Clear</button>
+        </div>
+      </div>
     </div>
     <div class="d-flex justify-content-center">
-      <button type="button" class="btn btn-primary" id="generate-btn" onclick="generate()">Generate Image</button>
-      <button type="button" class="btn btn-danger ml-2 mr-2" id="stop-btn" onclick="stop()" disabled>Stop</button>
+      <button class="btn btn-primary" id="generate-btn" onclick="generate()">Generate Image</button>
+      <button class="btn btn-danger ml-2 mr-2" id="stop-btn" onclick="stop()" disabled>Stop</button>
       <a class="btn btn-success" href="image_help.php">Help</a>
     </div>
     <?php if (!$uid) { ?>
@@ -62,6 +79,7 @@ $offline = time() - getAIVar("moa-available") > $procTimeout;
 </div>
 <a class="br" href="https://github.com/VoidXH/Poor-Man-s-AI"><img src="img/github.svg"></a>
 <script src="<?=$jqueryPath ?>"></script>
+<script src="<?=$bootstrapJSPath ?>"></script>
 <script src="js/command.js"></script>
 <script src="js/image.js"></script>
 </body>

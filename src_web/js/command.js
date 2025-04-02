@@ -26,6 +26,9 @@ function sendCommand(type, prompt, path = "") {
         });
       }
     }, 1500);
+  })
+  .fail((jqXHR, textStatus, errorThrown) => {
+    onHTTPError(jqXHR.status);
   });
 }
 

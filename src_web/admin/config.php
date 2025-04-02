@@ -56,12 +56,15 @@ editVar("Image generator name", "moaName");
 <p class="mt-n3">The available models by name, as set up on the Processors.</p>
 <?php editBool("SLM warnings", "slmWarning"); ?>
 <p>Show SLM warnings in chat when in Image + SLM mode. Recommended to disable when the Processor has unified memory and the models are large enough (like 7B).</p>
+<h2><br>Limits</h2>
 <?php editVar("Command lifespan", "commandClear", true); ?>
 <p class="mt-n3">Unprocessed commands will be deleted from the database after this many minutes while the Processor is online.</p>
 <?php editVar("Processor timeout", "procTimeout", true); ?>
 <p class="mt-n3">Seconds to consider the processor offline after it was last seen.</p>
+<?php editVar("Max queue length", "maxQueueLength"); ?>
+<p class="mt-n3">Maximum number of prompts in queue. When the queue limit is reached, prompts will be canceled due to server overload.</p>
 <?php editVar("Max wrong answers", "maxWrongAnswers"); ?>
-<p class="mt-n3">Number of conversations with disliked responses to keep (each one is maximized at 64 kB, so the default value of 1000 limits dislike storage to 64 MB).</p>
+<p class="mt-n3">Number of conversations with disliked responses to keep. Each dislike log is maximized at 64 kB, so the default value of 1000 limits dislike storage to 64 MB.</p>
 <h2><br>For developers</h2>
 <?php
 editVar("Viewport", "viewport");

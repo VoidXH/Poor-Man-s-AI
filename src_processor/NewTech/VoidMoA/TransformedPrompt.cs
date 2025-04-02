@@ -8,6 +8,11 @@ namespace PoorMansAI.NewTech.VoidMoA {
     /// </summary>
     public class TransformedPrompt {
         /// <summary>
+        /// Type of process to use (txt2img, img2img,...).
+        /// </summary>
+        public string Endpoint { get; set; }
+
+        /// <summary>
         /// Retained prompts to be sent to the generator.
         /// </summary>
         public string Prompt { get; set; }
@@ -16,6 +21,11 @@ namespace PoorMansAI.NewTech.VoidMoA {
         /// Negative prompts, things not to generate.
         /// </summary>
         public string NegativePrompt { get; set; }
+
+        /// <summary>
+        /// Images to transform with the prompt.
+        /// </summary>
+        public string[] ReferenceImages { get; set; }
 
         /// <summary>
         /// Name of the used model.
@@ -38,6 +48,7 @@ namespace PoorMansAI.NewTech.VoidMoA {
         public override string ToString() => JsonSerializer.Serialize(new {
             prompt = Prompt,
             negative_prompt = NegativePrompt,
+            init_images = ReferenceImages,
             width = Width,
             height = Height,
             steps = Config.imageGenSteps,

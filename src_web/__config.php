@@ -28,6 +28,8 @@
   $commandClear = 3;
   // Seconds of no connection after the Processor is considered offline:
   $procTimeout = 15;
+  // Maximum number of prompts in queue (further commands will be canceled):
+  $maxQueueLength = 10;
   // Number of conversations with disliked responses to keep (each one is
   // maximized at 64 kB, so the default value of 1000 limits dislike storage to
   // 64 MB):

@@ -83,6 +83,10 @@ function onFinalResult(progress, result) {
 }
 
 function onHTTPError(errorCode) {
+  if (errorCode == 503) {
+    onFinalResult(100, "Server is overloaded. Please try again later with the <i>Regenerate</i> button below.");
+    return;
+  }
   onPartialResult(50, "Temporary error (HTTP " + errorCode + "), retrying...");
 }
 

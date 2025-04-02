@@ -126,9 +126,10 @@ namespace PoorMansAI.Engines {
         /// <inheritdoc/>
         public override string Generate(Command command) {
             generating = true;
-            string procPrompt = PromptTransformer.Transform(command.Prompt).ToString();
+            TransformedPrompt transformedPrompt = PromptTransformer.Transform(command.Prompt);
+            string procPrompt = transformedPrompt.ToString();
             progressReporter = new Timer(ProgressCheck, command, 0, 500);
-            string result = HTTP.POST(Server + "/sdapi/v1/txt2img", procPrompt, Config.imageGenTimeout);
+            string result = HTTP.POST($"{Server}/sdapi/v1/{transformedPrompt.Endpoint}", procPrompt, Config.imageGenTimeout);
             generating = false;
             lock (locker) {
                 progressReporter?.Dispose();
