@@ -1,7 +1,12 @@
 # Poor Man's AI
 Your own chatbot and image generating AI service with the easiest possible
 setup: a website available from everywhere you need, and a computer that handles
-processing the prompts.
+processing the prompts. Poor Man's AI features:
+* Easy to install Website for interacting with your models
+* Easy to configure AI Processors with support for many
+* Chat popup on your website
+* Enhancing chatbots with your documents
+* Active swapping between models based on your rules
 
 ### Table of Contents
 1. [Try it!](#try-it)
