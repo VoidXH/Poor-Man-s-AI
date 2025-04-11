@@ -20,7 +20,13 @@ namespace PoorMansAI.Extensions {
         /// Update the logged local IP address on the Website.
         /// </summary>
         void PeriodicAction() {
-            IPAddress[] ips = Dns.GetHostEntry(Dns.GetHostName()).AddressList;
+            IPAddress[] ips;
+            try {
+                ips = Dns.GetHostEntry(Dns.GetHostName()).AddressList;
+            } catch {
+                Logger.Warning("Failed to get local IP addresses. This might be temporary until a new network is connected.");
+                return;
+            }
             IPAddress localIP = ips.FirstOrDefault(x => x.AddressFamily == AddressFamily.InterNetwork && x.ToString() != "127.0.0.1");
             if (localIP == null) {
                 Logger.Warning("No local IPv4 address was found. This might be temporary until a new network is connected.");
