@@ -81,6 +81,7 @@ namespace PoorMansAI {
                         }
                     } catch (Exception e) {
                         Logger.Error("Error while processing commands: " + e);
+                        Logger.Debug("Server response that resulted in an error:\n{0}", result);
                     }
                 } else {
                     Logger.Debug("Couldn't query the list of commands from the Website.");
