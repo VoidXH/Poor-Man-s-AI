@@ -33,7 +33,7 @@ namespace PoorMansAI.Engines {
         public LLModel(string prefix, bool large) {
             Dictionary<string, string> config = Config.Values;
             Name = config[prefix];
-            FilePath = Path.Combine(Config.models, config[prefix + (large ? "LLM" : "SLM")]);
+            FilePath = Path.Combine(Config.models, Path.GetFileName(config[prefix + (large ? "LLM" : "SLM")]));
             SystemMessage = config[prefix + "SystemMessage"];
 
             string postMessageKey = prefix + "PostMessage";
