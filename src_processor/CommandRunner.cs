@@ -64,7 +64,11 @@ namespace PoorMansAI {
                 DateTime processingStarted = DateTime.Now;
                 string commandUrl = "/cmd/list.php?" + EnginesToUpdate(),
                     result = HTTP.GET(HTTP.Combine(Config.publicWebserver, commandUrl), cookies);
-                if (result != null) {
+                if (result == null) {
+                    Logger.Debug("Couldn't query the list of commands from the Website.");
+                } else if (result.Length == 0) {
+                    Logger.Debug("Response from {0} was empty.", commandUrl);
+                } else {
                     try {
                         JsonNode parsed = JsonNode.Parse(result);
                         IEnumerable<Command> commands = parsed["commands"].AsArray().Select(x => new Command(x));
@@ -83,8 +87,6 @@ namespace PoorMansAI {
                         Logger.Error("Error while processing commands: " + e);
                         Logger.Debug("Server response that resulted in an error:\n{0}", result);
                     }
-                } else {
-                    Logger.Debug("Couldn't query the list of commands from the Website.");
                 }
 
                 int waitFosMS = Config.serverPollInterval - (int)(DateTime.Now - processingStarted).TotalMilliseconds;
