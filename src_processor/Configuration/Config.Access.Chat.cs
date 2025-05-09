@@ -49,7 +49,7 @@
         /// <summary>
         /// The folder where Large Language Models (LLMs) are saved (could be any path, even absolute).
         /// </summary>
-        public static readonly string models = Values["Models"];
+        public static readonly string models = Path.GetFullPath(Values["Models"]);
 
         /// <summary>
         /// If chat replies are not done in this many seconds, cancel the generation.

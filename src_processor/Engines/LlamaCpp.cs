@@ -25,7 +25,7 @@ namespace PoorMansAI.Engines {
         /// <summary>
         /// Path of each selectable model.
         /// </summary>
-        readonly Dictionary<string, (string path, string systemMessage)> models = [];
+        readonly Dictionary<string, LLModel> models = [];
 
         /// <summary>
         /// Handles context documents.
@@ -45,7 +45,7 @@ namespace PoorMansAI.Engines {
         /// <summary>
         /// Used model in the running <see cref="instance"/>.
         /// </summary>
-        string model;
+        string lastModelPath;
 
         /// <summary>
         /// LLM chatbot using llama.cpp's API.
@@ -53,15 +53,13 @@ namespace PoorMansAI.Engines {
         /// <param name="llm">Use the larger models on the GPU instead of the small ones on the CPU</param>
         public LlamaCpp(bool llm) {
             Dictionary<string, string> config = Config.Values;
-            string root = Path.GetFullPath(Config.models),
-                postfix = llm ? "LLM" : "SLM";
             foreach (string prefix in Config.ForEachModel()) {
-                string modelFile = Path.GetFileName(config[prefix + postfix]);
-                models[config[prefix]] = (Path.Combine(root, modelFile), config[prefix + "SystemMessage"]);
+                LLModel model = new(prefix, llm);
+                models[model.Name] = model;
             }
 
             LLM = llm;
-            model = models[config["Model1"]].path;
+            lastModelPath = models[config["Model1"]].FilePath;
             runner = new(Launch);
         }
 
@@ -82,9 +80,9 @@ namespace PoorMansAI.Engines {
         /// <inheritdoc/>
         public override string Generate(Command command) {
             int split = command.Prompt.IndexOf('|');
-            (string modelPath, string systemMessage) = models[command.Prompt[..split]];
-            if (model != modelPath) {
-                model = modelPath;
+            LLModel model = models[command.Prompt[..split]];
+            if (lastModelPath != model.FilePath) {
+                lastModelPath = model.FilePath;
                 runner.Dispose();
                 runner = new(Launch);
             }
@@ -92,15 +90,19 @@ namespace PoorMansAI.Engines {
             JsonArray messages = [];
             messages.Add(new JsonObject {
                 ["role"] = "system",
-                ["content"] = Config.augmentWithSystemPrompt ? systemMessage : contextDocs.TransformPrompt(systemMessage)
+                ["content"] = Config.augmentWithSystemPrompt ? model.SystemMessage : contextDocs.TransformPrompt(model.SystemMessage)
             });
 
             string[] chat = command.Prompt[(split + 1)..].Split('|');
+            if (model.PostMessage != null) {
+                chat[^1] += model.PostMessage;
+            }
+
             for (int i = 0, last = chat.Length - 1; i <= last; i++) {
                 bool user = i % 2 == 0;
                 string message = chat[i].Replace("&vert;", "|").Replace("\"", "\\\"");
                 if (user && (!Config.augmentLatestOnly || i == last)) {
-                    message = contextDocs.TransformPrompt(message, Config.augmentWithSystemPrompt ? systemMessage : null);
+                    message = contextDocs.TransformPrompt(message, Config.augmentWithSystemPrompt ? model.SystemMessage : null);
                 }
                 messages.Add(new JsonObject {
                     ["role"] = user ? "user" : "assistant",
@@ -139,14 +141,14 @@ namespace PoorMansAI.Engines {
         }
 
         /// <summary>
-        /// Relaunch with the currently selected <see cref="model"/>.
+        /// Relaunch with the currently selected <see cref="lastModelPath"/>.
         /// </summary>
         Process Launch() {
             string workingDir = LLM ? Config.llamaCppGPURoot : Config.llamaCppCPURoot,
                 ngl = LLM ? " -ngl 999" : string.Empty;
             ProcessStartInfo info = new() {
                 WorkingDirectory = workingDir,
-                Arguments = $"-m \"{model}\" --port {Config.Values["LlamaCppPort"]}{ngl}",
+                Arguments = $"-m \"{lastModelPath}\" --port {Config.Values["LlamaCppPort"]}{ngl}",
                 UseShellExecute = false
             };
             if (OperatingSystem.IsWindows()) {
@@ -165,7 +167,7 @@ namespace PoorMansAI.Engines {
                 }
                 Thread.Sleep(100);
             }
-            model = null;
+            lastModelPath = null;
             return instance;
         }
     }
