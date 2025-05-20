@@ -16,7 +16,7 @@ namespace PoorMansAI {
         /// <summary>
         /// Cookies received when logged in successfully.
         /// </summary>
-        internal readonly CookieCollection cookies;
+        internal CookieCollection cookies;
 
         /// <summary>
         /// Provides access to the running engines.
@@ -42,19 +42,21 @@ namespace PoorMansAI {
         /// Processes the commands of the server's command queue.
         /// </summary>
         public CommandRunner() {
-            // Login
-            cookies = HTTP.GetCookies(HTTP.Combine(Config.publicWebserver, "/login.php"), [
-                new KeyValuePair<string, string>("name", Config.adminUsername),
-                new KeyValuePair<string, string>("password", Config.adminPassword)
-            ]);
-
-            // Start command processing
+            Login();
             engine = new(cookies);
             engine.OnProgress += ProgressUpdate;
             canceller = new();
             runner = new(new ThreadStart(ProcessCommands));
             runner.Start();
         }
+
+        /// <summary>
+        /// Log in to the server and store the session cookies.
+        /// </summary>
+        void Login() => cookies = HTTP.GetCookies(HTTP.Combine(Config.publicWebserver, "/login.php"), [
+            new KeyValuePair<string, string>("name", Config.adminUsername),
+            new KeyValuePair<string, string>("password", Config.adminPassword)
+        ]);
 
         /// <summary>
         /// Periodically checks the command queue.
@@ -67,7 +69,12 @@ namespace PoorMansAI {
                 if (result == null) {
                     Logger.Debug("Couldn't query the list of commands from the Website.");
                 } else if (result.Length == 0) {
-                    Logger.Debug("Response from {0} was empty.", commandUrl);
+                    Logger.Debug("Cookies expired, logging in again.");
+                    try {
+                        Login();
+                    } catch {
+                        Logger.Info("Login failed, trying again.");
+                    }
                 } else {
                     try {
                         JsonNode parsed = JsonNode.Parse(result);
