@@ -44,6 +44,11 @@ namespace PoorMansAI.Engines {
         bool progressChecked;
 
         /// <summary>
+        /// Generation was done at least once. If it's a cold run, add extra timeout.
+        /// </summary>
+        bool ranOnce;
+
+        /// <summary>
         /// Image generating neural network runner.
         /// </summary>
         public StableDiffusionWebUI() => runner = new(Launch);
@@ -129,7 +134,13 @@ namespace PoorMansAI.Engines {
             TransformedPrompt transformedPrompt = PromptTransformer.Transform(command.Prompt);
             string procPrompt = transformedPrompt.ToString();
             progressReporter = new Timer(ProgressCheck, command, 0, 500);
-            string result = HTTP.POST($"{Server}/sdapi/v1/{transformedPrompt.Endpoint}", procPrompt, Config.imageGenTimeout);
+
+            int timeout = Config.imageGenTimeout;
+            if (!ranOnce) {
+                timeout += Config.imageGenLoading;
+                ranOnce = true;
+            }
+            string result = HTTP.POST($"{Server}/sdapi/v1/{transformedPrompt.Endpoint}", procPrompt, timeout);
             generating = false;
             lock (locker) {
                 progressReporter?.Dispose();

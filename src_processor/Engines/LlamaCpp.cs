@@ -81,8 +81,10 @@ namespace PoorMansAI.Engines {
         public override string Generate(Command command) {
             int split = command.Prompt.IndexOf('|');
             LLModel model = models[command.Prompt[..split]];
+            int timeout = Config.chatTimeout;
             if (lastModelPath != model.FilePath) {
                 lastModelPath = model.FilePath;
+                timeout += Config.chatLoading;
                 runner.Dispose();
                 runner = new(Launch);
             }
@@ -120,7 +122,7 @@ namespace PoorMansAI.Engines {
             string result;
             try {
                 result = HTTP.POST(Server + "/v1/chat/completions", root.ToJsonString(), x => UpdateProgress(command, .5f, x),
-                    Config.serverPollInterval / 3 /* final callback also limits */, Parse, canceller.Token, Config.chatTimeout);
+                    Config.serverPollInterval / 3 /* final callback also limits */, Parse, canceller.Token, timeout);
             } catch (Exception e) {
                 Console.Error.WriteLine(e);
                 result = null;
