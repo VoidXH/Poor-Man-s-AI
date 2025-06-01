@@ -67,7 +67,8 @@ namespace PoorMansAI {
                 string commandUrl = "/cmd/list.php?" + EnginesToUpdate(),
                     result = HTTP.GET(HTTP.Combine(Config.publicWebserver, commandUrl), cookies);
                 if (result == null) {
-                    Logger.Debug("Couldn't query the list of commands from the Website.");
+                    Logger.Debug("Couldn't query the list of commands from the Website, waiting 10 seconds.");
+                    Thread.Sleep(10000);
                 } else if (result.Length == 0) {
                     Logger.Debug("Cookies expired, logging in again.");
                     try {
