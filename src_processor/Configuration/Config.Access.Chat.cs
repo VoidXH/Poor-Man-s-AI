@@ -57,6 +57,11 @@
         public static readonly int chatTimeout = int.Parse(Values["ChatTimeout"]);
 
         /// <summary>
+        /// When switching models, allow this many extra seconds over the normal timeout.
+        /// </summary>
+        public static readonly int chatLoading = int.Parse(Values["ChatLoading"]);
+
+        /// <summary>
         /// Enumerates the user-set models and returns the prefix for each of them.
         /// </summary
         public static IEnumerable<string> ForEachModel() => ForEach("Model");
