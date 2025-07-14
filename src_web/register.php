@@ -52,15 +52,15 @@ if (isset($_POST["name"])) {
     <div class="login">
       <form method="POST">
         <h2>Registration</h2>
-        <div class="form-group">
+        <div class="form-group mb-2">
           <label for="name">Username</label>
           <input type="text" class="form-control" name="name" required>
         </div>
-        <div class="form-group">
+        <div class="form-group mb-2">
           <label for="password">Password</label>
           <input type="password" class="form-control" name="password" required>
         </div>
-        <div class="form-group">
+        <div class="form-group mb-2">
           <label for="password2">Repeat password</label>
           <input type="password" class="form-control" name="password2" required>
         </div>

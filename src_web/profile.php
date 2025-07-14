@@ -59,15 +59,15 @@ $prompts = $sqlink->query("SELECT prompts FROM ai_users WHERE id = $uid")->fetch
         <?php } else if ($wrong) { ?>
         <div class="alert alert-danger" role="alert">The current password was incorrect.</div>
         <?php } ?>
-        <div class="form-group">
+        <div class="form-group mb-2">
           <label for="current">Current password</label>
           <input type="password" class="form-control" name="current" required>
         </div>
-        <div class="form-group">
+        <div class="form-group mb-2">
           <label for="new">New password</label>
           <input type="password" class="form-control" name="new" required>
         </div>
-        <div class="form-group">
+        <div class="form-group mb-3">
           <label for="new2">New password again</label>
           <input type="password" class="form-control" name="new2" required>
         </div>

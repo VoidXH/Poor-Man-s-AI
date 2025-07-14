@@ -49,11 +49,11 @@ if (isset($_POST["name"])) {
         <?php } else if (isset($_GET["del"])) { ?>
         <div class="alert alert-success" role="alert">Account deleted successfully.</div>
         <?php } ?>
-        <div class="form-group">
+        <div class="form-group mb-2">
           <label for="name">Username</label>
           <input type="text" class="form-control" name="name" required>
         </div>
-        <div class="form-group">
+        <div class="form-group mb-3">
           <label for="password">Password</label>
           <input type="password" class="form-control" name="password" required>
         </div>

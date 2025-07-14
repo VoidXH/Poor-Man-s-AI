@@ -67,7 +67,6 @@ editVar("Viewport", "viewport");
 editVar("Bootstrap CSS path", "bootstrapPath");
 editVar("Bootstrap JS path", "bootstrapJSPath");
 editVar("JQuery path", "jqueryPath");
-editVar("Popper path", "popperPath");
 editVar("Marked path", "markedPath");
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     file_put_contents("__config.php", "<"."?php".PHP_EOL.$result."?".">");
