@@ -140,6 +140,9 @@ namespace PoorMansAI.Engines {
                 timeout += Config.imageGenLoading;
                 ranOnce = true;
             }
+            if (transformedPrompt.ReferenceImages?.Length > 0) {
+                timeout += Config.imageGenParsing;
+            }
             string result = HTTP.POST($"{Server}/sdapi/v1/{transformedPrompt.Endpoint}", procPrompt, timeout);
             generating = false;
             lock (locker) {

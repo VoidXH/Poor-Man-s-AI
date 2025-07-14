@@ -29,6 +29,11 @@ namespace PoorMansAI.Configuration {
         public static readonly int imageGenLoading = int.Parse(Values["ImageGenLoading"]);
 
         /// <summary>
+        /// When a reference image is used, allow this many extra seconds of timeout.
+        /// </summary>
+        public static readonly int imageGenParsing = int.Parse(Values["ImageGenParsing"]);
+
+        /// <summary>
         /// Number of times the image is refined for better results.
         /// </summary>
         public static readonly int imageGenSteps = int.Parse(Values["ImageGenSteps"]);
