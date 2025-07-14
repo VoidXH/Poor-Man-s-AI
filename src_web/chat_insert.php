@@ -25,10 +25,8 @@ if (time() - getAIVar("llm-available") <= $procTimeout && $open) { ?>
   <div class="card-footer">
     <div class="input-group">
       <textarea class="form-control" id="input" placeholder="Ask <?=$name ?> anything..." autofocus><?=$_GET["prefill"] ?></textarea>
-      <div class="input-group-append">
-        <button class="btn btn-danger" id="stop" style="display:none;" onclick="stop()">Stop</button>
-        <button class="btn btn-primary" id="send" onclick="send()">Send</button>
-      </div>
+      <button class="btn btn-danger" id="stop" style="display:none;" onclick="stop()">Stop</button>
+      <button class="btn btn-primary" id="send" onclick="send()">Send</button>
     </div>
     <?php addon("chat_insert"); ?>
   </div>

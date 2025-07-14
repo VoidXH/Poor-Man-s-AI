@@ -10,16 +10,12 @@ function editVar($name, $var, $int = false) {
     if ($_POST["key"] == $var) { $$var = $int ? intval($_POST["value"]) : $_POST["value"]; }
     $result .= "$".$var."= ".var_export($$var, true).";".PHP_EOL;
         echo '<form method="POST">
-    <div class="input-group mt-3">
-        <div class="input-group-prepend">
-            <span class="input-group-text">'.$name.':</span>
-        </div>
-        <input class="form-control"'.($int ? " type=\"number\"" : "").' name="value" value="'.htmlspecialchars($$var).'">
-        <div class="input-group-append">
-            <button type="submit" class="btn btn-primary">Set</button>
-        </div>
-    </div>
-    <input type="hidden" name="key" value="'.$var.'">
+	<div class="input-group mt-3">
+		<span class="input-group-text">'.$name.':</span>
+		<input class="form-control"'.($int ? " type=\"number\"" : "").' name="value" value="'.htmlspecialchars($$var).'">
+		<button type="submit" class="btn btn-primary">Set</button>
+	</div>
+	<input type="hidden" name="key" value="'.$var.'">
 </form>';
 }
 

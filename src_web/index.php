@@ -45,49 +45,36 @@ function online() {
   <a class="br" href="https://github.com/VoidXH/Poor-Man-s-AI"><img src="img/github.svg"></a>
   <div class="server input-group mt-3">
     <?php if ($admin) { ?>
-    <div class="input-group-prepend">
-      <?php online(); ?>
-    </div>
-    <div class="input-group-append">
+    <?php online(); ?>
 <?php
 require("proc/addon.php");
 addon("adminbtn");
 ?>
-      <a class="btn btn-secondary" href="admin.php">Admin</a>
-      <?php if ($online) { ?>
-      <div class="btn btn-primary m-0 p-0 dropdown show">
-        <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="modeList" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Mode</a>
-        <div class="dropdown-menu" aria-labelledby="modeList">
-          <a class="<?=$moaClass ?> dropdown-item" onclick="enableMoA()">Image + SLM</a>
-          <a class="<?=$llmClass ?> dropdown-item" onclick="enableLLM()">LLM</a>
-        </div>
+    <a class="btn btn-secondary" href="admin.php">Admin</a>
+    <?php if ($online) { ?>
+    <div class="btn btn-primary m-0 p-0 dropdown show">
+      <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="modeList" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Mode</a>
+      <div class="dropdown-menu" aria-labelledby="modeList">
+        <a class="<?=$moaClass ?> dropdown-item" onclick="enableMoA()">Image + SLM</a>
+        <a class="<?=$llmClass ?> dropdown-item" onclick="enableLLM()">LLM</a>
       </div>
-      <?php } ?>
     </div>
+    <?php } ?>
     <?php } else if ($open && !$uid) { ?>
-    <div class="input-group-prepend">
-      <?php online(); ?>
-    </div>
-    <div class="input-group-append">
-      <a class="btn btn-primary" href="login.php">Login</a>
-    </div>
+    <?php online(); ?>
+    <a class="btn btn-primary" href="login.php">Login</a>
     <?php } else {
       online();
     } ?>
   </div>
   <?php if ($uid) { ?>
   <div class="input-group profile m-3">
-    <div class="input-group-prepend">
-      <a class="btn btn-secondary" href="profile.php"><?=htmlspecialchars($_COOKIE["username"]) ?></a>
-    </div>
-    <div class="input-group-append">
-      <a class="btn btn-secondary" href="logout.php">Logout</a>
-    </div>
+    <a class="btn btn-secondary" href="profile.php"><?=htmlspecialchars($_COOKIE["username"]) ?></a>
+    <a class="btn btn-secondary" href="logout.php">Logout</a>
   </div>
   <?php } ?>
   <script src="<?=$jqueryPath ?>"></script>
   <?php if ($admin) { ?>
-  <script src="<?=$popperPath ?>"></script>
   <script src="<?=$bootstrapJSPath ?>"></script>
   <?php } ?>
   <script src="js/command.js"></script>

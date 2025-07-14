@@ -40,9 +40,8 @@
 
   // If you want to self-host JS dependencies too or the CDNs went down, change
   // these to the corresponding local relative paths:
-  $bootstrapPath = "https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css";
-  $bootstrapJSPath = "https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js";
+  $bootstrapPath= 'https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css';
+  $bootstrapJSPath= 'https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js';
   $jqueryPath = "https://code.jquery.com/jquery-3.6.0.min.js";
-  $popperPath = "https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js";
   $markedPath = "https://cdn.jsdelivr.net/npm/marked/marked.min.js";
 ?>

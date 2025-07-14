@@ -25,27 +25,19 @@ $slm = $time - getAIVar("moa-available") <= $procTimeout;
   <div class="card">
     <div class="card-header d-flex align-items-center">
       <div class="input-group w-auto">
-        <div class="input-group-prepend">
-          <a class="btn btn-primary" href="index.php">Back</a>
-        </div>
-        <div class="input-group-append">
-          <button class="input-group-append btn btn-danger" id="reset" onclick="reset()">Reset</button>
-        </div>
+        <a class="btn btn-primary" href="index.php">Back</a>
+        <button class="btn btn-danger" id="reset" onclick="reset()">Reset</button>
       </div>
       <span class="text-center flex-grow-1"><?=$chatName ?></span>
       <div class="input-group w-auto">
-        <div class="input-group-prepend">
-          <label class="input-group-text">Model</label>
-        </div>
+        <label class="input-group-text">Model</label>
         <?php
         $models = preg_split('/\s*,\s*/', $chatModels);
-        echo "<div class=\"input-group-append\" id=\"model\">";
-          foreach ($models as $index => $model) {
-            $class = ($index == 0) ? "btn btn-primary" : "btn btn-secondary";
-            $id = strtolower($model);
-            echo "<button class=\"$class\" id=\"$id\">$model</button>";
-          }
-        echo "</div>";
+        foreach ($models as $index => $model) {
+          $class = ($index == 0) ? "btn btn-primary" : "btn btn-secondary";
+          $id = strtolower($model);
+          echo "<button class=\"$class\" id=\"$id\">$model</button>";
+        }
         ?>
       </div>
     </div>
@@ -69,10 +61,8 @@ $slm = $time - getAIVar("moa-available") <= $procTimeout;
       <?php if (!$offline) { ?>
       <div class="input-group">
         <textarea class="form-control" id="input" placeholder="Ask <?=$chatName ?> anything..." autofocus></textarea>
-        <div class="input-group-append">
-          <button class="btn btn-danger" id="stop" style="display:none;" onclick="stop()">Stop</button>
-          <button class="btn btn-primary" id="send" onclick="send()">Send</button>
-        </div>
+        <button class="btn btn-danger" id="stop" style="display:none;" onclick="stop()">Stop</button>
+        <button class="btn btn-primary" id="send" onclick="send()">Send</button>
       </div>
       <?php if ($uid) { ?>
       <p class="text-center mt-3"><small><?=$chatName ?> can make mistakes. Check important info.</small></p>

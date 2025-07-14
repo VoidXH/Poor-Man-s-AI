@@ -36,33 +36,22 @@ $offline = time() - getAIVar("moa-available") > $procTimeout;
   <form id="image-form" autocomplete="off">
     <div class="input-group mb-3">
       <input type="text" class="form-control" id="prompt" name="prompt" placeholder="Enter prompt..." autofocus required>
-      <div class="input-group-append">
-        <button class="btn btn-secondary collapsed" type="button" data-toggle="collapse" data-target="#settings" aria-expanded="false" aria-controls="settings"><img src="img/sliders.svg"></button>
-      </div>
+      <button class="btn btn-secondary collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#settings" aria-expanded="false" aria-controls="settings"><img src="img/sliders.svg"></button>
     </div>
     <div id="settings" class="collapse">
       <div class="input-group mb-3">
-        <div class="input-group-prepend">
-          <span class="input-group-text">Number of images:</span>
-        </div>
+        <span class="input-group-text">Number of images:</span>
         <input type="number" class="form-control" id="num-images" name="num-images" min="1" max="10" value="1" required>
       </div>
       <div class="input-group mb-3">
-        <div class="input-group-prepend">
-          <span class="input-group-text">Reference image (optional):</span>
-        </div>
-        <div class="custom-file">
-          <input type="file" class="custom-file-input" id="reference" accept="image/*">
-          <label class="custom-file-label" for="reference" id="ref-file-name">Choose file</label>
-        </div>
-        <div class="input-group-append">
-          <button type="button" class="btn btn-secondary" onclick="clearRef()">Clear</button>
-        </div>
+        <span class="input-group-text">Reference image (optional):</span>
+		<input id="reference" type="file" class="form-control">
+        <button type="button" class="btn btn-secondary" onclick="clearRef()">Clear</button>
       </div>
     </div>
     <div class="d-flex justify-content-center">
       <button class="btn btn-primary" id="generate-btn" onclick="generate()">Generate Image</button>
-      <button class="btn btn-danger ml-2 mr-2" id="stop-btn" onclick="stop()" disabled>Stop</button>
+      <button class="btn btn-danger ms-2 me-2" id="stop-btn" onclick="stop()" disabled>Stop</button>
       <a class="btn btn-success" href="image_help.php">Help</a>
     </div>
     <?php if (!$uid) { ?>
