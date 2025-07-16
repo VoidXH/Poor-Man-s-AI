@@ -115,8 +115,8 @@ function send() {
     $(".chatbox").append('<div id="out' + sentMessages + '" class="message"><p class="username">' + you + '</p><p class="text">' + escape(input) + '</p><button class="btn btn-secondary btn-sm option" onclick="edit(' + sentMessages + ')">&#9999; Edit</button></div>');
     $(".chatbox").append('<div id="in' + sentMessages + '" class="message reply"><p class="username">' + gpt + '</p><p id="msg' + sentMessages + '" class="text">...</p><div class="option">' +
         '<button class="btn btn-secondary btn-sm" onclick="regenerate(' + sentMessages + ')">&#128260; Regenerate</button>' +
-        '<button class="btn btn-secondary btn-sm ml-2" id="correct' + sentMessages + '" onclick="correct(' + sentMessages + ')">&#128077;</button>' +
-        '<button class="btn btn-secondary btn-sm ml-2" id="wrong' + sentMessages + '" onclick="wrong(' + sentMessages + ')">&#128078;</button>' +
+        '<button class="btn btn-secondary btn-sm ms-2" id="correct' + sentMessages + '" onclick="correct(' + sentMessages + ')">&#128077;</button>' +
+        '<button class="btn btn-secondary btn-sm ms-2" id="wrong' + sentMessages + '" onclick="wrong(' + sentMessages + ')">&#128078;</button>' +
         '</div></div>');
     $("#input").val("");
     $(".chatbox").animate({ scrollTop: $(".chatbox").prop("scrollHeight") }, 500);

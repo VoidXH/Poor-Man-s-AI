@@ -29,7 +29,7 @@ $slm = $time - getAIVar("moa-available") <= $procTimeout;
         <button class="btn btn-danger" id="reset" onclick="reset()">Reset</button>
       </div>
       <span class="text-center flex-grow-1"><?=$chatName ?></span>
-      <div class="input-group w-auto">
+      <div id="model" class="input-group w-auto">
         <label class="input-group-text">Model</label>
         <?php
         $models = preg_split('/\s*,\s*/', $chatModels);
