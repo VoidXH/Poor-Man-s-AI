@@ -1,4 +1,6 @@
-﻿namespace PoorMansAI.Configuration {
+﻿using System.Globalization;
+
+namespace PoorMansAI.Configuration {
     /// <summary>
     /// Stores all settings of a Stable Diffusion Model for VoidMoA, parsed from a <paramref name="configKey"/>.
     /// </summary>
@@ -22,6 +24,18 @@
         /// Negative prompt, links for negative embedding downloads changed to pt files.
         /// </summary>
         public readonly string negative = ReadNegative(configKey + "Negative");
+
+        /// <summary>
+        /// Per-artist override for the CFG scale or the global default.
+        /// </summary>
+        public readonly float guidance =
+            float.Parse(Config.Values.GetValueOrDefault(configKey + "Guidance", Config.Values["ImageGenGuidance"]).Replace(',', '.'), CultureInfo.InvariantCulture);
+
+        /// <summary>
+        /// Per-artist override for the sampling method or the global default.
+        /// </summary>
+        public readonly string sampler =
+            Config.Values.GetValueOrDefault(configKey + "Sampler", Config.Values["ImageGenSampler"]);
 
         /// <summary>
         /// Parse negative prompts, with the URLs of negative embeddings changed to filenames.

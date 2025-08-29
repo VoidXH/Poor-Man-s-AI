@@ -43,6 +43,16 @@ namespace PoorMansAI.NewTech.VoidMoA {
         public int Height { get; set; }
 
         /// <summary>
+        /// CFG scale, how strongly to follow the prompt.
+        /// </summary>
+        public float Guidance { get; set; }
+
+        /// <summary>
+        /// Which sampling method to use.
+        /// </summary>
+        public string Sampler { get; set; }
+
+        /// <summary>
         /// Convert the prompt to a Stable Diffusion JSON API call.
         /// </summary>
         public override string ToString() => JsonSerializer.Serialize(new {
@@ -52,8 +62,8 @@ namespace PoorMansAI.NewTech.VoidMoA {
             width = Width,
             height = Height,
             steps = Config.imageGenSteps,
-            cfg_scale = Config.imageGenGuidance,
-            sampler_index = Config.imageGenSampler,
+            cfg_scale = Guidance,
+            sampler_index = Sampler,
             override_settings = new {
                 sd_model_checkpoint = Model
             }

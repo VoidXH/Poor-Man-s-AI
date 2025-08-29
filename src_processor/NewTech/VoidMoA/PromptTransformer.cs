@@ -36,8 +36,10 @@ namespace PoorMansAI.NewTech.VoidMoA {
                     maxVotesFor = i;
                 }
             }
-            result.Model = Config.GetSafetensorFilenameWithoutExtension(maxVotes == 0 ? Config.defaultArtist : artists[maxVotesFor].url);
-            result.NegativePrompt = maxVotes == 0 ? Config.defaultNegative : artists[maxVotesFor].negative;
+
+            ArtistConfiguration artist = artists[maxVotesFor];
+            result.Model = Config.GetSafetensorFilenameWithoutExtension(maxVotes == 0 ? Config.defaultArtist : artist.url);
+            result.NegativePrompt = maxVotes == 0 ? Config.defaultNegative : artist.negative;
 
             int widescreen = HasSelector(ref selectors, Config.hSelectors) + HasKeyword(keywords, Config.hKeywords);
             int portrait = HasSelector(ref selectors, Config.vSelectors) + HasKeyword(keywords, Config.vKeywords);
@@ -52,6 +54,8 @@ namespace PoorMansAI.NewTech.VoidMoA {
                 result.Width = hd ? Config.imageSizeHDW : Config.imageSizeW;
                 result.Height = hd ? Config.imageSizeHDH : Config.imageSizeH;
             }
+            result.Guidance = artist.guidance;
+            result.Sampler = artist.sampler;
             result.Prompt = string.Join(", ", selectors);
             return result;
         }
