@@ -52,6 +52,11 @@
         public static readonly string models = Path.GetFullPath(Values["Models"]);
 
         /// <summary>
+        /// Port used by the main LLM runner engine.
+        /// </summary>
+        public static readonly ushort llamaCppPort = ushort.Parse(Values["LlamaCppPort"]);
+
+        /// <summary>
         /// If chat replies are not done in this many seconds, cancel the generation.
         /// </summary>
         public static readonly int chatTimeout = int.Parse(Values["ChatTimeout"]);
@@ -60,6 +65,21 @@
         /// When switching models, allow this many extra seconds over the normal timeout.
         /// </summary>
         public static readonly int chatLoading = int.Parse(Values["ChatLoading"]);
+
+        /// <summary>
+        /// Maximum context length for prompts.
+        /// </summary>
+        public static readonly int chatContext = int.Parse(Values["ChatContext"]);
+
+        /// <summary>
+        /// How much to keep of the initial prompt context for each generation.
+        /// </summary>
+        public static readonly int chatKeep = int.Parse(Values["ChatKeep"]);
+
+        /// <summary>
+        /// How much space to keep at the end of the context window for new messages.
+        /// </summary>
+        public static readonly int chatDiscard = int.Parse(Values["ChatDiscard"]);
 
         /// <summary>
         /// Enumerates the user-set models and returns the prefix for each of them.
