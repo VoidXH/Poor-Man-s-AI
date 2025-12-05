@@ -16,9 +16,9 @@ namespace PoorMansAI.Engines;
 /// </summary>
 public class LlamaCpp : Engine {
     /// <summary>
-    /// Use the larger models on the GPU instead of the small ones on the CPU.
+    /// The model currently runs on the GPU.
     /// </summary>
-    public bool LLM { get; private set; }
+    public bool GPU => settings.GPU;
 
     /// <summary>
     /// URL of the running llama.cpp instance.
@@ -58,15 +58,25 @@ public class LlamaCpp : Engine {
     /// <summary>
     /// LLM chatbot using llama.cpp's API.
     /// </summary>
-    /// <param name="llm">Use the larger models on the GPU instead of the small ones on the CPU</param>
     /// <param name="settings">How this instance is configured</param>
     /// <param name="models">Each model with its key from the website</param>
-    public LlamaCpp(bool llm, LlamaCppSettings settings, Dictionary<string, LLModel> models) {
-        LLM = llm;
+    public LlamaCpp(LlamaCppSettings settings, Dictionary<string, LLModel> models) {
         this.settings = settings;
         this.models = models;
         lastModelPath = models.First().Value.FilePath;
         runner = new(Launch);
+    }
+
+    /// <summary>
+    /// Make the system ready to launch llama-server.exe.
+    /// </summary>
+    public static void Ready() {
+        Process[] processes = Process.GetProcessesByName("llama-server");
+        foreach (var process in processes) {
+            process.Kill();
+            process.WaitForExit();
+            Logger.Warning("A previously stuck llama-server instance was killed.");
+        }
     }
 
     /// <summary>
@@ -120,6 +130,7 @@ public class LlamaCpp : Engine {
 
         JsonObject root = new() {
             ["model"] = "gpt-3.5-turbo",
+            ["max_tokens"] = settings.Predict,
             ["messages"] = messages,
             ["n_discard"] = settings.Discard,
             ["stream"] = true
@@ -153,11 +164,13 @@ public class LlamaCpp : Engine {
     /// Relaunch with the currently selected <see cref="lastModelPath"/>.
     /// </summary>
     Process Launch() {
-        string workingDir = LLM ? Config.llamaCppGPURoot : Config.llamaCppCPURoot,
-            ngl = LLM ? " -ngl 999" : string.Empty;
+        string workingDir = settings.GPU ? Config.llamaCppGPURoot : Config.llamaCppCPURoot,
+            ngl = settings.GPU ? " -ngl 999" : string.Empty;
         ProcessStartInfo info = new() {
             WorkingDirectory = workingDir,
             Arguments = $"-m \"{lastModelPath}\" --port {settings.Port} -c {settings.Context} --keep {settings.Keep}{ngl}",
+            RedirectStandardError = true,
+            RedirectStandardOutput = true,
             UseShellExecute = false
         };
         if (OperatingSystem.IsWindows()) {
@@ -167,6 +180,10 @@ public class LlamaCpp : Engine {
         }
         Logger.Debug("Llama.cpp launched with: " + info.Arguments);
         Process instance = Process.Start(info);
+        instance.ErrorDataReceived += SanitizeLog;
+        instance.OutputDataReceived += SanitizeLog;
+        instance.BeginErrorReadLine();
+        instance.BeginOutputReadLine();
 
         // Give 30 seconds for startup - if fails, kill it
         DateTime tryUntil = DateTime.Now + TimeSpan.FromSeconds(30);
@@ -179,4 +196,50 @@ public class LlamaCpp : Engine {
         lastModelPath = null;
         return instance;
     }
+
+    /// <summary>
+    /// Selectively print llama.cpp logs based on the current log level.
+    /// </summary>
+    void SanitizeLog(object _, DataReceivedEventArgs e) {
+        if (e.Data == null) {
+            return;
+        }
+
+        string line = e.Data;
+        if (Logger.MinLogLevel > LogLevel.Debug) {
+            for (int i = 0; i < skippedLineStarts.Length; i++) {
+                if (line.StartsWith(skippedLineStarts[i])) {
+                    return;
+                }
+            }
+            if (line.EndsWith("<end_of_turn>")) {
+                return;
+            }
+
+            int index = line.IndexOf('{');
+            if (index != -1 && index + 1 != line.Length && (line[index + 1] == '{' || line[index + 1] == '%' || line[index + 1] == '#')) {
+                return;
+            }
+            index = line.LastIndexOf('}');
+            if (index > 0 && (line[index - 1] == '%' || line[index - 1] == '}')) {
+                return;
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(line)) {
+            Logger.Log("llama.cpp", line, ConsoleColor.DarkCyan, false);
+        }
+    }
+
+    /// <summary>
+    /// Lines starting with these are only logged when <see cref="Logger.MinLogLevel"/> is lower or equal than <see cref="LogLevel.Debug"/>.
+    /// </summary>
+    static readonly string[] skippedLineStarts = [
+        ".....", ", example_format:", "<start_of_turn>",
+        "build:",
+        "common_init_from_params:",
+        "llama_context:", "llama_kv_cache:", "llama_kv_cache_iswa:", "llama_model_loader:", "load_backend:", "load_tensors:",
+        "print_info:",
+        "slot ", "srv  ", "system info:", "system_info:"
+    ];
 }

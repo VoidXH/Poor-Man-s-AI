@@ -34,8 +34,7 @@ namespace PoorMansAI.Configuration {
         /// <summary>
         /// Per-artist override for the sampling method or the global default.
         /// </summary>
-        public readonly string sampler =
-            Config.Values.GetValueOrDefault(configKey + "Sampler", Config.Values["ImageGenSampler"]);
+        public readonly string sampler = Config.Values.GetValueOrDefault(configKey + "Sampler", Config.imageGenSampler);
 
         /// <summary>
         /// Parse negative prompts, with the URLs of negative embeddings changed to filenames.

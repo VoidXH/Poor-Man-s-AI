@@ -37,6 +37,11 @@ public static class Logger {
     public static LogLevel MinLogLevel { get; set; } = LogLevel.Info;
 
     /// <summary>
+    /// Handles thread safety.
+    /// </summary>
+    readonly static object locker = new();
+
+    /// <summary>
     /// Outputs log messages to the corresponding console.
     /// </summary>
     public static void Log(LogLevel level, string message) {
@@ -109,13 +114,15 @@ public static class Logger {
     /// <summary>
     /// Assemble a log line with per-level properties.
     /// </summary>
-    static void Log(string level, string message, ConsoleColor color, bool error) {
-        TextWriter console = error ? Console.Error : Console.Out;
-        console.Write('[');
-        Console.ForegroundColor = color;
-        console.Write(level);
-        Console.ResetColor();
-        console.Write("] ");
-        console.WriteLine(message);
+    public static void Log(string level, string message, ConsoleColor color, bool error) {
+        lock (locker) {
+            TextWriter console = error ? Console.Error : Console.Out;
+            console.Write('[');
+            Console.ForegroundColor = color;
+            console.Write(level);
+            Console.ResetColor();
+            console.Write("] ");
+            console.WriteLine(message);
+        }
     }
 }

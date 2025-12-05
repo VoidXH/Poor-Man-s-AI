@@ -67,6 +67,11 @@
         public static readonly int chatLoading = int.Parse(Values["ChatLoading"]);
 
         /// <summary>
+        /// Maximum number of tokens to generate (-1 = infinite).
+        /// </summary>
+        public static readonly int chatPredict = int.Parse(Values["ChatPredict"]);
+
+        /// <summary>
         /// Maximum context length for prompts.
         /// </summary>
         public static readonly int chatContext = int.Parse(Values["ChatContext"]);

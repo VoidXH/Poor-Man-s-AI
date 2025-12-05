@@ -91,6 +91,9 @@ namespace PoorMansAI.Configuration {
                 CheckLLM(Config.Values[prefix + "SLM"], ref prepTextSent);
                 CheckLLM(Config.Values[prefix + "LLM"], ref prepTextSent);
             }
+            if (!string.IsNullOrEmpty(Config.moaModel)) {
+                CheckLLM(Config.moaModel, ref prepTextSent);
+            }
         }
 
         /// <summary>

@@ -5,6 +5,11 @@
 /// </summary>
 public class LlamaCppSettings {
     /// <summary>
+    /// Use the larger models on the GPU instead of the small ones on the CPU.
+    /// </summary>
+    public bool GPU { get; set; }
+
+    /// <summary>
     /// Open the HTTP endpoints on this port.
     /// </summary>
     public ushort Port { get; set; } = 64100;
@@ -18,6 +23,11 @@ public class LlamaCppSettings {
     /// When switching models, allow this many extra seconds over the normal timeout.
     /// </summary>
     public int Loading { get; set; } = 15;
+
+    /// <summary>
+    /// Maximum number of tokens to generate (-1 = infinite).
+    /// </summary>
+    public int Predict { get; set; } = -1;
 
     /// <summary>
     /// Maximum context length for prompts.

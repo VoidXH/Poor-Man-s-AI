@@ -24,13 +24,13 @@ public class EngineCache : IDisposable {
 
             // Shutdowns
             bool slm = (value & EngineCacheMode.SLM) != 0;
-            if (chatEngine?.LLM == true || !slm) {
+            if (chatEngine?.GPU == true || !slm) {
                 chatEngine?.Dispose();
                 chatEngine = null;
             }
 
             bool llm = (value & EngineCacheMode.LLM) != 0;
-            if (chatEngine?.LLM == false || !llm) {
+            if (chatEngine?.GPU == false || !llm) {
                 chatEngine?.Dispose();
                 chatEngine = null;
             }
@@ -119,9 +119,11 @@ public class EngineCache : IDisposable {
     /// </summary>
     static LlamaCpp SetupLlamaCpp(bool llm) {
         LlamaCppSettings settings = new() {
+            GPU = llm,
             Port = Config.llamaCppPort,
             Timeout = Config.chatTimeout,
             Loading = Config.chatLoading,
+            Predict = Config.chatPredict,
             Context = Config.chatContext,
             Keep = Config.chatKeep,
             Discard = Config.chatDiscard,
@@ -132,7 +134,7 @@ public class EngineCache : IDisposable {
             LLModel model = new(prefix, llm);
             models[model.Name] = model;
         }
-        return new(llm, settings, models);
+        return new(settings, models);
     }
 
     /// <summary>

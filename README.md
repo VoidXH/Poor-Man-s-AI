@@ -43,7 +43,8 @@ software or rarely found in the wild.
 
 ### Mixture-of-Artists (MoA)
 The image generation part is based on allowing model swapping on demand. Prompts
-can contain specific keywords or selectors that guide the image generator to
+are either fed to an LLM to choose the best "artist" for the job, or they can
+contain specific keywords or selectors that guide the image generator to
 specific models, like the "photo" keyword could trigger the use of a model
 trained on photos only to produce perfectly photorealistic results. When using
 Stable Diffusion 1.5 models, this could mean that even terabytes of models can

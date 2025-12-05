@@ -3,9 +3,12 @@
 using PoorMansAI;
 using PoorMansAI.Configuration;
 using PoorMansAI.Extensions;
+using PoorMansAI.Engines;
 
 Logger.MinLogLevel = (LogLevel)Enum.Parse(typeof(LogLevel), Config.Values["LogLevel"]);
-Downloader.Prepare(); // Download required models
+// Prepare the environment, like downloading required models
+Downloader.Prepare();
+LlamaCpp.Ready();
 
 // Process commands until closed
 CommandRunner runner = new();

@@ -40,6 +40,15 @@ namespace PoorMansAI {
         }
 
         /// <summary>
+        /// Create a custom command not originating from the server.
+        /// </summary>
+        public Command(EngineType engine, string prompt) {
+            EngineType = engine;
+            ID = -1;
+            Prompt = prompt;
+        }
+
+        /// <summary>
         /// Check if this status was already sent to the server. If yes, it will be nullified to prevent redundantly used bandwidth,
         /// unless giving a result is <paramref name="forced"/>.
         /// </summary>

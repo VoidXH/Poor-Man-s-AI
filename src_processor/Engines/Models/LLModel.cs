@@ -42,4 +42,14 @@ public class LLModel {
             PostMessage = postMessage;
         }
     }
+
+    /// <summary>
+    /// Collects all info regarding a large language model.
+    /// </summary>
+    /// <param name="url">Where the model was downloaded from</param>
+    /// <param name="systemMessage">Initial prompt defining the model's personality</param>
+    public LLModel(string url, string systemMessage) {
+        FilePath = Path.Combine(Config.models, Path.GetFileName(url));
+        SystemMessage = systemMessage;
+    }
 }

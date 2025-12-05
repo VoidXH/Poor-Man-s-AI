@@ -41,6 +41,11 @@ namespace PoorMansAI.Engines {
         /// <param name="progress">Ratio of completion</param>
         /// <param name="status">Current version of the text/image/etc under generation</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        protected void UpdateProgress(Command command, float progress, string status) => OnProgress?.Invoke(command, progress, status);
+        protected void UpdateProgress(Command command, float progress, string status) {
+            if (command.ID == -1) {
+                return;
+            }
+            OnProgress?.Invoke(command, progress, status);
+        }
     }
 }

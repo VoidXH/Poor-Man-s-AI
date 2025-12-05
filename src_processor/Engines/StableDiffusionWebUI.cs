@@ -31,6 +31,11 @@ public class StableDiffusionWebUI : Engine {
     readonly Watchdog runner;
 
     /// <summary>
+    /// MoA model assigner instance.
+    /// </summary>
+    readonly PromptTransformer transformer;
+
+    /// <summary>
     /// Periodically checks and forwards image generation progress.
     /// </summary>
     Timer progressReporter;
@@ -53,12 +58,15 @@ public class StableDiffusionWebUI : Engine {
     /// <summary>
     /// Image generating neural network runner.
     /// </summary>
-    public StableDiffusionWebUI() => runner = new(Launch);
+    public StableDiffusionWebUI() {
+        runner = new(Launch);
+        transformer = Config.moaAI ? new LLMBasedPromptTransformer() : new KeywordBasedPromptTransformer();
+    }
 
     /// <summary>
     /// Start a new Stable Diffusion WebUI instance.
     /// </summary>
-    public static Process Launch() {
+    public Process Launch() {
         string root = Path.GetFullPath(Config.webUIRoot);
         string[] foldersInRoot = Directory.GetDirectories(root);
         if (foldersInRoot.Length == 1) {
@@ -81,6 +89,8 @@ public class StableDiffusionWebUI : Engine {
 
         ProcessStartInfo info = new() {
             WorkingDirectory = dir,
+            RedirectStandardError = true,
+            RedirectStandardOutput = true,
             UseShellExecute = false
         };
         if (OperatingSystem.IsWindows()) {
@@ -96,6 +106,10 @@ public class StableDiffusionWebUI : Engine {
             info.FileName = Path.Combine(dir, "webui.sh");
         }
         Process instance = Process.Start(info);
+        instance.ErrorDataReceived += SanitizeLog;
+        instance.OutputDataReceived += SanitizeLog;
+        instance.BeginErrorReadLine();
+        instance.BeginOutputReadLine();
 
         // Wait for startup
         DateTime tryUntil = DateTime.Now + TimeSpan.FromSeconds(60);
@@ -133,7 +147,7 @@ public class StableDiffusionWebUI : Engine {
     /// <inheritdoc/>
     public override string Generate(Command command) {
         generating = true;
-        TransformedPrompt transformedPrompt = PromptTransformer.Transform(command.Prompt);
+        TransformedPrompt transformedPrompt = transformer.Transform(command.Prompt);
         string procPrompt = transformedPrompt.ToString();
         progressReporter = new Timer(ProgressCheck, command, 0, 500);
 
@@ -180,6 +194,7 @@ public class StableDiffusionWebUI : Engine {
             Thread.Sleep(100);
         }
         runner.Dispose();
+        transformer.Dispose();
         GC.SuppressFinalize(this);
     }
 
@@ -216,7 +231,49 @@ public class StableDiffusionWebUI : Engine {
     }
 
     /// <summary>
+    /// Selectively print llama.cpp logs based on the current log level.
+    /// </summary>
+    void SanitizeLog(object _, DataReceivedEventArgs e) {
+        if (e.Data == null) {
+            return;
+        }
+
+        string line = e.Data;
+        if (Logger.MinLogLevel > LogLevel.Debug) {
+            for (int i = 0; i < skippedLineStarts.Length; i++) {
+                if (line.StartsWith(skippedLineStarts[i])) {
+                    return;
+                }
+            }
+
+            if ((line.StartsWith("INFO:") && !line.Contains("http")) || line.EndsWith("200 OK")) {
+                return;
+            }
+
+        }
+
+        if (line.Length > 4 && line[3] == '%' && line[4] == '|') { // Generation progress bar
+            Console.Write('\r');
+            Console.Write(line);
+        } else if (!string.IsNullOrWhiteSpace(line)) {
+            Logger.Log("SD WebUI", line, ConsoleColor.DarkMagenta, false);
+        }
+    }
+
+    /// <summary>
     /// Recommended command line arguments when Stable Diffusion WebUI is ran on a Mac.
     /// </summary>
     const string macArgs = "--skip-torch-cuda-test --upcast-sampling --use-cpu interrogate";
+
+    /// <summary>
+    /// Lines starting with these are only logged when <see cref="Logger.MinLogLevel"/> is lower or equal than <see cref="LogLevel.Debug"/>.
+    /// </summary>
+    static readonly string[] skippedLineStarts = [
+        "  warnings.warn",
+        "Applying attention",
+        "Commit hash:",
+        "No module", "no module",
+        "Python ",
+        "Version:"
+    ];
 }
