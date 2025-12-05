@@ -240,7 +240,7 @@ public class LlamaCpp : Engine {
         ".....", ", example_format:", "<start_of_turn>", "<|im_start|>",
         "build:",
         "common_init_from_params:",
-        "ggml_metal_init:",
+        "ggml_metal_device_init:", "ggml_metal_free:", "ggml_metal_init:", "ggml_metal_library_init:",
         "llama_context:", "llama_kv_cache:", "llama_kv_cache_iswa:", "llama_model_loader:", "load_backend:", "load_tensors:",
         "print_info:",
         "slot ", "srv  ", "system info:", "system_info:"
