@@ -212,8 +212,10 @@ public class LlamaCpp : Engine {
                     return;
                 }
             }
-            if (line.EndsWith("<end_of_turn>")) {
-                return;
+            for (int i = 0; i < skippedLineEnds.Length; i++) {
+                if (line.EndsWith(skippedLineEnds[i])) {
+                    return;
+                }
             }
 
             int index = line.IndexOf('{');
@@ -235,11 +237,19 @@ public class LlamaCpp : Engine {
     /// Lines starting with these are only logged when <see cref="Logger.MinLogLevel"/> is lower or equal than <see cref="LogLevel.Debug"/>.
     /// </summary>
     static readonly string[] skippedLineStarts = [
-        ".....", ", example_format:", "<start_of_turn>",
+        ".....", ", example_format:", "<start_of_turn>", "<|im_start|>",
         "build:",
         "common_init_from_params:",
+        "ggml_metal_init:",
         "llama_context:", "llama_kv_cache:", "llama_kv_cache_iswa:", "llama_model_loader:", "load_backend:", "load_tensors:",
         "print_info:",
         "slot ", "srv  ", "system info:", "system_info:"
+    ];
+
+    /// <summary>
+    /// Lines ending with these are only logged when <see cref="Logger.MinLogLevel"/> is lower or equal than <see cref="LogLevel.Debug"/>.
+    /// </summary>
+    static readonly string[] skippedLineEnds = [
+        "<end_of_turn>", "<|im_end|>"
     ];
 }

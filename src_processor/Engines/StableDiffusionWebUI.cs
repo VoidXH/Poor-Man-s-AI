@@ -269,11 +269,14 @@ public class StableDiffusionWebUI : Engine {
     /// Lines starting with these are only logged when <see cref="Logger.MinLogLevel"/> is lower or equal than <see cref="LogLevel.Debug"/>.
     /// </summary>
     static readonly string[] skippedLineStarts = [
+        "#####",
         "  warnings.warn",
         "Applying attention",
         "Commit hash:",
+        "Install script",
         "No module", "no module",
         "Python ",
+        "Tested on",
         "Version:"
     ];
 }
