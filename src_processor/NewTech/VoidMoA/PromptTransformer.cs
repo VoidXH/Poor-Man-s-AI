@@ -27,11 +27,13 @@ public abstract class PromptTransformer : IDisposable {
         if (artist != null) {
             result.Model = Config.GetSafetensorFilenameWithoutExtension(artist.url);
             result.NegativePrompt = artist.negative;
+            result.Steps = artist.steps;
             result.Guidance = artist.guidance;
             result.Sampler = artist.sampler;
         } else {
             result.Model = Config.GetSafetensorFilenameWithoutExtension(Config.defaultArtist);
             result.NegativePrompt = Config.defaultNegative;
+            result.Steps = Config.imageGenSteps;
             result.Guidance = Config.imageGenGuidance;
             result.Sampler = Config.imageGenSampler;
         }

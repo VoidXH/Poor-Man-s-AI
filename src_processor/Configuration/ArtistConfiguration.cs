@@ -26,6 +26,11 @@ namespace PoorMansAI.Configuration {
         public readonly string negative = ReadNegative(configKey + "Negative");
 
         /// <summary>
+        /// Number of sampling iterations.
+        /// </summary>
+        public readonly int steps = int.Parse(Config.Values.GetValueOrDefault(configKey + "Steps", Config.Values["ImageGenSteps"]));
+
+        /// <summary>
         /// Per-artist override for the CFG scale or the global default.
         /// </summary>
         public readonly float guidance =

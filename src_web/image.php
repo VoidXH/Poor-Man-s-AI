@@ -34,22 +34,22 @@ $offline = time() - getAIVar("moa-available") > $procTimeout;
   addon("image");
 ?>
   <form id="image-form" autocomplete="off">
-    <div class="input-group mb-3">
+    <div class="input-group">
       <input type="text" class="form-control" id="prompt" name="prompt" placeholder="Enter prompt..." autofocus required>
       <button class="btn btn-secondary collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#settings" aria-expanded="false" aria-controls="settings"><img src="img/sliders.svg"></button>
     </div>
     <div id="settings" class="collapse">
-      <div class="input-group mb-3">
+      <div class="input-group mt-3">
         <span class="input-group-text">Number of images:</span>
         <input type="number" class="form-control" id="num-images" name="num-images" min="1" max="10" value="1" required>
       </div>
-      <div class="input-group mb-3">
+      <div class="input-group mt-3">
         <span class="input-group-text">Reference image (optional):</span>
 		<input id="reference" type="file" class="form-control">
         <button type="button" class="btn btn-secondary" onclick="clearRef()">Clear</button>
       </div>
     </div>
-    <div class="d-flex justify-content-center">
+    <div class="d-flex justify-content-center mt-3">
       <button class="btn btn-primary" id="generate-btn" onclick="generate()">Generate Image</button>
       <button class="btn btn-danger ms-2 me-2" id="stop-btn" onclick="stop()" disabled>Stop</button>
       <a class="btn btn-success" href="image_help.php">Help</a>

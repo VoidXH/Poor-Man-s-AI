@@ -43,6 +43,11 @@ namespace PoorMansAI.NewTech.VoidMoA {
         public int Height { get; set; }
 
         /// <summary>
+        /// Number of sampling iterations.
+        /// </summary>
+        public int Steps { get; set; }
+
+        /// <summary>
         /// CFG scale, how strongly to follow the prompt.
         /// </summary>
         public float Guidance { get; set; }
@@ -61,7 +66,7 @@ namespace PoorMansAI.NewTech.VoidMoA {
             init_images = ReferenceImages,
             width = Width,
             height = Height,
-            steps = Config.imageGenSteps,
+            steps = Steps,
             cfg_scale = Guidance,
             sampler_index = Sampler,
             override_settings = new {
