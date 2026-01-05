@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Globalization;
 
 using VoidX.WPF;
 
@@ -35,14 +36,16 @@ partial class LlamaCpp {
                 return;
             }
 
-            if (line.Length > 18 && line[11..19] == " time = ") {
+            if (line.Length > 32 && line[11..19] == " time = ") {
                 string type = line[..11].TrimStart();
-                string time = line[19..32].TrimStart();
-                string tokens = line[35..40].TrimStart();
-                string tps = line[72..80].TrimStart();
                 if (type == "eval") {
                     return;
                 }
+                string time = line[19..32].TrimStart();
+                string tokens = line[35..40].TrimStart();
+                string tps = line.Length > 80 ?
+                    line[72..80].TrimStart() :
+                    (int.Parse(tokens) * 1000 / float.Parse(time[..time.IndexOf(' ')], CultureInfo.InvariantCulture)).ToString();
                 line = $"{type}: {time}, {tokens} tok. ({tps} tps)";
             }
         }
