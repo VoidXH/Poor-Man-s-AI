@@ -1,4 +1,6 @@
-﻿using PoorMansAI.Configuration;
+﻿using System.Globalization;
+
+using PoorMansAI.Configuration;
 
 namespace PoorMansAI.Engines.Models;
 
@@ -27,6 +29,11 @@ public class LLModel {
     public string PostMessage { get; }
 
     /// <summary>
+    /// Randomness of each next token.
+    /// </summary>
+    public float Temperature { get; }
+
+    /// <summary>
     /// Collects all info regarding a large language model.
     /// </summary>
     /// <param name="prefix">The model is referred to as this in the config file (Model1 and so on)</param>
@@ -41,6 +48,9 @@ public class LLModel {
         if (config.TryGetValue(postMessageKey, out string postMessage)) {
             PostMessage = postMessage;
         }
+
+        string temperature = config.GetValueOrDefault(prefix + "Temperature", config["ChatTemperature"]);
+        Temperature = float.Parse(temperature, CultureInfo.InvariantCulture);
     }
 
     /// <summary>

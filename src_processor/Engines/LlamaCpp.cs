@@ -133,6 +133,7 @@ public class LlamaCpp : Engine {
             ["max_tokens"] = settings.Predict,
             ["messages"] = messages,
             ["n_discard"] = settings.Discard,
+            ["temperature"] = model.Temperature,
             ["stream"] = true
         };
 
