@@ -7,9 +7,14 @@ namespace PoorMansAI.Engines;
 
 partial class LlamaCpp {
     /// <summary>
+    /// Calculate the tokens/second value from parsed llama.cpp outputs.
+    /// </summary>
+    static string GetTPS(int tokens, float ms) => (tokens * 1000 / ms).ToString("0.00", CultureInfo.InvariantCulture);
+
+    /// <summary>
     /// Selectively print llama.cpp logs based on the current log level.
     /// </summary>
-    void SanitizeLog(object _, DataReceivedEventArgs e) {
+    static void SanitizeLog(object _, DataReceivedEventArgs e) {
         if (e.Data == null) {
             return;
         }
@@ -45,8 +50,8 @@ partial class LlamaCpp {
                 string tokens = line[35..40].TrimStart();
                 string tps = line.Length > 80 ?
                     line[72..80].TrimStart() :
-                    (int.Parse(tokens) * 1000 / float.Parse(time[..time.IndexOf(' ')], CultureInfo.InvariantCulture)).ToString();
-                line = $"{type}: {time}, {tokens} tok. ({tps} tps)";
+                    GetTPS(int.Parse(tokens), float.Parse(time[..time.IndexOf(' ')], CultureInfo.InvariantCulture));
+                line = $"{type}: {tokens} t / {time} = {tps} tps";
             }
         }
 
