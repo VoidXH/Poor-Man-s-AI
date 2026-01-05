@@ -131,7 +131,13 @@ public class CommandRunner : IDisposable {
     /// </summary>
     void RunGroup(IEnumerable<Command> commands) {
         foreach (Command command in commands) {
-            string output = engine.Generate(command) ?? "Error.";
+            string output;
+            try {
+                output = engine.Generate(command) ?? "Error.";
+            } catch (Exception e) {
+                output = "The prompt couldn't be processed. Please try again";
+                Logger.Error(e.ToString());
+            }
             ProgressUpdate(command, 1, output);
         }
     }
