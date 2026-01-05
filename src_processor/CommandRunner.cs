@@ -135,7 +135,7 @@ public class CommandRunner : IDisposable {
             try {
                 output = engine.Generate(command) ?? "Error.";
             } catch (Exception e) {
-                output = "The prompt couldn't be processed. Please try again";
+                output = "The prompt couldn't be processed. Please try again.";
                 Logger.Error(e.ToString());
             }
             ProgressUpdate(command, 1, output);
