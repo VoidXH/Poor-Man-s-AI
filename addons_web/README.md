@@ -27,3 +27,5 @@ name.php>` as a file name, where locations names can be the following:
 * `command_before`: before a command command (POST request) is processed and a
   command is inserted to the queue.
 * `image`: before the image prompting form.
+* `var_dump`: at the end of the var dump admin page table. New rows can be added
+  in a 3-column `tr`.

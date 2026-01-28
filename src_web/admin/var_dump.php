@@ -3,6 +3,8 @@ if (!$admin) {
     die;
 }
 
+require_once("proc/addon.php");
+
 $description = [
     "llm-available" => "Last availability of a Processor with chat support (Unix timestamp)",
     "llm-weight" => "The highest priority among the chat Processors",
@@ -28,6 +30,7 @@ $description = [
             while($row = $result->fetch_assoc()) {
                 echo "<tr><td>".$row["key"]."</td><td>".$row["value"]."</td><td>".$description[$row["key"]]."</td></tr>";
             }
+			addon("var_dump");
         ?>
     </tbody>
 </table>
