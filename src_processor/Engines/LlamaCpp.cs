@@ -169,19 +169,24 @@ public partial class LlamaCpp : Engine {
     /// Relaunch with the currently selected <see cref="lastModelPath"/>.
     /// </summary>
     Process Launch() {
-        string workingDir = settings.GPU ? Config.llamaCppGPURoot : Config.llamaCppCPURoot,
-            ngl = settings.GPU ? " -ngl 999" : string.Empty;
+        string workingDir = settings.GPU ? Config.llamaCppGPURoot : Config.llamaCppCPURoot;
         ProcessStartInfo info = new() {
             WorkingDirectory = workingDir,
-            Arguments = $"-m \"{lastModelPath}\" --port {settings.Port} -c {settings.Context} --keep {settings.Keep}{ngl}",
+            Arguments = $"-m \"{lastModelPath}\" --port {settings.Port} -c {settings.Context} --keep {settings.Keep}",
             RedirectStandardError = true,
             RedirectStandardOutput = true,
             UseShellExecute = false
         };
+        if (settings.GPU) {
+            info.Arguments += " -ngl 999";
+        }
+        if (Config.chatLocalhost) {
+            info.Arguments += " --host 0.0.0.0";
+        }
         if (OperatingSystem.IsWindows()) {
             info.FileName = Path.Combine(workingDir, "llama-server.exe");
         } else {
-            info.FileName = Path.Combine(workingDir, "build/bin/llama-server");
+            info.FileName = Path.Combine(workingDir, "llama-server");
         }
         Logger.Debug("Llama.cpp launched with: " + info.Arguments);
         Process instance = Process.Start(info);

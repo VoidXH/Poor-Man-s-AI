@@ -57,6 +57,11 @@
         public static readonly ushort llamaCppPort = ushort.Parse(Values["LlamaCppPort"]);
 
         /// <summary>
+        /// Allow local network to reach the chat's native webpage.
+        /// </summary>
+        public static readonly bool chatLocalhost = bool.Parse(Values["ChatLocalhost"]);
+
+        /// <summary>
         /// If chat replies are not done in this many seconds, cancel the generation.
         /// </summary>
         public static readonly int chatTimeout = int.Parse(Values["ChatTimeout"]);
