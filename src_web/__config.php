@@ -17,6 +17,8 @@
   $forceLogin = false;
   // Allow the registration of new users (true or false):
   $regOn = true;
+  // Seconds of no user interaction before logging them out automatically:
+  $loginTimeout = 604800;
 
   // The available models by name, as set up on the Processors:
   $chatModels = "Chat, Think, Code";

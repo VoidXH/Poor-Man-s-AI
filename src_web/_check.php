@@ -10,6 +10,9 @@ if (isset($_COOKIE["username"]) && isset($_COOKIE["password"])) {
   $stmt->close();
   $admin = (bool)$row["admin"];
   $uid = $row["id"];
+  $refresh = time() + $loginTimeout;
+  setcookie("username", $_COOKIE["username"], $refresh, "/");
+  setcookie("password", $_COOKIE["password"], $refresh, "/");
 } else if ($open) {
   $uid = false;
 } else {
