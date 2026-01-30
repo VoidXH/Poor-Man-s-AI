@@ -7,6 +7,7 @@ processing the prompts. Poor Man's AI features:
 * Chat popup on your website
 * Enhancing chatbots with your documents
 * Active swapping between models based on your rules
+* Models can use tools for tasks like fetching the weather
 
 ### Table of Contents
 1. [Try it!](#try-it)
