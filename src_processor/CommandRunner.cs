@@ -217,10 +217,10 @@ public class CommandRunner : IDisposable {
     /// </summary>
     string EnginesToUpdate() {
         StringBuilder result = new();
-        if (engine.CanGenerateText && Config.chatWeight >= 0) {
+        if (engine.Engines.ContainsKey(EngineType.Chat) && Config.chatWeight >= 0) {
             result.Append("llm=").Append(Config.chatWeight);
         }
-        if (engine.CanGenerateImages && Config.imageGenWeight >= 0) {
+        if (engine.Engines.ContainsKey(EngineType.Image) && Config.imageGenWeight >= 0) {
             if (result.Length != 0) {
                 result.Append('&');
             }

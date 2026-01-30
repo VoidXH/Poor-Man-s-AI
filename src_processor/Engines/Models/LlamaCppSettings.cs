@@ -1,4 +1,6 @@
-﻿namespace PoorMansAI.Engines.Models;
+﻿using PoorMansAI.Configuration;
+
+namespace PoorMansAI.Engines.Models;
 
 /// <summary>
 /// All settings for the llama.cpp engine with their default values.
@@ -43,4 +45,37 @@ public class LlamaCppSettings {
     /// How much space to keep at the end of the context window for new messages.
     /// </summary>
     public int Discard { get; set; } = 512;
+
+    /// <summary>
+    /// Create a settings holder with default values.
+    /// </summary>
+    public LlamaCppSettings() { }
+
+    /// <summary>
+    /// Read the settings for llama.cpp from the main configuration file.
+    /// </summary>
+    /// <param name="llm"></param>
+    public LlamaCppSettings(bool llm) {
+        GPU = llm;
+        Port = Config.llamaCppPort;
+        Timeout = Config.chatTimeout;
+        Loading = Config.chatLoading;
+        Predict = Config.chatPredict;
+        Context = Config.chatContext;
+        Keep = Config.chatKeep;
+        Discard = Config.chatDiscard;
+    }
+
+    /// <summary>
+    /// Get the model list from the main configuration file.
+    /// </summary>
+    /// <returns></returns>
+    public Dictionary<string, LLModel> GetConfiguredModels() {
+        Dictionary<string, LLModel> models = [];
+        foreach (string prefix in Config.ForEachModel()) {
+            LLModel model = new(prefix, GPU);
+            models[model.Name] = model;
+        }
+        return models;
+    }
 }

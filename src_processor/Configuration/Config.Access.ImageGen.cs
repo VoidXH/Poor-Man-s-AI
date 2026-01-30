@@ -1,223 +1,211 @@
 ﻿using System.Globalization;
 
-namespace PoorMansAI.Configuration {
-    // Parsed config values related to image generation
-    partial class Config {
-        /// <summary>
-        /// Where AUTOMATIC1111's Stable Diffusion WebUI is unpacked to (has system and webui subfolders).
-        /// </summary>
-        public static readonly string webUIRoot = Values["WebUIRoot"];
+namespace PoorMansAI.Configuration;
 
-        /// <summary>
-        /// Stable Diffusion WebUI release build download path.
-        /// </summary>
-        public static readonly string webUIDownload = Values["WebUIDownload"];
+// Parsed config values related to image generation
+partial class Config {
+    /// <summary>
+    /// Where AUTOMATIC1111's Stable Diffusion WebUI is unpacked to (has system and webui subfolders).
+    /// </summary>
+    public static readonly string webUIRoot = Values["WebUIRoot"];
 
-        /// <summary>
-        /// Use this port for image generation.
-        /// </summary>
-        public static readonly string webUIPort = Values["WebUIPort"];
+    /// <summary>
+    /// Stable Diffusion WebUI release build download path.
+    /// </summary>
+    public static readonly string webUIDownload = Values["WebUIDownload"];
 
-        /// <summary>
-        /// If images are not done in this many seconds, cancel the generation.
-        /// </summary>
-        public static readonly int imageGenTimeout = int.Parse(Values["ImageGenTimeout"]);
+    /// <summary>
+    /// Use this port for image generation.
+    /// </summary>
+    public static readonly string webUIPort = Values["WebUIPort"];
 
-        /// <summary>
-        /// When switching models, allow this many extra seconds over the normal timeout.
-        /// </summary>
-        public static readonly int imageGenLoading = int.Parse(Values["ImageGenLoading"]);
+    /// <summary>
+    /// If images are not done in this many seconds, cancel the generation.
+    /// </summary>
+    public static readonly int imageGenTimeout = int.Parse(Values["ImageGenTimeout"]);
 
-        /// <summary>
-        /// When a reference image is used, allow this many extra seconds of timeout.
-        /// </summary>
-        public static readonly int imageGenParsing = int.Parse(Values["ImageGenParsing"]);
+    /// <summary>
+    /// When switching models, allow this many extra seconds over the normal timeout.
+    /// </summary>
+    public static readonly int imageGenLoading = int.Parse(Values["ImageGenLoading"]);
 
-        /// <summary>
-        /// Number of times the image is refined for better results.
-        /// </summary>
-        public static readonly int imageGenSteps = int.Parse(Values["ImageGenSteps"]);
+    /// <summary>
+    /// When a reference image is used, allow this many extra seconds of timeout.
+    /// </summary>
+    public static readonly int imageGenParsing = int.Parse(Values["ImageGenParsing"]);
 
-        /// <summary>
-        /// How close the prompts are followed, read your models' recommendation.
-        /// </summary>
-        public static readonly float imageGenGuidance = float.Parse(Values["ImageGenGuidance"].Replace(',', '.'), CultureInfo.InvariantCulture);
+    /// <summary>
+    /// Number of times the image is refined for better results.
+    /// </summary>
+    public static readonly int imageGenSteps = int.Parse(Values["ImageGenSteps"]);
 
-        /// <summary>
-        /// Sampler method used for image generation.
-        /// </summary>
-        public static readonly string imageGenSampler = Values["ImageGenSampler"];
+    /// <summary>
+    /// How close the prompts are followed, read your models' recommendation.
+    /// </summary>
+    public static readonly float imageGenGuidance = float.Parse(Values["ImageGenGuidance"].Replace(',', '.'), CultureInfo.InvariantCulture);
 
-        /// <summary>
-        /// Base image size for non-HD generations, width.
-        /// </summary>
-        public static readonly int imageSizeW = ResX("ImageSize");
+    /// <summary>
+    /// Sampler method used for image generation.
+    /// </summary>
+    public static readonly string imageGenSampler = Values["ImageGenSampler"];
 
-        /// <summary>
-        /// Base image size for non-HD generations, width.
-        /// </summary>
-        public static readonly int imageSizeH = ResY("ImageSize");
+    /// <summary>
+    /// Base image size for non-HD generations, width.
+    /// </summary>
+    public static readonly int imageSizeW = ResX("ImageSize");
 
-        /// <summary>
-        /// Image size for horizontal/landscape non-HD generations, width.
-        /// </summary>
-        public static readonly int imageSizeHW = ResX("ImageSizeH");
+    /// <summary>
+    /// Base image size for non-HD generations, width.
+    /// </summary>
+    public static readonly int imageSizeH = ResY("ImageSize");
 
-        /// <summary>
-        /// Image size for horizontal/landscape non-HD generations, width.
-        /// </summary>
-        public static readonly int imageSizeHH = ResY("ImageSizeH");
+    /// <summary>
+    /// Image size for horizontal/landscape non-HD generations, width.
+    /// </summary>
+    public static readonly int imageSizeHW = ResX("ImageSizeH");
 
-        /// <summary>
-        /// Image size for vertical/portrait non-HD generations, width.
-        /// </summary>
-        public static readonly int imageSizeVW = ResX("ImageSizeV");
+    /// <summary>
+    /// Image size for horizontal/landscape non-HD generations, width.
+    /// </summary>
+    public static readonly int imageSizeHH = ResY("ImageSizeH");
 
-        /// <summary>
-        /// Image size for vertical/portrait non-HD generations, width.
-        /// </summary>
-        public static readonly int imageSizeVH = ResY("ImageSizeV");
+    /// <summary>
+    /// Image size for vertical/portrait non-HD generations, width.
+    /// </summary>
+    public static readonly int imageSizeVW = ResX("ImageSizeV");
 
-        /// <summary>
-        /// Base image size for HD generations, width.
-        /// </summary>
-        public static readonly int imageSizeHDW = ResX("ImageSizeHD");
+    /// <summary>
+    /// Image size for vertical/portrait non-HD generations, width.
+    /// </summary>
+    public static readonly int imageSizeVH = ResY("ImageSizeV");
 
-        /// <summary>
-        /// Base image size for HD generations, width.
-        /// </summary>
-        public static readonly int imageSizeHDH = ResY("ImageSizeHD");
+    /// <summary>
+    /// Base image size for HD generations, width.
+    /// </summary>
+    public static readonly int imageSizeHDW = ResX("ImageSizeHD");
 
-        /// <summary>
-        /// Image size for horizontal/landscape HD generations, width.
-        /// </summary>
-        public static readonly int imageSizeHDHW = ResX("ImageSizeHDH");
+    /// <summary>
+    /// Base image size for HD generations, width.
+    /// </summary>
+    public static readonly int imageSizeHDH = ResY("ImageSizeHD");
 
-        /// <summary>
-        /// Image size for horizontal/landscape HD generations, width.
-        /// </summary>
-        public static readonly int imageSizeHDHH = ResY("ImageSizeHDH");
+    /// <summary>
+    /// Image size for horizontal/landscape HD generations, width.
+    /// </summary>
+    public static readonly int imageSizeHDHW = ResX("ImageSizeHDH");
 
-        /// <summary>
-        /// Image size for vertical/portrait HD generations, width.
-        /// </summary>
-        public static readonly int imageSizeHDVW = ResX("ImageSizeHDV");
+    /// <summary>
+    /// Image size for horizontal/landscape HD generations, width.
+    /// </summary>
+    public static readonly int imageSizeHDHH = ResY("ImageSizeHDH");
 
-        /// <summary>
-        /// Image size for vertical/portrait HD generations, width.
-        /// </summary>
-        public static readonly int imageSizeHDVH = ResY("ImageSizeHDV");
+    /// <summary>
+    /// Image size for vertical/portrait HD generations, width.
+    /// </summary>
+    public static readonly int imageSizeHDVW = ResX("ImageSizeHDV");
 
-        /// <summary>
-        /// Keywords for making the image horizontal/landscape.
-        /// </summary>
-        public static readonly string[] hKeywords = ReadKeywordList("HKeywords");
+    /// <summary>
+    /// Image size for vertical/portrait HD generations, width.
+    /// </summary>
+    public static readonly int imageSizeHDVH = ResY("ImageSizeHDV");
 
-        /// <summary>
-        /// Selectors for making the image horizontal/landscape.
-        /// </summary>
-        public static readonly string[] hSelectors = ReadKeywordList("HSelectors");
+    /// <summary>
+    /// Keywords for making the image horizontal/landscape.
+    /// </summary>
+    public static readonly string[] hKeywords = ReadKeywordList("HKeywords");
 
-        /// <summary>
-        /// Keywords for making the image vertical/portrait.
-        /// </summary>
-        public static readonly string[] vKeywords = ReadKeywordList("VKeywords");
+    /// <summary>
+    /// Selectors for making the image horizontal/landscape.
+    /// </summary>
+    public static readonly string[] hSelectors = ReadKeywordList("HSelectors");
 
-        /// <summary>
-        /// Selectors for making the image vertical/portrait.
-        /// </summary>
-        public static readonly string[] vSelectors = ReadKeywordList("VSelectors");
+    /// <summary>
+    /// Keywords for making the image vertical/portrait.
+    /// </summary>
+    public static readonly string[] vKeywords = ReadKeywordList("VKeywords");
 
-        /// <summary>
-        /// Keywords for making the image HD.
-        /// </summary>
-        public static readonly string[] hdKeywords = ReadKeywordList("HDKeywords");
+    /// <summary>
+    /// Selectors for making the image vertical/portrait.
+    /// </summary>
+    public static readonly string[] vSelectors = ReadKeywordList("VSelectors");
 
-        /// <summary>
-        /// Selectors for making the image HD.
-        /// </summary>
-        public static readonly string[] hdSelectors = ReadKeywordList("HDSelectors");
+    /// <summary>
+    /// Keywords for making the image HD.
+    /// </summary>
+    public static readonly string[] hdKeywords = ReadKeywordList("HDKeywords");
 
-        /// <summary>
-        /// Stable Diffusion checkpoints are stored in this folder.
-        /// </summary>
-        public static readonly string artists = Values["Artists"];
+    /// <summary>
+    /// Selectors for making the image HD.
+    /// </summary>
+    public static readonly string[] hdSelectors = ReadKeywordList("HDSelectors");
 
-        /// <summary>
-        /// Stable Diffusion embeddings are stored in this folder.
-        /// </summary>
-        public static readonly string embeddings = Values["Embeddings"];
+    /// <summary>
+    /// Stable Diffusion checkpoints are stored in this folder.
+    /// </summary>
+    public static readonly string artists = Values["Artists"];
 
-        /// <summary>
-        /// Default checkpoint to use for image generation.
-        /// </summary>
-        public static readonly string defaultArtist = Values["DefaultArtist"];
+    /// <summary>
+    /// Stable Diffusion embeddings are stored in this folder.
+    /// </summary>
+    public static readonly string embeddings = Values["Embeddings"];
 
-        /// <summary>
-        /// Negative embeddings to be used in conjunction with the <see cref="defaultArtist"/>.
-        /// </summary>
-        public static readonly string defaultNegative = ArtistConfiguration.ReadNegative("DefaultNegative");
+    /// <summary>
+    /// Default checkpoint to use for image generation.
+    /// </summary>
+    public static readonly string defaultArtist = Values["DefaultArtist"];
 
-        /// <summary>
-        /// Stores download URL, keywords, and selectors of each configured Stable Diffusion Model for VoidMoA.
-        /// </summary>
-        public static readonly ArtistConfiguration[] artistConfigs = ParseArtists();
+    /// <summary>
+    /// Negative embeddings to be used in conjunction with the <see cref="defaultArtist"/>.
+    /// </summary>
+    public static readonly string defaultNegative = ArtistConfiguration.ReadNegative("DefaultNegative");
 
-        /// <summary>
-        /// Convert a download <paramref name="url"/> to a Pickle Tensor filename by stripping URL parameters and adding the extension.
-        /// </summary>
-        public static string GetPTFilename(string url) => GetSafetensorFilenameWithoutExtension(url) + ".pt";
+    /// <summary>
+    /// Stores download URL, keywords, and selectors of each configured Stable Diffusion Model for VoidMoA.
+    /// </summary>
+    public static readonly ArtistConfiguration[] artistConfigs = ParseArtists();
 
-        /// <summary>
-        /// Convert a download <paramref name="url"/> to a safetensor filename by stripping URL parameters and adding the extension.
-        /// </summary>
-        public static string GetSafetensorFilename(string url) => GetSafetensorFilenameWithoutExtension(url) + ".safetensors";
+    /// <summary>
+    /// Convert a download <paramref name="url"/> to a Pickle Tensor filename by stripping URL parameters and adding the extension.
+    /// </summary>
+    public static string GetPTFilename(string url) => GetSafetensorFilenameWithoutExtension(url) + ".pt";
 
-        /// <summary>
-        /// Convert a download <paramref name="url"/> to a safetensor filename root by stripping URL parameters.
-        /// </summary>
-        public static string GetSafetensorFilenameWithoutExtension(string url) {
-            int paramsFrom = url.IndexOf('?');
-            return Path.GetFileName(paramsFrom == -1 ? url : url[..paramsFrom]);
+    /// <summary>
+    /// Convert a download <paramref name="url"/> to a safetensor filename by stripping URL parameters and adding the extension.
+    /// </summary>
+    public static string GetSafetensorFilename(string url) => GetSafetensorFilenameWithoutExtension(url) + ".safetensors";
+
+    /// <summary>
+    /// Convert a download <paramref name="url"/> to a safetensor filename root by stripping URL parameters.
+    /// </summary>
+    public static string GetSafetensorFilenameWithoutExtension(string url) {
+        int paramsFrom = url.IndexOf('?');
+        return Path.GetFileName(paramsFrom == -1 ? url : url[..paramsFrom]);
+    }
+
+    /// <summary>
+    /// Get every custom artist related configuration in a structured format.
+    /// </summary>
+    static ArtistConfiguration[] ParseArtists() {
+        List<ArtistConfiguration> artists = [];
+        foreach (string artist in ForEach("Artist")) {
+            artists.Add(new(artist));
         }
+        return [.. artists];
+    }
 
-        /// <summary>
-        /// Parse keywords or selectors to a binary searchable (sorted) array.
-        /// </summary>
-        internal static string[] ReadKeywordList(string key) {
-            string[] result = ReadList(key);
-            for (int i = 0; i < result.Length; i++) {
-                result[i] = result[i].ToLowerInvariant();
-            }
-            Array.Sort(result);
-            return result;
-        }
+    /// <summary>
+    /// Get the X component of a resolution variable of WxH format.
+    /// </summary>
+    static int ResX(string key) {
+        string value = Values[key];
+        return int.Parse(value[..value.IndexOf('x')]);
+    }
 
-        /// <summary>
-        /// Get every custom artist related configuration in a structured format.
-        /// </summary>
-        static ArtistConfiguration[] ParseArtists() {
-            List<ArtistConfiguration> artists = [];
-            foreach (string artist in ForEach("Artist")) {
-                artists.Add(new(artist));
-            }
-            return [.. artists];
-        }
-
-        /// <summary>
-        /// Get the X component of a resolution variable of WxH format.
-        /// </summary>
-        static int ResX(string key) {
-            string value = Values[key];
-            return int.Parse(value[..value.IndexOf('x')]);
-        }
-
-        /// <summary>
-        /// Get the Y component of a resolution variable of WxH format.
-        /// </summary>
-        static int ResY(string key) {
-            string value = Values[key];
-            return int.Parse(value[(value.IndexOf('x') + 1)..]);
-        }
+    /// <summary>
+    /// Get the Y component of a resolution variable of WxH format.
+    /// </summary>
+    static int ResY(string key) {
+        string value = Values[key];
+        return int.Parse(value[(value.IndexOf('x') + 1)..]);
     }
 }

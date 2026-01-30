@@ -3,7 +3,6 @@
 using VoidX.WPF;
 
 using PoorMansAI.Configuration;
-using PoorMansAI.Engines.Models;
 
 namespace PoorMansAI.Engines.Orchestration; 
 
@@ -23,40 +22,39 @@ public class EngineCache : IDisposable {
             }
 
             // Shutdowns
+            LlamaCpp activeChat = engines.TryGetValue(EngineType.Chat, out Engine engine) ? engine as LlamaCpp : null;
             bool slm = (value & EngineCacheMode.SLM) != 0;
-            if (chatEngine?.GPU == true || !slm) {
-                chatEngine?.Dispose();
-                chatEngine = null;
-            }
-
             bool llm = (value & EngineCacheMode.LLM) != 0;
-            if (chatEngine?.GPU == false || !llm) {
-                chatEngine?.Dispose();
-                chatEngine = null;
+            bool moa = (value & EngineCacheMode.Image) != 0;
+            if (slm && llm) {
+                Logger.Error("Cannot enable both SLM and LLM modes at the same time.");
+                return;
             }
 
-            bool moa = (value & EngineCacheMode.Image) != 0;
-            if (!moa) {
-                imageEngine?.Dispose();
-                imageEngine = null;
+            if (activeChat != null && ((!slm || activeChat?.GPU == true) || (!llm || activeChat?.GPU == false))) {
+                activeChat.Dispose();
+                engines.Remove(EngineType.Chat);
+            }
+            if (!moa && engines.TryGetValue(EngineType.Image, out Engine imageEngineToRemove)) {
+                imageEngineToRemove.Dispose();
+                engines.Remove(EngineType.Image);
             }
 
             // Launches
             if (moa) {
-                if (imageEngine == null) {
-                    imageEngine = new StableDiffusionWebUI();
+                if (!engines.ContainsKey(EngineType.Image)) {
+                    StableDiffusionWebUI imageEngine = new();
                     imageEngine.OnProgress += CallOnProgress;
+                    engines[EngineType.Image] = imageEngine;
                 }
             }
 
-            if (slm && chatEngine == null) {
-                chatEngine = SetupLlamaCpp(false);
+            if ((slm || llm) && !engines.ContainsKey(EngineType.Chat)) {
+                LlamaCpp chatEngine = new(new(llm)) {
+                    Others = engines
+                };
                 chatEngine.OnProgress += CallOnProgress;
-            }
-
-            if (llm && chatEngine == null) {
-                chatEngine = SetupLlamaCpp(true);
-                chatEngine.OnProgress += CallOnProgress;
+                engines[EngineType.Chat] = chatEngine;
             }
 
             mode = value;
@@ -66,34 +64,20 @@ public class EngineCache : IDisposable {
     EngineCacheMode mode;
 
     /// <summary>
-    /// An LLM is running.
-    /// </summary>
-    public bool CanGenerateText => chatEngine != null;
-
-    /// <summary>
-    /// An image generator is running.
-    /// </summary>
-    public bool CanGenerateImages => imageEngine != null;
-
-    /// <summary>
     /// Reports partial progression and midway states.
     /// </summary>
     public Engine.Progress OnProgress;
 
     /// <summary>
+    /// Active engine instances.
+    /// </summary>
+    public IReadOnlyDictionary<EngineType, Engine> Engines => engines;
+    readonly Dictionary<EngineType, Engine> engines = [];
+
+    /// <summary>
     /// Authentication cookies to the server.
     /// </summary>
     readonly CookieCollection cookies;
-
-    /// <summary>
-    /// Active chatbot instance, could be CPU (SLM mode) or GPU (LLM mode).
-    /// </summary>
-    LlamaCpp chatEngine;
-
-    /// <summary>
-    /// Active image generator, possibly takes up the entire GPU.
-    /// </summary>
-    StableDiffusionWebUI imageEngine;
 
     /// <summary>
     /// On launch, the system default mode is used and sent to the server for activation.
@@ -115,29 +99,6 @@ public class EngineCache : IDisposable {
     }
 
     /// <summary>
-    /// Initialize llama.cpp with the user configuration for the main LLM runner.
-    /// </summary>
-    static LlamaCpp SetupLlamaCpp(bool llm) {
-        LlamaCppSettings settings = new() {
-            GPU = llm,
-            Port = Config.llamaCppPort,
-            Timeout = Config.chatTimeout,
-            Loading = Config.chatLoading,
-            Predict = Config.chatPredict,
-            Context = Config.chatContext,
-            Keep = Config.chatKeep,
-            Discard = Config.chatDiscard,
-        };
-
-        Dictionary<string, LLModel> models = [];
-        foreach (string prefix in Config.ForEachModel()) {
-            LLModel model = new(prefix, llm);
-            models[model.Name] = model;
-        }
-        return new(settings, models);
-    }
-
-    /// <summary>
     /// Run a <paramref name="command"/> through the corresponding engine.
     /// </summary>
     /// <returns>The output of the generation.</returns>
@@ -151,8 +112,12 @@ public class EngineCache : IDisposable {
         }
 
         return command.EngineType switch {
-            EngineType.Chat => chatEngine?.Generate(command) ?? "Chat engine is offline.",
-            EngineType.Image => imageEngine?.Generate(command) ?? File.ReadAllText("Data/OfflineImage.txt"),
+            EngineType.Chat => engines.TryGetValue(EngineType.Chat, out Engine engine) ?
+                engine.Generate(command) :
+                "Chat engine is offline.",
+            EngineType.Image => engines.TryGetValue(EngineType.Image, out Engine engine) ?
+                engine.Generate(command) :
+                File.ReadAllText("Data/OfflineImage.txt"),
             _ => null
         };
     }
@@ -161,18 +126,17 @@ public class EngineCache : IDisposable {
     /// Cancel the current operation.
     /// </summary>
     public void StopGeneration(EngineType type) {
-        Engine engine = type switch {
-            EngineType.Chat => chatEngine,
-            EngineType.Image => imageEngine,
-            _ => null
-        };
-        engine?.StopGeneration();
+        if (engines.TryGetValue(type, out Engine engine)) {
+            engine?.StopGeneration();
+        }
     }
 
     /// <inheritdoc/>
     public void Dispose() {
-        chatEngine?.Dispose();
-        imageEngine?.Dispose();
+        foreach (Engine engine in engines.Values) {
+            engine.Dispose();
+        }
+        engines.Clear();
         GC.SuppressFinalize(this);
     }
 

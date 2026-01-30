@@ -53,7 +53,12 @@ public partial class LlamaCpp : Engine {
     /// <summary>
     /// Used model in the running <see cref="instance"/>.
     /// </summary>
-    string lastModelPath;
+    LLModel lastModel;
+
+    /// <summary>
+    /// LLM chatbot using llama.cpp's API, loading models from the root configuration file.
+    /// </summary>
+    public LlamaCpp(LlamaCppSettings settings) : this(settings, settings.GetConfiguredModels()) { }
 
     /// <summary>
     /// LLM chatbot using llama.cpp's API.
@@ -63,7 +68,7 @@ public partial class LlamaCpp : Engine {
     public LlamaCpp(LlamaCppSettings settings, Dictionary<string, LLModel> models) {
         this.settings = settings;
         this.models = models;
-        lastModelPath = models.First().Value.FilePath;
+        lastModel = models.First().Value;
         runner = new(Launch);
     }
 
@@ -79,20 +84,6 @@ public partial class LlamaCpp : Engine {
         }
     }
 
-    /// <summary>
-    /// Parse a generation endpoint result.
-    /// </summary>
-    static string Parse(string result) {
-        if (result.Length == 0) {
-            return string.Empty;
-        }
-        try {
-            return JsonNode.Parse(result[6..])["choices"][0]["delta"]["content"]?.ToString();
-        } catch {
-            return string.Empty;
-        }
-    }
-
     /// <inheritdoc/>
     public override string Generate(Command command) {
         int split = command.Prompt.IndexOf('|');
@@ -102,8 +93,8 @@ public partial class LlamaCpp : Engine {
         }
 
         int timeout = settings.Timeout;
-        if (lastModelPath != model.FilePath) {
-            lastModelPath = model.FilePath;
+        if (lastModel.FilePath != model.FilePath) {
+            lastModel = model;
             timeout += settings.Loading;
             runner.Dispose();
             runner = new(Launch);
@@ -140,6 +131,7 @@ public partial class LlamaCpp : Engine {
             ["temperature"] = model.Temperature,
             ["stream"] = true
         };
+        model.Jinja?.Attach(root);
 
         canceller = new();
         string result;
@@ -150,10 +142,37 @@ public partial class LlamaCpp : Engine {
             Console.Error.WriteLine(e);
             result = null;
         }
+
+        if (model.Jinja?.ToolSelected ?? false) {
+            result = model.Jinja.LaunchTool(this, UpdateProgress);
+        }
+
         canceller.Dispose();
         canceller = null;
         Extension.RunChatPostprocessActions(messages, ref result);
         return result;
+    }
+
+    /// <summary>
+    /// Parse a generation endpoint result.
+    /// </summary>
+    string Parse(string result) {
+        if (result.Length == 0) {
+            return string.Empty;
+        }
+        try {
+            JsonNode choices = JsonNode.Parse(result[6..])["choices"];
+            JsonNode delta = choices[0]["delta"];
+            JsonNode toolCalls = delta["tool_calls"];
+            if (toolCalls == null) {
+                return delta["content"]?.ToString();
+            } else {
+                lastModel.Jinja.ParseToolCalls(toolCalls);
+                return string.Empty;
+            }
+        } catch {
+            return string.Empty;
+        }
     }
 
     /// <inheritdoc/>
@@ -172,7 +191,7 @@ public partial class LlamaCpp : Engine {
         string workingDir = settings.GPU ? Config.llamaCppGPURoot : Config.llamaCppCPURoot;
         ProcessStartInfo info = new() {
             WorkingDirectory = workingDir,
-            Arguments = $"-m \"{lastModelPath}\" --port {settings.Port} -c {settings.Context} --keep {settings.Keep}",
+            Arguments = $"-m \"{lastModel.FilePath}\" --port {settings.Port} -c {settings.Context} --keep {settings.Keep}",
             RedirectStandardError = true,
             RedirectStandardOutput = true,
             UseShellExecute = false
@@ -203,7 +222,7 @@ public partial class LlamaCpp : Engine {
             }
             Thread.Sleep(100);
         }
-        lastModelPath = null;
+        lastModel = null;
         return instance;
     }
 }

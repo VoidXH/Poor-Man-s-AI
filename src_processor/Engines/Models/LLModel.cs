@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 
 using PoorMansAI.Configuration;
+using PoorMansAI.Engines.Jinja;
 
 namespace PoorMansAI.Engines.Models;
 
@@ -34,6 +35,11 @@ public class LLModel {
     public float Temperature { get; }
 
     /// <summary>
+    /// List of supported external tools.
+    /// </summary>
+    public JinjaConfig Jinja { get; }
+
+    /// <summary>
     /// Collects all info regarding a large language model.
     /// </summary>
     /// <param name="prefix">The model is referred to as this in the config file (Model1 and so on)</param>
@@ -51,6 +57,10 @@ public class LLModel {
 
         string temperature = config.GetValueOrDefault(prefix + "Temperature", config["ChatTemperature"]);
         Temperature = float.Parse(temperature, CultureInfo.InvariantCulture);
+
+        if (config.TryGetValue(prefix + "Jinja", out string jinja)) {
+            Jinja = new(Path.Combine(Directory.GetCurrentDirectory(), "Configuration", jinja));
+        }
     }
 
     /// <summary>
