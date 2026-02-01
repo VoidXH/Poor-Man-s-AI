@@ -24,6 +24,7 @@ public abstract class Tool {
     /// </summary>
     public static (Tool engine, JsonObject jinja) Parse(IniFileBlock source) {
         Tool engine = source.Header switch {
+            "Reply" => new Reply(),
             "Weather" => new Weather(),
             _ => null
         };
