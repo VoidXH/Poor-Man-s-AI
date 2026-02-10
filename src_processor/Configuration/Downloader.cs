@@ -59,7 +59,11 @@ namespace PoorMansAI.Configuration {
                     CheckFile(download, tempFile, ref prepTextSent);
                 }
                 Logger.Info($"Extracting {Path.GetFileName(tempFile)}...");
-                ZipFile.ExtractToDirectory(tempFile, bin);
+                if (tempFile.EndsWith(".tar.gz")) {
+                    TarGzFile.ExtractToDirectory(tempFile, bin);
+                } else {
+                    ZipFile.ExtractToDirectory(tempFile, bin);
+                }
                 File.Delete(tempFile);
             }
         }
