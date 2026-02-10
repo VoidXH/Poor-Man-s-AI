@@ -7,7 +7,7 @@ namespace PoorMansAI.Engines.Jinja;
 /// <summary>
 /// Fetches weather information for a given location.
 /// </summary>
-public class Weather : Tool {
+public sealed class Weather : Tool {
     /// <inheritdoc/>
     public override string Execute(LlamaCpp caller, JsonNode parameters, Engine.Progress progressReporter) {
         string location = parameters["location"]?.ToString();
