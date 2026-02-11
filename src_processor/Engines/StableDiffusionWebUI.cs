@@ -94,15 +94,10 @@ public partial class StableDiffusionWebUI : Engine {
             UseShellExecute = false
         };
         if (OperatingSystem.IsWindows()) {
-            SetWindowsEnvironment(root);
+            PrepareForWindows(root);
             info.FileName = Path.Combine(dir, "webui.bat");
         } else {
-            Process chmod = Process.Start(new ProcessStartInfo() {
-                FileName = "/bin/bash",
-                Arguments = $"-c \"chmod +x '{Path.Combine(dir, "webui.sh")}'\"",
-                UseShellExecute = false
-            });
-            chmod.WaitForExit();
+            PrepareForMac(dir);
             info.FileName = Path.Combine(dir, "webui.sh");
         }
         Process instance = Process.Start(info);
@@ -123,25 +118,6 @@ public partial class StableDiffusionWebUI : Engine {
             }
             Thread.Sleep(100);
         }
-    }
-
-    /// <summary>
-    /// Setup the batch environment for the <paramref name="root"/> folder of Stable Diffusion WebUI.
-    /// </summary>
-    static void SetWindowsEnvironment(string root) {
-        string dir = Path.Combine(root, "system");
-        Environment.SetEnvironmentVariable("PATH", string.Join(';', Path.Combine(dir, "git", "bin"), Path.Combine(dir, "python"),
-                Path.Combine(dir, "python", "Scripts"), Environment.GetEnvironmentVariable("PATH")));
-        Environment.SetEnvironmentVariable("PY_LIBS", Path.Combine(dir, "python", "Scripts", "Lib") + ';' +
-            Path.Combine(dir, "python", "Scripts", "Lib", "site-packages"));
-        Environment.SetEnvironmentVariable("PY_PIP", Path.Combine(dir, "python", "Scripts"));
-        Environment.SetEnvironmentVariable("SKIP_VENV", "1");
-        Environment.SetEnvironmentVariable("PIP_INSTALLER_LOCATION", Path.Combine(dir, "python", "get-pip.py"));
-        Environment.SetEnvironmentVariable("TRANSFORMERS_CACHE", Path.Combine(dir, "transformers-cache"));
-        Environment.SetEnvironmentVariable("PYTHON", string.Empty);
-        Environment.SetEnvironmentVariable("GIT", string.Empty);
-        Environment.SetEnvironmentVariable("VENV_DIR", string.Empty);
-        Environment.SetEnvironmentVariable("SD_WEBUI_LOG_LEVEL", "WARNING"); // Performance + we handle it
     }
 
     /// <inheritdoc/>
