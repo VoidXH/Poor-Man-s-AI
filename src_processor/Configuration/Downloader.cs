@@ -53,8 +53,8 @@ namespace PoorMansAI.Configuration {
             if (!Directory.Exists(bin)) {
                 Directory.CreateDirectory(bin);
             }
-            string tempFile = Path.Combine(bin, "llama.zip");
-            if (Directory.Exists(bin) && (File.Exists(tempFile) || (Directory.GetFiles(bin).Length + Directory.GetDirectories(bin).Length) == 0)) {
+            string tempFile = Path.Combine(bin, download.EndsWith(".gz") ? "llama.tar.gz" : "llama.zip");
+            if (Directory.Exists(bin) && (File.Exists(tempFile) || (Directory.GetFiles(bin).Count(x => !x.EndsWith(".DS_Store")) + Directory.GetDirectories(bin).Length) == 0)) {
                 if (!File.Exists(tempFile)) {
                     CheckFile(download, tempFile, ref prepTextSent);
                 }

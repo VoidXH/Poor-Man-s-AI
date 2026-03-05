@@ -189,6 +189,11 @@ public partial class LlamaCpp : Engine {
     /// </summary>
     Process Launch() {
         string workingDir = settings.GPU ? Config.llamaCppGPURoot : Config.llamaCppCPURoot;
+        string[] subfolders = Directory.GetDirectories(workingDir);
+        if (subfolders.Length == 1 && !Directory.GetFiles(workingDir).Any(x => !x.EndsWith(".DS_Store"))) {
+            workingDir = subfolders[0];
+        }
+
         ProcessStartInfo info = new() {
             WorkingDirectory = workingDir,
             Arguments = $"-m \"{lastModel.FilePath}\" --port {settings.Port} -c {settings.Context} --keep {settings.Keep}",
