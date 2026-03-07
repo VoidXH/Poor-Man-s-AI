@@ -8,6 +8,7 @@ using PoorMansAI.Extensions;
 using PoorMansAI.NewTech.ContextDocTree;
 using PoorMansAI.Engines.Orchestration;
 using PoorMansAI.Engines.Models;
+using PoorMansAI.Engines.Utilities;
 
 namespace PoorMansAI.Engines;
 
@@ -29,6 +30,11 @@ public partial class LlamaCpp : Engine {
     /// How this instance is configured.
     /// </summary>
     readonly LlamaCppSettings settings;
+
+    /// <summary>
+    /// Properly packs reasoning/thinking blocks for network delivery.
+    /// </summary>
+    readonly ReasoningParser parser;
 
     /// <summary>
     /// Path of each selectable model.
@@ -165,7 +171,7 @@ public partial class LlamaCpp : Engine {
             JsonNode delta = choices[0]["delta"];
             JsonNode toolCalls = delta["tool_calls"];
             if (toolCalls == null) {
-                return delta["content"]?.ToString();
+                return parser.Process(delta);
             } else {
                 lastModel.Jinja.ParseToolCalls(toolCalls);
                 return string.Empty;
