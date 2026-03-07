@@ -34,7 +34,7 @@ public partial class LlamaCpp : Engine {
     /// <summary>
     /// Properly packs reasoning/thinking blocks for network delivery.
     /// </summary>
-    readonly ReasoningParser parser;
+    readonly ReasoningParser parser = new();
 
     /// <summary>
     /// Path of each selectable model.

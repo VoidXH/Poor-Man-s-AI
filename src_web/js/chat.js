@@ -63,7 +63,7 @@ function onPartialResult(progress, result) {
   let think = "";
   if (split.think.length != 0) {
     const prevThink = $("#think" + sentMessages).hasClass("show");
-    think = '<button class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#think' + sentMessages + '" aria-expanded="' + prevThink + '" aria-controls="think' + sentMessages + '">Show/hide thought process</button>' +
+    think = '<button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#think' + sentMessages + '" aria-expanded="' + prevThink + '" aria-controls="think' + sentMessages + '">Show/hide thought process</button>' +
       '<div class="collapse' + (prevThink ? ' show' : '') + '" id="think' + sentMessages + '" style="border: 1px solid white; width: auto;">' + marked.parse(split.think) + '</div>';
   }
   $("#msg" + sentMessages).html(think + marked.parse(split.result));
