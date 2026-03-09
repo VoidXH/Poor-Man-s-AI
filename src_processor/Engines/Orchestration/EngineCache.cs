@@ -88,6 +88,7 @@ public class EngineCache : IDisposable {
         string mode = GetMode();
         while (mode == null) {
             Logger.Warning("Couldn't fetch the active model, retrying...");
+            Thread.Sleep(1000);
             mode = GetMode();
         }
         try {
