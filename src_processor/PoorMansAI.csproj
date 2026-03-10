@@ -21,7 +21,10 @@
 	  <None Update="Configuration\6 GB GPU.ini">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
-	  <None Update="Configuration\custom.ini">
+	  <None Update="Configuration\custom_mac.ini">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Configuration\custom_win.ini">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
 	  <None Update="Configuration\Tools.ini">
