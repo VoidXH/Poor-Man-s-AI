@@ -3,6 +3,7 @@ var newMessage = false;
 var hist = Array();
 
 const customPath = typeof pmaiPath !== "undefined" ? pmaiPath : "";
+const thinkEnd = "</think>";
 
 const escape = (x) => x.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;").replaceAll("\n", "<br>");
 const isWorking = () => $("#send").prop("disabled");
@@ -38,7 +39,6 @@ function splitThink(input) {
 	let think = "";
 	let result = "";
 	const thinkStart = "<think>";
-	const thinkEnd = "</think>";
 	const startIdx = input.indexOf(thinkStart);
 	const endIdx = input.indexOf(thinkEnd);
 	if (startIdx != -1 && endIdx != -1) {
@@ -79,6 +79,11 @@ function onFinalResult(progress, result) {
 	activate(false);
 	if (!(/Mobi|Android/i.test(navigator.userAgent))) {
 		$('#input').focus();
+	}
+
+	const endIdx = result.indexOf(thinkEnd);
+	if (endIdx != -1) {
+		result = result.substring(endIdx + thinkEnd.length).trim();
 	}
 	hist.push(result);
 }
