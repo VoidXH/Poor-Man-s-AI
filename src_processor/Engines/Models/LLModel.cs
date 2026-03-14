@@ -40,6 +40,11 @@ public class LLModel {
     public JinjaConfig Jinja { get; }
 
     /// <summary>
+    /// Think before answering.
+    /// </summary>
+    public bool Reasoning { get; set; }
+
+    /// <summary>
     /// Collects all info regarding a large language model.
     /// </summary>
     /// <param name="prefix">The model is referred to as this in the config file (Model1 and so on)</param>
@@ -61,6 +66,9 @@ public class LLModel {
         if (config.TryGetValue(prefix + "Jinja", out string jinja)) {
             Jinja = new(Path.Combine(Directory.GetCurrentDirectory(), "Configuration", jinja));
         }
+
+        string reasoning = config.GetValueOrDefault(prefix + "Reasoning", "true");
+        Reasoning = bool.Parse(reasoning);
     }
 
     /// <summary>

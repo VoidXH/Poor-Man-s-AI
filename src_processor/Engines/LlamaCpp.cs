@@ -138,6 +138,11 @@ public partial class LlamaCpp : Engine {
             ["stream"] = true
         };
         model.Jinja?.Attach(root);
+        if (!model.Reasoning) {
+            root["chat_template_kwargs"] = new JsonObject {
+                ["enable_thinking"] = false
+            };
+        }
 
         canceller = new();
         string result;
