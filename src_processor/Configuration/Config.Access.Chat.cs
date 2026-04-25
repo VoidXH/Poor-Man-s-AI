@@ -82,6 +82,11 @@
         public static readonly int chatContext = int.Parse(Values["ChatContext"]);
 
         /// <summary>
+        /// Number of tokens to maximally use for a single reasoning session.
+        /// </summary>
+        public static readonly int chatReasoningBudget = int.Parse(Values["ChatReasoningBudget"]);
+
+        /// <summary>
         /// How much to keep of the initial prompt context for each generation.
         /// </summary>
         public static readonly int chatKeep = int.Parse(Values["ChatKeep"]);
