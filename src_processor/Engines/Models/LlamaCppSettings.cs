@@ -1,4 +1,6 @@
-﻿using PoorMansAI.Configuration;
+﻿using System.Runtime.InteropServices;
+
+using PoorMansAI.Configuration;
 
 namespace PoorMansAI.Engines.Models;
 
@@ -54,9 +56,8 @@ public class LlamaCppSettings {
     /// <summary>
     /// Read the settings for llama.cpp from the main configuration file.
     /// </summary>
-    /// <param name="llm"></param>
     public LlamaCppSettings(bool llm) {
-        GPU = llm;
+        GPU = llm || RuntimeInformation.IsOSPlatform(OSPlatform.OSX); // Mac is Unified, GPU mode is about 0.5% faster
         Port = Config.llamaCppPort;
         Timeout = Config.chatTimeout;
         Loading = Config.chatLoading;
