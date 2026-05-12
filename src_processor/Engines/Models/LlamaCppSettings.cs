@@ -49,6 +49,11 @@ public class LlamaCppSettings {
     public int Discard { get; set; } = 512;
 
     /// <summary>
+    /// Parallel requests chat can serve, larger values take up more RAM.
+    /// </summary>
+    public int Parallel { get; set; } = 1;
+
+    /// <summary>
     /// Create a settings holder with default values.
     /// </summary>
     public LlamaCppSettings() { }
@@ -62,7 +67,7 @@ public class LlamaCppSettings {
         Timeout = Config.chatTimeout;
         Loading = Config.chatLoading;
         Predict = Config.chatPredict;
-        Context = Config.chatContext;
+        Context = llm ? Config.chatContextLLM : Config.chatContextSLM;
         Keep = Config.chatKeep;
         Discard = Config.chatDiscard;
     }

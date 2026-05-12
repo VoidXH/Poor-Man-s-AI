@@ -77,9 +77,14 @@
         public static readonly int chatPredict = int.Parse(Values["ChatPredict"]);
 
         /// <summary>
-        /// Maximum context length for prompts.
+        /// Maximum context length for prompts when small models are in use.
         /// </summary>
-        public static readonly int chatContext = int.Parse(Values["ChatContext"]);
+        public static readonly int chatContextSLM = int.Parse(Values["ChatContextSLM"]);
+
+        /// <summary>
+        /// Maximum context length for prompts when large models are in use.
+        /// </summary>
+        public static readonly int chatContextLLM = int.Parse(Values["ChatContextLLM"]);
 
         /// <summary>
         /// Number of tokens to maximally use for a single reasoning session.
@@ -95,6 +100,11 @@
         /// How much space to keep at the end of the context window for new messages.
         /// </summary>
         public static readonly int chatDiscard = int.Parse(Values["ChatDiscard"]);
+
+        /// <summary>
+        /// Parallel requests chat can serve, larger values take up more RAM.
+        /// </summary>
+        public static readonly int chatParallel = int.Parse(Values["ChatParallel"]);
 
         /// <summary>
         /// Enumerates the user-set models and returns the prefix for each of them.

@@ -207,7 +207,8 @@ public partial class LlamaCpp : Engine {
 
         ProcessStartInfo info = new() {
             WorkingDirectory = workingDir,
-            Arguments = $"-m \"{lastModel.FilePath}\" --port {settings.Port} -c {settings.Context} --keep {settings.Keep} --reasoning-budget {Config.chatReasoningBudget}",
+            Arguments = $"-m \"{lastModel.FilePath}\" --port {settings.Port} -c {settings.Context} -np {settings.Parallel} --keep {settings.Keep}" +
+                $" --reasoning-budget {Config.chatReasoningBudget}",
             RedirectStandardError = true,
             RedirectStandardOutput = true,
             UseShellExecute = false
