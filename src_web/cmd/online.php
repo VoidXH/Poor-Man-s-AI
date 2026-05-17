@@ -1,4 +1,10 @@
 <?php
+/*
+	Online status endpoint
+	----------------------
+	GET: if the server is online (bool)
+*/
+
 require("../_check.php");
 require("../proc/ai_vars.php");
 

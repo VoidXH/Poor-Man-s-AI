@@ -1,9 +1,17 @@
 <?php
+/*
+	Set AI variable endpoint
+	------------------------
+	POST:
+		key: variable key
+		value: variable value (creates if not exists, updates if exists)
+*/
+
 require("../_check.php");
 require("../proc/ai_vars.php");
 
 if (!$admin) {
-    die;
+	die;
 }
 
 $key = $_POST["key"];
@@ -12,9 +20,9 @@ $exists = $stmt->get_result()->num_rows != 0;
 $stmt->close();
 
 if ($exists) {
-    setAIVar($key, $_POST["value"]);
+	setAIVar($key, $_POST["value"]);
 } else {
-    $stmt = execute("INSERT INTO ai_vars (`key`, `value`) VALUES (?, ?)", $key, $_POST["value"]);
-    $stmt->close();
+	$stmt = execute("INSERT INTO ai_vars (`key`, `value`) VALUES (?, ?)", $key, $_POST["value"]);
+	$stmt->close();
 }
 ?>
