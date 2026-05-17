@@ -220,12 +220,18 @@ public class CommandRunner : IDisposable {
         if (engine.Engines.ContainsKey(EngineType.Chat) && Config.chatWeight >= 0) {
             result.Append("llm=").Append(Config.chatWeight);
         }
-        if (engine.Engines.ContainsKey(EngineType.Image) && Config.imageGenWeight >= 0) {
-            if (result.Length != 0) {
-                result.Append('&');
+
+        void AddEngine(EngineType type, string key, int weight) {
+            if (engine.Engines.ContainsKey(type) && weight >= 0) {
+                if (result.Length != 0) {
+                    result.Append('&');
+                }
+                result.Append(key).Append('=').Append(weight);
             }
-            result.Append("moa=").Append(Config.imageGenWeight);
         }
+
+        AddEngine(EngineType.Image, "moa", Config.imageGenWeight);
+        AddEngine(EngineType.Shell, "shell", Config.shellWeight);
         return result.ToString();
     }
 }

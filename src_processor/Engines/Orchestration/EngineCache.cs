@@ -3,8 +3,9 @@
 using VoidX.WPF;
 
 using PoorMansAI.Configuration;
+using PoorMansAI.Engines.BaseClasses;
 
-namespace PoorMansAI.Engines.Orchestration; 
+namespace PoorMansAI.Engines.Orchestration;
 
 /// <summary>
 /// Keeps <see cref="Engine"/>s by certain rules active and reusable. Sends commands through cached instances, switches running software if needed.
@@ -119,6 +120,7 @@ public class EngineCache : IDisposable {
             EngineType.Image => engines.TryGetValue(EngineType.Image, out Engine engine) ?
                 engine.Generate(command) :
                 File.ReadAllText("Data/OfflineImage.txt"),
+            EngineType.Shell => ShellAccess.Instance.Generate(command),
             _ => null
         };
     }

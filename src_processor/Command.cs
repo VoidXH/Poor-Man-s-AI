@@ -1,6 +1,7 @@
 ﻿using System.Text.Json.Nodes;
 
 using PoorMansAI.Engines;
+using PoorMansAI.Engines.BaseClasses;
 
 namespace PoorMansAI {
     /// <summary>

@@ -1,8 +1,8 @@
-﻿using System.IO.Compression;
-
+﻿using SharpCompress.Archives;
 using SharpCompress.Archives.SevenZip;
 using SharpCompress.Common;
 using SharpCompress.Readers;
+using System.IO.Compression;
 
 using VoidX.WPF;
 
@@ -200,7 +200,7 @@ namespace PoorMansAI.Configuration {
         /// </summary>
         static void Extract(string archive, string output) {
             Logger.Info($"Extracting {Path.GetFileName(archive)}...");
-            using SevenZipArchive release = SevenZipArchive.Open(archive);
+            using IArchive release = ArchiveFactory.OpenArchive(archive);
             using IReader reader = release.ExtractAllEntries();
 
             ExtractionOptions options = new() {
@@ -208,8 +208,10 @@ namespace PoorMansAI.Configuration {
                 Overwrite = true
             };
             DateTime nextUpdate = default;
-            int extracted = 0,
-                count = release.Entries.Count;
+            int extracted = 0;
+            int count = release is SevenZipArchive sevenZip ?
+                sevenZip.Entries.Count :
+                release.Entries.Count();
             while (reader.MoveToNextEntry()) {
                 IEntry entry = reader.Entry;
                 string path = Path.Combine(output, entry.Key);

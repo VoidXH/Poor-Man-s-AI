@@ -1,6 +1,7 @@
 ﻿using System.Text.Json.Nodes;
 
 using PoorMansAI.Configuration;
+using PoorMansAI.Engines.BaseClasses;
 
 namespace PoorMansAI.Engines.Jinja;
 

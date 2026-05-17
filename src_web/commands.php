@@ -13,7 +13,7 @@ require_once('_check.php');
 
 function getQueueLength() {
     global $sqlink;
-    $result = $sqlink->query("SELECT COUNT(*) FROM ai_commands WHERE command_ts < '$command_ts' AND progress != 100");
+    $result = $sqlink->query("SELECT COUNT(*) FROM ai_commands WHERE command_ts < '$commandTS' AND progress != 100");
     $row = $result->fetch_assoc();
     return $row['COUNT(*)'];
 }
@@ -25,10 +25,10 @@ if ($method === 'GET') {
         addon('check');
         $id = $_GET['check'];
         $stmt = execute('SELECT command_ts, progress, result FROM ai_commands WHERE id = ?', $id);
-        $stmt->bind_result($command_ts, $progress, $result);
+        $stmt->bind_result($commandTS, $progress, $result);
         $stmt->fetch();
         $stmt->close();
-        if ($command_ts == 0) {
+        if ($commandTS == 0) {
             die('100|');
         }
         if ($progress == 0) {
@@ -51,10 +51,16 @@ if ($method === 'GET') {
             die;
         }
 
+		$command = $_POST['command'];
+		$pipePos = strpos($command, '|');
+		if ($pipePos === false || (strpos(substr($command, 0, $pipePos), 'Shell') !== false && !$admin)) {
+			die('100|');
+		}
+
         require('proc/addon.php');
         addon('command_before');
         $commandTS = $admin ? '\''.date('Y-m-d H:i:s', strtotime((1 - $commandClear).' minutes')).'\'' : 'NOW()';
-        $stmt = execute("INSERT INTO ai_commands (command, command_ts, progress) VALUES (?, $commandTS, 0)", $_POST['command']);
+        $stmt = execute("INSERT INTO ai_commands (command, command_ts, progress) VALUES (?, $commandTS, 0)", $command);
         echo $stmt->insert_id;
         $stmt->close();
 

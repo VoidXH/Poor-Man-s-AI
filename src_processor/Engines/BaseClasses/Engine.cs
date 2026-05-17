@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace PoorMansAI.Engines;
+namespace PoorMansAI.Engines.BaseClasses;
 
 /// <summary>
 /// One kind of task-specific AI like image generator or chatbot.

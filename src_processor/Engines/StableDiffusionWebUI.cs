@@ -3,6 +3,7 @@ using System.Text.Json.Nodes;
 
 using VoidX.WPF;
 
+using PoorMansAI.Engines.BaseClasses;
 using PoorMansAI.Engines.Orchestration;
 using PoorMansAI.NewTech.VoidMoA;
 

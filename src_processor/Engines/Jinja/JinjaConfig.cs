@@ -4,6 +4,7 @@ using System.Text.Json.Nodes;
 using VoidX.WPF;
 
 using PoorMansAI.Configuration;
+using PoorMansAI.Engines.BaseClasses;
 
 namespace PoorMansAI.Engines.Jinja;
 

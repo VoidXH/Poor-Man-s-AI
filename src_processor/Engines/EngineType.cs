@@ -14,6 +14,10 @@
         /// <summary>
         /// Image generator.
         /// </summary>
-        Image
+        Image,
+        /// <summary>
+        /// Access to a server console.
+        /// </summary>
+        Shell,
     }
 }

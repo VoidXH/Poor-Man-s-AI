@@ -32,6 +32,11 @@ public static partial class Config {
     public static readonly int imageGenWeight = int.Parse(Values["ImageGenWeight"]);
 
     /// <summary>
+    /// Priority of the shell access across all distributed nodes.
+    /// </summary>
+    public static readonly int shellWeight = int.Parse(Values["ShellWeight"]);
+
+    /// <summary>
     /// Command poller user's name.
     /// </summary>
     internal static readonly string adminUsername = Values["AdminUsername"];
@@ -64,13 +69,15 @@ public static partial class Config {
             int maxWeight = int.MinValue;
             foreach (var iniFile in configs) {
                 Dictionary<string, string> data = IniFile.ParseAll(iniFile);
-                if (data.TryGetValue("ChatWeight", out string chatWeightString) && data.TryGetValue("ImageGenWeight", out string imageGenWeightString) &&
-                    int.TryParse(chatWeightString, out int chatWeight) && int.TryParse(imageGenWeightString, out int imageGenWeight)) {
-                    int bigger = Math.Max(chatWeight, imageGenWeight);
-                    if (bigger > maxWeight) {
-                        maxWeight = bigger;
-                        result = data;
-                    }
+                if (!data.ContainsKey("ChatWeight")) {
+                    continue;
+                }
+
+                int GetWeight(string key) => int.TryParse(data[key], out int weight) ? weight : int.MinValue;
+                int currentMax = Math.Max(GetWeight("ChatWeight"), Math.Max(GetWeight("ImageGenWeight"), GetWeight("ShellWeight")));
+                if (currentMax > maxWeight) {
+                    maxWeight = currentMax;
+                    result = data;
                 }
             }
             return loadedConfig = result;
