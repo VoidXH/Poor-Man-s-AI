@@ -15,7 +15,7 @@ namespace PoorMansAI.Engines;
 /// <summary>
 /// Image generating neural network runner using AUTOMATIC1111's Stable Diffusion WebUI.
 /// </summary>
-public partial class StableDiffusionWebUI : Engine {
+public partial class StableDiffusionWebUI : ImageEngine {
     /// <summary>
     /// URL of the running WebUI instance.
     /// </summary>

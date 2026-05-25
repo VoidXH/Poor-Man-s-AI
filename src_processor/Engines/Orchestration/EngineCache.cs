@@ -13,53 +13,20 @@ namespace PoorMansAI.Engines.Orchestration;
 /// </summary>
 public class EngineCache : IDisposable {
     /// <summary>
+    /// The logic that initializes the running engines.
+    /// </summary>
+    public EngineFactory Factory { get; set; } = new EngineFactory();
+
+    /// <summary>
     /// Rule to keep engines alive by.
     /// </summary>
     public EngineCacheMode Mode {
         get => mode;
         set {
-            if (mode == value) {
-                return;
+            if (mode != value && Factory.Modify(engines, value, CallOnProgress)) {
+                mode = value;
+                Logger.Info($"Ready in {mode} mode.");
             }
-
-            // Shutdowns
-            LlamaCpp activeChat = engines.TryGetValue(EngineType.Chat, out Engine engine) ? engine as LlamaCpp : null;
-            bool slm = (value & EngineCacheMode.SLM) != 0;
-            bool llm = (value & EngineCacheMode.LLM) != 0;
-            bool moa = (value & EngineCacheMode.Image) != 0;
-            if (slm && llm) {
-                Logger.Error("Cannot enable both SLM and LLM modes at the same time.");
-                return;
-            }
-
-            if (activeChat != null && ((!slm || activeChat?.GPU == true) || (!llm || activeChat?.GPU == false))) {
-                activeChat.Dispose();
-                engines.Remove(EngineType.Chat);
-            }
-            if (!moa && engines.TryGetValue(EngineType.Image, out Engine imageEngineToRemove)) {
-                imageEngineToRemove.Dispose();
-                engines.Remove(EngineType.Image);
-            }
-
-            // Launches
-            if (moa) {
-                if (!engines.ContainsKey(EngineType.Image)) {
-                    StableDiffusionWebUI imageEngine = new();
-                    imageEngine.OnProgress += CallOnProgress;
-                    engines[EngineType.Image] = imageEngine;
-                }
-            }
-
-            if ((slm || llm) && !engines.ContainsKey(EngineType.Chat)) {
-                LlamaCpp chatEngine = new(new(llm)) {
-                    Others = engines
-                };
-                chatEngine.OnProgress += CallOnProgress;
-                engines[EngineType.Chat] = chatEngine;
-            }
-
-            mode = value;
-            Logger.Info($"Ready in {mode} mode.");
         }
     }
     EngineCacheMode mode;
@@ -79,6 +46,11 @@ public class EngineCache : IDisposable {
     /// Authentication cookies to the server.
     /// </summary>
     readonly CookieCollection cookies;
+
+    /// <summary>
+    /// Launch an engine selector with a predefined <paramref name="mode"/>.
+    /// </summary>
+    public EngineCache(EngineCacheMode mode) => Mode = mode;
 
     /// <summary>
     /// On launch, the system default mode is used and sent to the server for activation.

@@ -16,11 +16,11 @@ namespace PoorMansAI.Engines;
 /// <summary>
 /// LLM chatbot using llama.cpp's API.
 /// </summary>
-public partial class LlamaCpp : Engine {
+public partial class LlamaCpp : ChatEngine {
     /// <summary>
-    /// The model currently runs on the GPU.
+    /// Whether this engine's model runs on the GPU.
     /// </summary>
-    public bool GPU => settings.GPU;
+    public override bool GPU => settings.GPU;
 
     /// <summary>
     /// URL of the running llama.cpp instance.
