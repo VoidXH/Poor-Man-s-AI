@@ -24,11 +24,11 @@ public class ShellAccess_Tests {
         ShellAccess engine = (ShellAccess)ShellAccess.Instance;
         engine.OnProgress += handler;
 
-#if OSX
-        engine.Generate(new Command(EngineType.Shell, 0, "printf 'hello\\n'"));
-#else
-        engine.Generate(new Command(EngineType.Shell, 0, "echo hello"));
-#endif
+        if (OperatingSystem.IsMacOS()) {
+            engine.Generate(new Command(EngineType.Shell, 0, "printf 'hello\\n'"));
+        } else {
+            engine.Generate(new Command(EngineType.Shell, 0, "echo hello"));
+        }
 
         bool received = completion.Task.Wait(TimeSpan.FromSeconds(5));
         engine.OnProgress -= handler;
