@@ -43,9 +43,14 @@ namespace PoorMansAI {
         /// <summary>
         /// Create a custom command not originating from the server.
         /// </summary>
-        public Command(EngineType engine, string prompt) {
+        public Command(EngineType engine, string prompt) : this(engine, -1, prompt) { }
+
+        /// <summary>
+        /// Create a custom command not originating from the server.
+        /// </summary>
+        public Command(EngineType engine, int id, string prompt) {
             EngineType = engine;
-            ID = -1;
+            ID = id;
             Prompt = prompt;
         }
 

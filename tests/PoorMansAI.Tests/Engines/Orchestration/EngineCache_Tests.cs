@@ -1,7 +1,7 @@
 using PoorMansAI.Engines;
 using PoorMansAI.Engines.Orchestration;
-using PoorMansAI.Tests.Engines.Orchestration.Mocks;
 using PoorMansAI.Tests.Engines.Mocks;
+using PoorMansAI.Tests.Engines.Utilities;
 
 namespace PoorMansAI.Tests.Engines.Orchestration;
 
@@ -10,13 +10,6 @@ namespace PoorMansAI.Tests.Engines.Orchestration;
 /// </summary>
 [TestClass]
 public class EngineCache_Tests {
-    /// <summary>
-    /// Creates a test-ready, engine-mocked <see cref="EngineCache"/> in offline mode for testing.
-    /// </summary>
-    /// <returns></returns>
-    static EngineCache CreateEngineCache() => new(EngineCacheMode.Offline) {
-        Factory = new MockEngineFactory()
-    };
 
     #region Static checker helpers
 
@@ -68,7 +61,7 @@ public class EngineCache_Tests {
     /// </summary>
     [TestMethod]
     public void SwapMode_SLMToOffline_RemovesChatEngine() {
-        using EngineCache cache = CreateEngineCache();
+        using EngineCache cache = EngineCacheUtils.CreateEngineCache();
 
         // Initialize with SLM mode - should have a ChatEngine (MockChatEngine with gpu=false)
         cache.Mode = EngineCacheMode.SLM;
@@ -85,7 +78,7 @@ public class EngineCache_Tests {
     /// </summary>
     [TestMethod]
     public void SwapMode_OfflineToSLM_CreatesOnlySLMEngine() {
-        using EngineCache cache = CreateEngineCache();
+        using EngineCache cache = EngineCacheUtils.CreateEngineCache();
 
         // Start from offline - no engines
         AssertNoEngines(cache);
@@ -104,7 +97,7 @@ public class EngineCache_Tests {
     /// </summary>
     [TestMethod]
     public void SwapMode_SLMToLLM_SwapsChatEngine() {
-        using EngineCache cache = CreateEngineCache();
+        using EngineCache cache = EngineCacheUtils.CreateEngineCache();
 
         // Initialize with SLM
         cache.Mode = EngineCacheMode.SLM;
@@ -122,7 +115,7 @@ public class EngineCache_Tests {
     /// </summary>
     [TestMethod]
     public void SwapMode_LLMToOffline_RemovesLLMEngine() {
-        using EngineCache cache = CreateEngineCache();
+        using EngineCache cache = EngineCacheUtils.CreateEngineCache();
 
         // Initialize with LLM
         cache.Mode = EngineCacheMode.LLM;
@@ -139,7 +132,7 @@ public class EngineCache_Tests {
     /// </summary>
     [TestMethod]
     public void SwapMode_OfflineToImage_CreatesOnlyImageEngine() {
-        using EngineCache cache = CreateEngineCache();
+        using EngineCache cache = EngineCacheUtils.CreateEngineCache();
 
         // Start from offline
         AssertNoEngines(cache);
@@ -155,7 +148,7 @@ public class EngineCache_Tests {
     /// </summary>
     [TestMethod]
     public void SwapMode_ImageToOffline_RemovesImageEngine() {
-        using EngineCache cache = CreateEngineCache();
+        using EngineCache cache = EngineCacheUtils.CreateEngineCache();
 
         // Initialize with Image
         cache.Mode = EngineCacheMode.Image;
@@ -172,7 +165,7 @@ public class EngineCache_Tests {
     /// </summary>
     [TestMethod]
     public void SwapMode_SLMToImage_SwapsChatEngineForImage() {
-        using EngineCache cache = CreateEngineCache();
+        using EngineCache cache = EngineCacheUtils.CreateEngineCache();
 
         // Initialize with SLM
         cache.Mode = EngineCacheMode.SLM;
@@ -191,7 +184,7 @@ public class EngineCache_Tests {
     /// </summary>
     [TestMethod]
     public void SwapMode_ImageToSLM_SwapsImageEngineForChat() {
-        using EngineCache cache = CreateEngineCache();
+        using EngineCache cache = EngineCacheUtils.CreateEngineCache();
 
         // Initialize with Image
         cache.Mode = EngineCacheMode.Image;
@@ -210,7 +203,7 @@ public class EngineCache_Tests {
     /// </summary>
     [TestMethod]
     public void SwapMode_OfflineToImageAndSLM_CreatesBothEngines() {
-        using EngineCache cache = CreateEngineCache();
+        using EngineCache cache = EngineCacheUtils.CreateEngineCache();
 
         // Start from offline
         AssertNoEngines(cache);
@@ -226,7 +219,7 @@ public class EngineCache_Tests {
     /// </summary>
     [TestMethod]
     public void SwapMode_ImageAndSLMToOffline_RemovesAllEngines() {
-        using EngineCache cache = CreateEngineCache();
+        using EngineCache cache = EngineCacheUtils.CreateEngineCache();
 
         // Initialize with ImageAndSLM
         cache.Mode = EngineCacheMode.ImageAndSLM;
@@ -243,7 +236,7 @@ public class EngineCache_Tests {
     /// </summary>
     [TestMethod]
     public void SwapMode_ImageAndSLMToImage_RemovesOnlyChatEngine() {
-        using EngineCache cache = CreateEngineCache();
+        using EngineCache cache = EngineCacheUtils.CreateEngineCache();
 
         // Initialize with ImageAndSLM
         cache.Mode = EngineCacheMode.ImageAndSLM;
@@ -261,7 +254,7 @@ public class EngineCache_Tests {
     /// </summary>
     [TestMethod]
     public void SwapMode_ImageToImageAndSLM_AddsChatEngine() {
-        using EngineCache cache = CreateEngineCache();
+        using EngineCache cache = EngineCacheUtils.CreateEngineCache();
 
         // Initialize with Image
         cache.Mode = EngineCacheMode.Image;
@@ -278,7 +271,7 @@ public class EngineCache_Tests {
     /// </summary>
     [TestMethod]
     public void SwapMode_ImageAndSLMToSLM_RemovesOnlyImageEngine() {
-        using EngineCache cache = CreateEngineCache();
+        using EngineCache cache = EngineCacheUtils.CreateEngineCache();
 
         // Initialize with ImageAndSLM
         cache.Mode = EngineCacheMode.ImageAndSLM;
@@ -296,7 +289,7 @@ public class EngineCache_Tests {
     /// </summary>
     [TestMethod]
     public void SwapMode_LLMToImageAndSLM_SwapsChatAndAddsImage() {
-        using EngineCache cache = CreateEngineCache();
+        using EngineCache cache = EngineCacheUtils.CreateEngineCache();
 
         // Initialize with LLM
         cache.Mode = EngineCacheMode.LLM;
@@ -313,7 +306,7 @@ public class EngineCache_Tests {
     /// </summary>
     [TestMethod]
     public void SwapMode_ImageToLLM_SwapsImageEngineForChat() {
-        using EngineCache cache = CreateEngineCache();
+        using EngineCache cache = EngineCacheUtils.CreateEngineCache();
 
         // Initialize with Image
         cache.Mode = EngineCacheMode.Image;
@@ -331,7 +324,7 @@ public class EngineCache_Tests {
     /// </summary>
     [TestMethod]
     public void SwapMode_LLMToImage_SwapsChatEngineForImage() {
-        using EngineCache cache = CreateEngineCache();
+        using EngineCache cache = EngineCacheUtils.CreateEngineCache();
 
         // Initialize with LLM
         cache.Mode = EngineCacheMode.LLM;
@@ -349,7 +342,7 @@ public class EngineCache_Tests {
     /// </summary>
     [TestMethod]
     public void SwapMode_ImageToImage_NoChange_KeepsEngine() {
-        using EngineCache cache = CreateEngineCache();
+        using EngineCache cache = EngineCacheUtils.CreateEngineCache();
 
         // Initialize with Image
         cache.Mode = EngineCacheMode.Image;
@@ -367,7 +360,7 @@ public class EngineCache_Tests {
     /// </summary>
     [TestMethod]
     public void SwapMode_Sequence_OfflineSLMImageAndSLMLLMOffline_VerifiesAllStates() {
-        using EngineCache cache = CreateEngineCache();
+        using EngineCache cache = EngineCacheUtils.CreateEngineCache();
 
         // Offline -> SLM
         cache.Mode = EngineCacheMode.Offline;
