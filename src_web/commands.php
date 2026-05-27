@@ -1,84 +1,24 @@
 <?php
 /*
-  User command handling endpoints
-  -------------------------------
+  User command handling — routes to cmd/usr/ endpoints
+  ----------------------------------------------------
   GET:
-    ?check=ID: get the progress and status message for a job with an ID, separated by |
+    ?check=ID   → cmd/usr/check.php
   POST:
-    command: creates a job and prints its ID
-    stop: stops a job by ID
+    command     → cmd/usr/command.php
+    stop        → cmd/usr/stop.php
 */
 
-require_once('_check.php');
-
-function getQueueLength() {
-    global $sqlink;
-    $result = $sqlink->query("SELECT COUNT(*) FROM ai_commands WHERE command_ts < '$commandTS' AND progress != 100");
-    $row = $result->fetch_assoc();
-    return $row['COUNT(*)'];
-}
-
 $method = $_SERVER['REQUEST_METHOD'];
-if ($method === 'GET') {
-    if (isset($_GET['check'])) {
-        require('proc/addon.php');
-        addon('check');
-        $id = $_GET['check'];
-        $stmt = execute('SELECT command_ts, progress, result FROM ai_commands WHERE id = ?', $id);
-        $stmt->bind_result($commandTS, $progress, $result);
-        $stmt->fetch();
-        $stmt->close();
-        if ($commandTS == 0) {
-            die('100|');
-        }
-        if ($progress == 0) {
-            die((-1 - getQueueLength()) . '|');
-        }
-        echo $progress . '|' . $result;
-
-        if ($progress == 100) {
-            $stmt = execute('DELETE FROM ai_commands WHERE id = ?', $id);
-        } else if ($result != null) {
-            $stmt = execute('UPDATE ai_commands SET result = NULL WHERE id = ?', $id);
-        }
-        $stmt->close();
-        die;
-    }
-} else if ($method === 'POST') {
+if ($method === 'GET' && isset($_GET['check'])) {
+    require('cmd/usr/check.php');
+}
+if ($method === 'POST') {
     if (isset($_POST['command'])) {
-        if (getQueueLength() >= $maxQueueLength) {
-            http_response_code(503);
-            die;
-        }
-
-		$command = $_POST['command'];
-		$pipePos = strpos($command, '|');
-		if ($pipePos === false || (strpos(substr($command, 0, $pipePos), 'Shell') !== false && !$admin)) {
-			die('100|');
-		}
-
-        require('proc/addon.php');
-        addon('command_before');
-        $commandTS = $admin ? '\''.date('Y-m-d H:i:s', strtotime((1 - $commandClear).' minutes')).'\'' : 'NOW()';
-        $stmt = execute("INSERT INTO ai_commands (command, command_ts, progress) VALUES (?, $commandTS, 0)", $command);
-        echo $stmt->insert_id;
-        $stmt->close();
-
-        if ($uid) {
-            $stmt = execute('UPDATE ai_users SET prompts = prompts + 1 WHERE id = ?', $uid);
-            $stmt->close();
-        } else {
-            require_once('proc/ai_vars.php');
-            setAIVar('unreg-use', intval(getAIVar('unreg-use')) + 1);
-        }
-        addon('command_after');
-        die;
+        require('cmd/usr/command.php');
     }
-
     if (isset($_POST['stop'])) {
-        $stmt = execute('UPDATE ai_commands SET progress = -1 WHERE id = ?', $_POST['stop']);
-        $stmt->close();
-        die;
+        require('cmd/usr/stop.php');
     }
 }
 ?>
