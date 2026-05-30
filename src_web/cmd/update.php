@@ -16,8 +16,14 @@ if ($admin && isset($_POST["id"])) {
 	$result = $_POST["result"];
 	$stmt = execute("SELECT progress FROM ai_commands WHERE id = ?", $id);
 	$stmt->bind_result($progress);
-	$stmt->fetch();
+	$rowExists = $stmt->fetch();
 	$stmt->close();
+
+	if (!$rowExists) {
+		echo "STOP";
+		die;
+    }
+
 	if ($newProgress == 100) {
 		if ($result == null) {
 			echo "RETRY Final result is null.";

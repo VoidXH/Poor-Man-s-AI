@@ -23,7 +23,8 @@ if (getQueueLength() >= $maxQueueLength) {
 
 $command = $_POST['command'];
 $pipePos = strpos($command, '|');
-if ($pipePos === false || (strpos(substr($command, 0, $pipePos), 'Shell') !== false && !$admin)) {
+$isShell = $pipePos === false || strpos(substr($command, 0, $pipePos), 'Shell') !== false;
+if ($isShell && !$admin) {
     die('100|');
 }
 

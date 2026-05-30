@@ -30,4 +30,3 @@ robocopy "src_web" "%WebLocation%" /E /XF "__*.*" "*.jpg" /XO /R:0 /W:0
 
 echo.
 echo Deployment complete.
-pause

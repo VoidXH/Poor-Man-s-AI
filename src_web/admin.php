@@ -30,6 +30,7 @@ function tabLink($i, $name) {
         <?=tabLink(1, "Config") ?>
         <?=tabLink(2, "Var dump") ?>
         <?=tabLink(3, "Dislikes") ?>
+        <?=tabLink(4, "Shell") ?>
     </div>
     <?php switch($p) {
         case 2:
@@ -37,6 +38,9 @@ function tabLink($i, $name) {
             break;
         case 3:
             require("admin/dislikes.php");
+            break;
+        case 4:
+            require("admin/shell.php");
             break;
         default:
             require("admin/config.php");
