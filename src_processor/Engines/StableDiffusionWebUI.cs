@@ -108,9 +108,9 @@ public partial class StableDiffusionWebUI : ImageEngine {
         instance.BeginOutputReadLine();
 
         // Wait for startup
-        DateTime tryUntil = DateTime.Now + TimeSpan.FromSeconds(60);
+        DateTime tryUntil = DateTime.UtcNow + TimeSpan.FromSeconds(60);
         while (true) {
-            if (DateTime.Now >= tryUntil) {
+            if (DateTime.UtcNow >= tryUntil) {
                 Logger.Warning("Image engine failed to start in 60 seconds.");
                 tryUntil = DateTime.MaxValue;
             }

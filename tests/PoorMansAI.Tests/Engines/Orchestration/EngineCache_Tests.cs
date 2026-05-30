@@ -59,7 +59,7 @@ public class EngineCache_Tests {
     /// Tests that switching from <see cref="EngineCacheMode.SLM"/> to <see cref="EngineCacheMode.Offline"/>
     /// correctly removes the chat engine and leaves no engines running.
     /// </summary>
-    [TestMethod]
+    [TestMethod, Timeout(1000)]
     public void SwapMode_SLMToOffline_RemovesChatEngine() {
         using EngineCache cache = EngineCacheUtils.CreateEngineCache();
 
@@ -76,7 +76,7 @@ public class EngineCache_Tests {
     /// Tests that switching from <see cref="EngineCacheMode.Offline"/> to <see cref="EngineCacheMode.SLM"/>
     /// correctly creates only the SLM chat engine.
     /// </summary>
-    [TestMethod]
+    [TestMethod, Timeout(1000)]
     public void SwapMode_OfflineToSLM_CreatesOnlySLMEngine() {
         using EngineCache cache = EngineCacheUtils.CreateEngineCache();
 
@@ -95,7 +95,7 @@ public class EngineCache_Tests {
     /// Tests that switching from <see cref="EngineCacheMode.SLM"/> to <see cref="EngineCacheMode.LLM"/>
     /// swaps the chat engine from SLM to LLM.
     /// </summary>
-    [TestMethod]
+    [TestMethod, Timeout(1000)]
     public void SwapMode_SLMToLLM_SwapsChatEngine() {
         using EngineCache cache = EngineCacheUtils.CreateEngineCache();
 
@@ -113,7 +113,7 @@ public class EngineCache_Tests {
     /// Tests that switching from <see cref="EngineCacheMode.LLM"/> to <see cref="EngineCacheMode.Offline"/>
     /// correctly removes the LLM chat engine.
     /// </summary>
-    [TestMethod]
+    [TestMethod, Timeout(1000)]
     public void SwapMode_LLMToOffline_RemovesLLMEngine() {
         using EngineCache cache = EngineCacheUtils.CreateEngineCache();
 
@@ -130,7 +130,7 @@ public class EngineCache_Tests {
     /// Tests that switching from <see cref="EngineCacheMode.Offline"/> to <see cref="EngineCacheMode.Image"/>
     /// creates only the image engine.
     /// </summary>
-    [TestMethod]
+    [TestMethod, Timeout(1000)]
     public void SwapMode_OfflineToImage_CreatesOnlyImageEngine() {
         using EngineCache cache = EngineCacheUtils.CreateEngineCache();
 
@@ -146,7 +146,7 @@ public class EngineCache_Tests {
     /// Tests that switching from <see cref="EngineCacheMode.Image"/> to <see cref="EngineCacheMode.Offline"/>
     /// correctly removes the image engine.
     /// </summary>
-    [TestMethod]
+    [TestMethod, Timeout(1000)]
     public void SwapMode_ImageToOffline_RemovesImageEngine() {
         using EngineCache cache = EngineCacheUtils.CreateEngineCache();
 
@@ -163,7 +163,7 @@ public class EngineCache_Tests {
     /// Tests that switching from <see cref="EngineCacheMode.SLM"/> to <see cref="EngineCacheMode.Image"/>
     /// replaces the SLM chat engine with the Image engine.
     /// </summary>
-    [TestMethod]
+    [TestMethod, Timeout(1000)]
     public void SwapMode_SLMToImage_SwapsChatEngineForImage() {
         using EngineCache cache = EngineCacheUtils.CreateEngineCache();
 
@@ -182,7 +182,7 @@ public class EngineCache_Tests {
     /// Tests that switching from <see cref="EngineCacheMode.Image"/> to <see cref="EngineCacheMode.SLM"/>
     /// replaces the Image engine with the SLM chat engine.
     /// </summary>
-    [TestMethod]
+    [TestMethod, Timeout(1000)]
     public void SwapMode_ImageToSLM_SwapsImageEngineForChat() {
         using EngineCache cache = EngineCacheUtils.CreateEngineCache();
 
@@ -201,7 +201,7 @@ public class EngineCache_Tests {
     /// Tests that switching from <see cref="EngineCacheMode.Offline"/> to <see cref="EngineCacheMode.ImageAndSLM"/>
     /// creates both the SLM chat engine and the Image engine.
     /// </summary>
-    [TestMethod]
+    [TestMethod, Timeout(1000)]
     public void SwapMode_OfflineToImageAndSLM_CreatesBothEngines() {
         using EngineCache cache = EngineCacheUtils.CreateEngineCache();
 
@@ -217,7 +217,7 @@ public class EngineCache_Tests {
     /// Tests that switching from <see cref="EngineCacheMode.ImageAndSLM"/> to <see cref="EngineCacheMode.Offline"/>
     /// removes both the chat engine and the image engine.
     /// </summary>
-    [TestMethod]
+    [TestMethod, Timeout(1000)]
     public void SwapMode_ImageAndSLMToOffline_RemovesAllEngines() {
         using EngineCache cache = EngineCacheUtils.CreateEngineCache();
 
@@ -234,7 +234,7 @@ public class EngineCache_Tests {
     /// Tests that switching from <see cref="EngineCacheMode.ImageAndSLM"/> to <see cref="EngineCacheMode.Image"/>
     /// removes only the chat engine, keeping the Image engine.
     /// </summary>
-    [TestMethod]
+    [TestMethod, Timeout(1000)]
     public void SwapMode_ImageAndSLMToImage_RemovesOnlyChatEngine() {
         using EngineCache cache = EngineCacheUtils.CreateEngineCache();
 
@@ -252,7 +252,7 @@ public class EngineCache_Tests {
     /// Tests that switching from <see cref="EngineCacheMode.Image"/> to <see cref="EngineCacheMode.ImageAndSLM"/>
     /// adds the SLM chat engine while keeping the Image engine.
     /// </summary>
-    [TestMethod]
+    [TestMethod, Timeout(1000)]
     public void SwapMode_ImageToImageAndSLM_AddsChatEngine() {
         using EngineCache cache = EngineCacheUtils.CreateEngineCache();
 
@@ -269,7 +269,7 @@ public class EngineCache_Tests {
     /// Tests that switching from <see cref="EngineCacheMode.ImageAndSLM"/> to <see cref="EngineCacheMode.SLM"/>
     /// removes only the Image engine, keeping the SLM chat engine.
     /// </summary>
-    [TestMethod]
+    [TestMethod, Timeout(1000)]
     public void SwapMode_ImageAndSLMToSLM_RemovesOnlyImageEngine() {
         using EngineCache cache = EngineCacheUtils.CreateEngineCache();
 
@@ -287,7 +287,7 @@ public class EngineCache_Tests {
     /// Tests that switching from <see cref="EngineCacheMode.LLM"/> to <see cref="EngineCacheMode.ImageAndSLM"/>
     /// swaps the LLM chat engine for an SLM chat engine and adds the Image engine.
     /// </summary>
-    [TestMethod]
+    [TestMethod, Timeout(1000)]
     public void SwapMode_LLMToImageAndSLM_SwapsChatAndAddsImage() {
         using EngineCache cache = EngineCacheUtils.CreateEngineCache();
 
@@ -304,7 +304,7 @@ public class EngineCache_Tests {
     /// Tests that switching from <see cref="EngineCacheMode.Image"/> to <see cref="EngineCacheMode.LLM"/>
     /// replaces the Image engine with the LLM chat engine.
     /// </summary>
-    [TestMethod]
+    [TestMethod, Timeout(1000)]
     public void SwapMode_ImageToLLM_SwapsImageEngineForChat() {
         using EngineCache cache = EngineCacheUtils.CreateEngineCache();
 
@@ -322,7 +322,7 @@ public class EngineCache_Tests {
     /// Tests that switching from <see cref="EngineCacheMode.LLM"/> to <see cref="EngineCacheMode.Image"/>
     /// replaces the LLM chat engine with the Image engine.
     /// </summary>
-    [TestMethod]
+    [TestMethod, Timeout(1000)]
     public void SwapMode_LLMToImage_SwapsChatEngineForImage() {
         using EngineCache cache = EngineCacheUtils.CreateEngineCache();
 
@@ -340,7 +340,7 @@ public class EngineCache_Tests {
     /// Tests that switching from <see cref="EngineCacheMode.Image"/> to <see cref="EngineCacheMode.Image"/>
     /// (no change) does not crash and keeps the same engine running.
     /// </summary>
-    [TestMethod]
+    [TestMethod, Timeout(1000)]
     public void SwapMode_ImageToImage_NoChange_KeepsEngine() {
         using EngineCache cache = EngineCacheUtils.CreateEngineCache();
 
@@ -358,7 +358,7 @@ public class EngineCache_Tests {
     /// <summary>
     /// Tests a sequence of mode changes: Offline -> SLM -> ImageAndSLM -> LLM -> Offline.
     /// </summary>
-    [TestMethod]
+    [TestMethod, Timeout(1000)]
     public void SwapMode_Sequence_OfflineSLMImageAndSLMLLMOffline_VerifiesAllStates() {
         using EngineCache cache = EngineCacheUtils.CreateEngineCache();
 

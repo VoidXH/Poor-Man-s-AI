@@ -155,13 +155,13 @@ namespace VoidX.WPF {
                 using Stream stream = await response.Content.ReadAsStreamAsync();
                 using StreamReader reader = new(stream);
                 string line;
-                DateTime failAt = DateTime.Now + TimeSpan.FromSeconds(timeoutSeconds); // As the timeout for the client is "since last reply"
+                DateTime failAt = DateTime.UtcNow + TimeSpan.FromSeconds(timeoutSeconds); // As the timeout for the client is "since last reply"
                 while ((line = await reader.ReadLineAsync()) != null) {
                     result += transformer(line);
                     if (canceller.IsCancellationRequested) {
                         return result;
                     }
-                    DateTime now = DateTime.Now;
+                    DateTime now = DateTime.UtcNow;
                     if (sendAt == default) { // Prevent sending too small of a progress
                         sendAt = now + interval;
                     }

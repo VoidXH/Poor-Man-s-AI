@@ -184,8 +184,8 @@ namespace PoorMansAI.Configuration {
                 while ((bytesRead = await contentStream.ReadAsync(buffer)) > 0) {
                     await file.WriteAsync(buffer.AsMemory(0, bytesRead));
                     totalRead += bytesRead;
-                    if (totalBytes.HasValue && (nextUpdate < DateTime.Now || totalRead == totalBytes)) {
-                        nextUpdate = DateTime.Now + TimeSpan.FromSeconds(1);
+                    if (totalBytes.HasValue && (nextUpdate < DateTime.UtcNow || totalRead == totalBytes)) {
+                        nextUpdate = DateTime.UtcNow + TimeSpan.FromSeconds(1);
                         ProgressBar(totalRead, totalBytes.Value);
                     }
                 }
@@ -226,8 +226,8 @@ namespace PoorMansAI.Configuration {
                     }
                 }
 
-                if (nextUpdate < DateTime.Now || ++extracted == count) {
-                    nextUpdate = DateTime.Now + TimeSpan.FromSeconds(1);
+                if (nextUpdate < DateTime.UtcNow || ++extracted == count) {
+                    nextUpdate = DateTime.UtcNow + TimeSpan.FromSeconds(1);
                     ProgressBar(extracted, count);
                 }
             }

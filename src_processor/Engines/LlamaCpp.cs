@@ -96,7 +96,7 @@ public partial class LlamaCpp : ChatEngine {
         int split = command.Prompt.IndexOf('|');
         if (!models.TryGetValue(command.Prompt[..split], out LLModel model)) {
             Logger.Error("Model not found: " + command.Prompt[..split]);
-            return "Model not found.";
+            return ModelNotFound;
         }
 
         int timeout = settings.Timeout;
@@ -233,8 +233,8 @@ public partial class LlamaCpp : ChatEngine {
         instance.BeginOutputReadLine();
 
         // Give 30 seconds for startup - if fails, kill it
-        DateTime tryUntil = DateTime.Now + TimeSpan.FromSeconds(30);
-        while (DateTime.Now < tryUntil) {
+        DateTime tryUntil = DateTime.UtcNow + TimeSpan.FromSeconds(30);
+        while (DateTime.UtcNow < tryUntil) {
             if (HTTP.GET(Server + "/health")?.Contains("ok") ?? false) {
                 return instance;
             }
@@ -243,4 +243,9 @@ public partial class LlamaCpp : ChatEngine {
         lastModel = null;
         return instance;
     }
+
+    /// <summary>
+    /// Error message produced when a model name could not be found in the configuration.
+    /// </summary>
+    public static string ModelNotFound => "Model not found.";
 }

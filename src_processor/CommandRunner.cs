@@ -85,7 +85,7 @@ public class CommandRunner : IDisposable {
     /// </summary>
     void ProcessCommands() {
         while (!canceller.IsCancellationRequested) {
-            DateTime processingStarted = DateTime.Now;
+            DateTime processingStarted = DateTime.UtcNow;
             string commandUrl = "/cmd/list.php?" + EnginesToUpdate(),
                 result = HTTP.GET(HTTP.Combine(Config.publicWebserver, commandUrl), cookies);
             if (result == null) {
@@ -119,7 +119,7 @@ public class CommandRunner : IDisposable {
                 }
             }
 
-            int waitFosMS = Config.serverPollInterval - (int)(DateTime.Now - processingStarted).TotalMilliseconds;
+            int waitFosMS = Config.serverPollInterval - (int)(DateTime.UtcNow - processingStarted).TotalMilliseconds;
             if (waitFosMS > 0) {
                 Thread.Sleep(waitFosMS);
             }
@@ -135,7 +135,7 @@ public class CommandRunner : IDisposable {
             try {
                 output = engine.Generate(command) ?? "Error.";
             } catch (Exception e) {
-                output = "The prompt couldn't be processed. Please try again.";
+                output = ProcessingError;
                 Logger.Error(e.ToString());
             }
             ProgressUpdate(command, 1, output);
@@ -183,7 +183,7 @@ public class CommandRunner : IDisposable {
             }
 
             bool finished = progress == 1;
-            if (!finished && DateTime.Now < lastMessage + TimeSpan.FromMilliseconds(Config.serverPollInterval)) {
+            if (!finished && DateTime.UtcNow < lastMessage + TimeSpan.FromMilliseconds(Config.serverPollInterval)) {
                 return; // Prevent DoS
             }
 
@@ -208,7 +208,7 @@ public class CommandRunner : IDisposable {
                     engine.StopGeneration(command.EngineType);
                 }
             } while (repeat);
-            lastMessage = DateTime.Now;
+            lastMessage = DateTime.UtcNow;
         }
     }
 
@@ -234,4 +234,9 @@ public class CommandRunner : IDisposable {
         AddEngine(EngineType.Shell, "shell", Config.shellWeight);
         return result.ToString();
     }
+
+    /// <summary>
+    /// This message will be returned when can't process a prompt because of a formatting or internal error.
+    /// </summary>
+    public static string ProcessingError => "The prompt couldn't be processed. Please try again.";
 }

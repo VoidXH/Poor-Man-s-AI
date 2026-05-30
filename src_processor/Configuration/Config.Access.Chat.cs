@@ -107,8 +107,13 @@
         public static readonly int chatParallel = int.Parse(Values["ChatParallel"]);
 
         /// <summary>
+        /// Enumerate the names of configured models.
+        /// </summary>
+        public static IEnumerable<string> GetModelNames() => ForEachModel().Select(x => Values[x]);
+
+        /// <summary>
         /// Enumerates the user-set models and returns the prefix for each of them.
         /// </summary
-        public static IEnumerable<string> ForEachModel() => ForEach("Model");
+        internal static IEnumerable<string> ForEachModel() => ForEach("Model");
     }
 }
