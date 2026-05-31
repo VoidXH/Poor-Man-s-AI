@@ -1,9 +1,8 @@
 ﻿using System.Text.Json.Nodes;
-
 using PoorMansAI.Configuration;
 using PoorMansAI.Engines.BaseClasses;
 
-namespace PoorMansAI.Engines.Jinja;
+namespace PoorMansAI.Engines.Jinja.BaseClasses;
 
 /// <summary>
 /// A tool where the reply does not need to be transformed, it comes from the model completed.
@@ -15,6 +14,6 @@ public abstract class ReplyBasedTool : Tool {
     public abstract string OutputProperty { get; }
 
     /// <inheritdoc/>
-    public sealed override string Execute(LlamaCpp caller, JsonNode parameters, Engine.Progress progressReporter) =>
+    public override string Execute(LlamaCpp caller, JsonNode parameters, Engine.Progress progressReporter) =>
         parameters[OutputProperty]?.ToString() ?? Config.internalErrorMessage;
 }

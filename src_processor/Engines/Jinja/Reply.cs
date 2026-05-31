@@ -2,6 +2,7 @@
 
 using PoorMansAI.Configuration;
 using PoorMansAI.Engines.BaseClasses;
+using PoorMansAI.Engines.Jinja.BaseClasses;
 
 namespace PoorMansAI.Engines.Jinja {
     /// <summary>

@@ -5,7 +5,7 @@ using VoidX.WPF;
 using PoorMansAI.Configuration;
 using PoorMansAI.Engines.BaseClasses;
 
-namespace PoorMansAI.Engines.Jinja;
+namespace PoorMansAI.Engines.Jinja.BaseClasses;
 
 /// <summary>
 /// An externally usable tool for Jinja.
