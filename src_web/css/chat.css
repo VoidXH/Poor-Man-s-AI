@@ -6,6 +6,10 @@ pre code {
   color: #0094BF;
 }
 
+img {
+  max-width: 100%;
+}
+
 .br {
   position: fixed;
   bottom: 20px;

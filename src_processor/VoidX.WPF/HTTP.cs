@@ -150,7 +150,7 @@ namespace VoidX.WPF {
             DateTime sendAt = default;
             try {
                 using HttpResponseMessage response = await CreateClient(cookies, timeoutSeconds).
-                    SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+                    SendAsync(request, HttpCompletionOption.ResponseHeadersRead, canceller);
                 response.EnsureSuccessStatusCode();
                 using Stream stream = await response.Content.ReadAsStreamAsync();
                 using StreamReader reader = new(stream);

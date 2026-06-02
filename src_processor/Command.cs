@@ -46,7 +46,7 @@ namespace PoorMansAI {
         public Command(EngineType engine, string prompt) : this(engine, -1, prompt) { }
 
         /// <summary>
-        /// Create a custom command not originating from the server.
+        /// Create a custom command not originating from the server, but still sends an update for the given ID.
         /// </summary>
         public Command(EngineType engine, int id, string prompt) {
             EngineType = engine;

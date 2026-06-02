@@ -146,10 +146,11 @@ public partial class LlamaCpp : ChatEngine {
         }
 
         canceller = new();
+        canceller.CancelAfter(timeout * 1000);
         string result;
         try {
             result = HTTP.POST(Server + "/v1/chat/completions", root.ToJsonString(), x => UpdateProgress(command, .5f, x),
-                Config.serverPollInterval / 3 /* final callback also limits */, Parse, canceller.Token, timeout);
+                Config.serverPollInterval / 3 /* final callback also limits */, Parse, canceller.Token, int.MaxValue);
         } catch (Exception e) {
             Console.Error.WriteLine(e);
             result = null;
@@ -164,6 +165,11 @@ public partial class LlamaCpp : ChatEngine {
         Extension.RunChatPostprocessActions(messages, ref result);
         return result;
     }
+
+    /// <summary>
+    /// Override the current generation's timeout if a prompt is being processed.
+    /// </summary>
+    public void OverrideTimeout(int newTimeoutSeconds) => canceller?.CancelAfter(newTimeoutSeconds * 1000);
 
     /// <summary>
     /// Parse a generation endpoint result.
