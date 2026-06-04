@@ -25,6 +25,8 @@ while ($row = mysqli_fetch_assoc($result)) {
 		$add = $llm;
 	} else if ($type == "Image") {
 		$add = $moa;
+	} else if ($type == "Shell") {
+		$add = $shell;
 	} else {
 		$add = true;
 	}
