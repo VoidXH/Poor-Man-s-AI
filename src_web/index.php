@@ -35,10 +35,7 @@ function online() {
   </style>
 </head>
 <body>
-  <div class="main">
-    <div class="option gpt" onclick="gpt()"><span><?=$chatPage ?></span></div>
-    <div class="option moa" onclick="moa()"><span><?=$moaPage ?></span></div>
-  </div>
+  <?php require("index_selector.php"); ?>
   <div id="loading-overlay" class="overlay">
     <div class="spinner"></div>
   </div>

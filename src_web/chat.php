@@ -1,7 +1,7 @@
 <?php
 require_once("_check.php");
 if ($forceLogin && !$uid) {
-    require_once("login.php");
+	require_once("login.php");
 }
 
 require_once("proc/addon.php");
@@ -13,68 +13,79 @@ $slm = $time - getAIVar("moa-available") <= $procTimeout;
 ?>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <?=$viewport ?>
-  <title><?=$chatName ?></title>
-  <link rel="stylesheet" href="<?=$bootstrapPath ?>">
-  <link rel="stylesheet" href="css/dark.css">
-  <link rel="stylesheet" href="css/chat.css">
+	<meta charset="UTF-8">
+	<?=$viewport ?>
+	<title><?=$chatName ?></title>
+	<link rel="stylesheet" href="<?=$bootstrapPath ?>">
+	<link rel="stylesheet" href="css/dark.css">
+	<link rel="stylesheet" href="css/chat.css">
 </head>
 <body>
 <div class="container">
-  <div class="card">
-    <div class="card-header d-flex align-items-center">
-      <div class="input-group w-auto">
-        <a class="btn btn-primary" href="index.php">Back</a>
-        <button class="btn btn-danger" id="reset" onclick="reset()">Reset</button>
-      </div>
-      <span class="text-center flex-grow-1"><?=$chatName ?></span>
-      <div id="model" class="input-group w-auto">
-        <label class="input-group-text">Model</label>
-        <?php
-        $models = preg_split('/\s*,\s*/', $chatModels);
-        foreach ($models as $index => $model) {
-          $class = ($index == 0) ? "btn btn-primary" : "btn btn-secondary";
-          $id = strtolower($model);
-          echo "<button class=\"$class\" id=\"$id\">$model</button>";
-        }
-        ?>
-      </div>
-    </div>
-    <div class="card-body chatbox">
-<?php if ($offline) { ?>
-      <div class="alert alert-danger" role="alert">Shhh! The chatting computer is sleeping and can't work now. Wait until it wakes up!</div>
-<?php } else {
-  if ($slm && $slmWarning) { ?>
-      <div class="alert alert-warning" role="alert">The server is currently running the chat on CPU. The quality and generation speed of answers may be worse.</div>
+	<div class="card">
+		<div class="card-header d-flex align-items-center">
+			<a class="btn btn-primary" href="index.php">Back</a>
+			<span class="text-center flex-grow-1"><?=$chatName ?></span>
+			<button class="btn btn-danger" id="reset" onclick="reset()">Reset</button>
+		</div>
+		<div class="card-body chatbox">
 <?php
-  }
-  if (isset($_POST["fill"])) {
-    require("proc/chat/fill.php");
-  } else {
-    require("proc/chat/starters.php");
-  }
+if ($offline) {
+?>
+			<div class="alert alert-danger" role="alert">Shhh! The chatting computer is sleeping and can't work now. Wait until it wakes up!</div>
+<?php
+} else {
+	if ($slm && $slmWarning) {
+?>
+			<div class="alert alert-warning" role="alert">The server is currently running the chat on CPU. The quality and generation speed of answers may be worse.</div>
+<?php
+	}
+	if (isset($_POST["fill"])) {
+		require("proc/chat/fill.php");
+	} else {
+		require("proc/chat/starters.php");
+	}
 }
 ?>
-    </div>
-	<div class="card-footer">
-	<?php if (!$offline) { ?>
-		<div class="input-group">
-			<textarea class="form-control" id="input" placeholder="Ask <?=$chatName ?> anything..." autofocus></textarea>
-			<button class="btn btn-danger" id="stop" style="display:none;" onclick="stop()">Stop</button>
-			<button class="btn btn-primary" id="send" onclick="send()">Send</button>
+    	</div>
+		<div class="card-footer">
+<?php
+if (!$offline) {
+?>
+			<div id="model" class="mb-1">
+<?php
+	$models = preg_split('/\s*,\s*/', $chatModels);
+	foreach ($models as $index => $model) {
+		$class = ($index == 0) ? "btn btn-primary btn-sm" : "btn btn-secondary btn-sm";
+		$id = strtolower($model);
+		echo "<button class=\"$class\" id=\"$id\">$model</button>\n";
+	}
+?>
+			</div>
+			<div class="input-group">
+				<textarea class="form-control" id="input" placeholder="Ask <?=$chatName ?> anything..." autofocus></textarea>
+				<button class="btn btn-danger" id="stop" style="display:none;" onclick="stop()">Stop</button>
+				<button class="btn btn-primary" id="send" onclick="send()">Send</button>
+			</div>
+			<p class="text-center small m-2"style="font-size: 0.7rem">
+<?php
+	if ($uid) {
+?>
+				<?=$chatName ?> can make mistakes. Check important info.
+<?php
+	} else {
+?>
+				By chatting with <?=$chatName ?>, you state that you have read the <a href="tos.php">Terms of Service</a> and the <a href="gdpr.php">Privacy Policy</a>, and agree to both.
+<?php
+	}
+?>
+			</p>
+<?php
+	addon("chat_footer");
+}
+?>
 		</div>
-		<p class="text-center small m-2"style="font-size: 0.7rem">
-		<?php if ($uid) { ?>
-			<?=$chatName ?> can make mistakes. Check important info.
-		<?php } else { ?>
-			By chatting with <?=$chatName ?>, you state that you have read the <a href="tos.php">Terms of Service</a> and the <a href="gdpr.php">Privacy Policy</a>, and agree to both.
-		<?php } ?>
-		</p>
-		<?php addon("chat_footer");
-	} ?>
-    </div>
-  </div>
+	</div>
 </div>
 <a class="br" href="https://github.com/VoidXH/Poor-Man-s-AI"><img src="img/github.svg"></a>
 <script>

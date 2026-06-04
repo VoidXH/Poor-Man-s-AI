@@ -66,10 +66,6 @@ img {
 }
 
 @media (max-width: 767px) {
-  .card-header {
-    flex-direction: column;
-  }
-
   .container {
     max-width: 100%;
     margin: 0;
