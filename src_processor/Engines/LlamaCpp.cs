@@ -150,7 +150,7 @@ public partial class LlamaCpp : ChatEngine {
         string result;
         try {
             result = HTTP.POST(Server + "/v1/chat/completions", root.ToJsonString(), x => UpdateProgress(command, .5f, x),
-                Config.serverPollInterval / 3 /* final callback also limits */, Parse, canceller.Token, int.MaxValue);
+                Config.serverPollInterval / 3 /* final callback also limits */, Parse, canceller.Token, 3600 /* large enough, but not crash-causing */);
         } catch (Exception e) {
             Console.Error.WriteLine(e);
             result = null;

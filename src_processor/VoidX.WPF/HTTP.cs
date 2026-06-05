@@ -148,34 +148,31 @@ namespace VoidX.WPF {
             string result = string.Empty;
             TimeSpan interval = TimeSpan.FromMilliseconds(callbackPeriodMs);
             DateTime sendAt = default;
-            try {
-                using HttpResponseMessage response = await CreateClient(cookies, timeoutSeconds).
-                    SendAsync(request, HttpCompletionOption.ResponseHeadersRead, canceller);
-                response.EnsureSuccessStatusCode();
-                using Stream stream = await response.Content.ReadAsStreamAsync();
-                using StreamReader reader = new(stream);
-                string line;
-                DateTime failAt = DateTime.UtcNow + TimeSpan.FromSeconds(timeoutSeconds); // As the timeout for the client is "since last reply"
-                while ((line = await reader.ReadLineAsync()) != null) {
-                    result += transformer(line);
-                    if (canceller.IsCancellationRequested) {
-                        return result;
-                    }
-                    DateTime now = DateTime.UtcNow;
-                    if (sendAt == default) { // Prevent sending too small of a progress
-                        sendAt = now + interval;
-                    }
-                    if (sendAt < now) {
-                        callback(result);
-                        sendAt = now + interval;
-                    }
-                    if (failAt < now) {
-                        return result;
-                    }
+            using HttpResponseMessage response = await CreateClient(cookies, timeoutSeconds).
+                SendAsync(request, HttpCompletionOption.ResponseHeadersRead, canceller);
+            response.EnsureSuccessStatusCode();
+            using Stream stream = await response.Content.ReadAsStreamAsync();
+            using StreamReader reader = new(stream);
+            string line;
+            DateTime failAt = DateTime.UtcNow + TimeSpan.FromSeconds(timeoutSeconds); // As the timeout for the client is "since last reply"
+            while ((line = await reader.ReadLineAsync()) != null) {
+                result += transformer(line);
+                if (canceller.IsCancellationRequested) {
+                    return result;
                 }
-                return result;
-            } catch { }
-            return null;
+                DateTime now = DateTime.UtcNow;
+                if (sendAt == default) { // Prevent sending too small of a progress
+                    sendAt = now + interval;
+                }
+                if (sendAt < now) {
+                    callback(result);
+                    sendAt = now + interval;
+                }
+                if (failAt < now) {
+                    return result;
+                }
+            }
+            return result;
         }
 
         /// <summary>
