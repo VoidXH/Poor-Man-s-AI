@@ -1,5 +1,5 @@
 <?php
-require("_check.php");
+require_once("proc/loading.php");
 if (!$admin) {
     die;
 }
@@ -31,6 +31,7 @@ function tabLink($i, $name) {
         <?=tabLink(2, "Var dump") ?>
         <?=tabLink(3, "Dislikes") ?>
         <?=tabLink(4, "Shell") ?>
+        <?=tabLink(5, "Mode") ?>
     </div>
     <?php switch($p) {
         case 2:
@@ -41,6 +42,9 @@ function tabLink($i, $name) {
             break;
         case 4:
             require("admin/shell.php");
+            break;
+        case 5:
+            require("admin/mode.php");
             break;
         default:
             require("admin/config.php");

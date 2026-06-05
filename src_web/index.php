@@ -33,13 +33,17 @@ $llmClass = $mode == 2 ? "text-primary" : "text-secondary";
     <div class="spinner"></div>
   </div>
   <a class="br" href="https://github.com/VoidXH/Poor-Man-s-AI"><img src="img/github.svg"></a>
-<?php if ($instantMode) { ?>
+<?php if ($instantMode || $admin) { ?>
 <script src="<?=$jqueryPath ?>"></script>
 <?php
-} else {
+}
+if (!$instantMode) {
     require("proc/status.php");
     require("proc/profile.php");
 ?>
+<?php if ($admin) { ?>
+<script src="js/admin.js"></script>
+<?php } ?>
 <script src="js/index.js"></script>
 <?php } ?>
   <script src="<?=$bootstrapJSPath ?>"></script>
