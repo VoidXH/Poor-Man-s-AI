@@ -24,7 +24,6 @@ function reset() {
 
 function activate(running) {
 	$("#reset").prop("disabled", running);
-	$("#input").prop("disabled", running);
 	$("#send").prop("disabled", running);
 	const stop = $("#stop");
 	stop.prop("disabled", false);
@@ -107,6 +106,9 @@ function getModel() {
 }
 
 function send() {
+	if (isWorking()) {
+		return;
+	}
 	const input = $("#input").val();
 	if (input) {
 		activate(true);

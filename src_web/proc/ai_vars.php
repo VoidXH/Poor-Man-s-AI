@@ -15,4 +15,3 @@ function setAIVar($key, $value) {
   $stmt = execute("UPDATE ai_vars SET `value` = ? WHERE `key` = ?", $value, $key);
   $stmt->close();
 }
-?>

@@ -8,4 +8,3 @@ foreach ($items as $index => $text) {
     }
     echo "\"><p class=\"text\">$text</p></div>";
 }
-?>

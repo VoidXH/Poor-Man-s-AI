@@ -16,4 +16,3 @@ function execute($query, ...$params) {
   $stmt->execute();
   return $stmt;
 }
-?>

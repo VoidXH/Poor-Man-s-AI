@@ -8,4 +8,3 @@ function register($name, $password) {
   $stmt = execute("INSERT INTO ai_users (name, password, salt) VALUES (?, ?, ?)", $name, $hashed_password, $salt);
   $stmt->close();
 }
-?>

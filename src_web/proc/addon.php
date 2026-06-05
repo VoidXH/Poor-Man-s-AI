@@ -6,4 +6,3 @@ function addon($path) {
     include($path);
   }
 }
-?>

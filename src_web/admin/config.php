@@ -40,7 +40,8 @@ editVar("Chatbot page title", "chatPage");
 editVar("Chatbot name", "chatName");
 editVar("Image generator page title", "moaPage");
 editVar("Image generator name", "moaName");
-?>
+editBool("Instant mode", "instantMode"); ?>
+<p>Show a chat instead of the legacy tool selection page.</p>
 <h2><br>Registration</h2>
 <?php editBool("Open the site", "open"); ?>
 <p>Allow anyone to use the website without logging in.</p>

@@ -1,15 +1,12 @@
 <?php
-require_once("_check.php");
-if ($forceLogin && !$uid) {
-	require_once("login.php");
-}
-
-require_once("proc/addon.php");
-require_once("proc/ai_vars.php");
+$standalone = !isset($chatName);
+require_once('proc/loading.php');
 
 $time = time();
 $offline = $time - getAIVar("llm-available") > $procTimeout;
 $slm = $time - getAIVar("moa-available") <= $procTimeout;
+
+if ($standalone) {
 ?>
 <html lang="en">
 <head>
@@ -18,35 +15,43 @@ $slm = $time - getAIVar("moa-available") <= $procTimeout;
 	<title><?=$chatName ?></title>
 	<link rel="stylesheet" href="<?=$bootstrapPath ?>">
 	<link rel="stylesheet" href="css/dark.css">
-	<link rel="stylesheet" href="css/chat.css">
 </head>
 <body>
+<?php } ?>
+<link rel="stylesheet" href="css/chat.css">
 <div class="container">
 	<div class="card">
 		<div class="card-header d-flex align-items-center">
-			<a class="btn btn-primary" href="index.php">Back</a>
+<?php if ($standalone) { ?>
+			<a class="btn btn-sm btn-primary" href="index.php">Back</a>
+<?php
+} else {
+			require('proc/profile.php');
+} ?>
 			<span class="text-center flex-grow-1"><?=$chatName ?></span>
-			<button class="btn btn-danger" id="reset" onclick="reset()">Reset</button>
+			<button class="btn btn-sm btn-danger" id="reset" onclick="reset()">Reset</button>
 		</div>
-		<div class="card-body chatbox">
+		<div class="card-body chat">
+			<div class="chatbox">
 <?php
 if ($offline) {
 ?>
-			<div class="alert alert-danger" role="alert">Shhh! The chatting computer is sleeping and can't work now. Wait until it wakes up!</div>
+				<div class="alert alert-danger" role="alert">Shhh! The chatting computer is sleeping and can't work now. Wait until it wakes up!</div>
 <?php
 } else {
 	if ($slm && $slmWarning) {
 ?>
-			<div class="alert alert-warning" role="alert">The server is currently running the chat on CPU. The quality and generation speed of answers may be worse.</div>
+				<div class="alert alert-warning" role="alert">The server is currently running the chat on CPU. The quality and generation speed of answers may be worse.</div>
 <?php
 	}
 	if (isset($_POST["fill"])) {
-		require("proc/chat/fill.php");
+		require('proc/chat/fill.php');
 	} else {
-		require("proc/chat/starters.php");
+		require('proc/chat/starters.php');
 	}
-}
-?>
+} ?>
+			</div>
+<?php require('proc/chat/disclaimer.php'); ?>
     	</div>
 		<div class="card-footer">
 <?php
@@ -67,35 +72,24 @@ if (!$offline) {
 				<button class="btn btn-danger" id="stop" style="display:none;" onclick="stop()">Stop</button>
 				<button class="btn btn-primary" id="send" onclick="send()">Send</button>
 			</div>
-			<p class="text-center small m-2"style="font-size: 0.7rem">
 <?php
-	if ($uid) {
-?>
-				<?=$chatName ?> can make mistakes. Check important info.
-<?php
-	} else {
-?>
-				By chatting with <?=$chatName ?>, you state that you have read the <a href="tos.php">Terms of Service</a> and the <a href="gdpr.php">Privacy Policy</a>, and agree to both.
-<?php
-	}
-?>
-			</p>
-<?php
-	addon("chat_footer");
+	addon('chat_footer');
 }
 ?>
 		</div>
 	</div>
 </div>
-<a class="br" href="https://github.com/VoidXH/Poor-Man-s-AI"><img src="img/github.svg"></a>
 <script>
 const you = "<?=htmlspecialchars($uid ? $_COOKIE['username'] : 'You') ?>";
 const gpt = "<?=htmlspecialchars($chatName) ?>";
 </script>
 <script src="<?=$jqueryPath ?>"></script>
-<script src="<?=$bootstrapJSPath ?>"></script>
 <script src="<?=$markedPath ?>"></script>
-<script src="js/command.js"></script>
 <script src="js/chat.js"></script>
+<?php if ($standalone) { ?>
+<script src="<?=$bootstrapJSPath ?>"></script>
+<script src="js/command.js"></script>
+<a class="br" href="https://github.com/VoidXH/Poor-Man-s-AI"><img src="img/github.svg"></a>
 </body>
 </html>
+<?php } ?>
