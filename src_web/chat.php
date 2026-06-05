@@ -26,10 +26,13 @@ if ($standalone) {
 			<a class="btn btn-sm btn-primary" href="index.php">Back</a>
 <?php
 } else {
-			require('proc/profile.php');
-} ?>
+	require('proc/chat/menu.php');
+}
+?>
 			<span class="text-center flex-grow-1"><?=$chatName ?></span>
-			<button class="btn btn-sm btn-danger" id="reset" onclick="reset()">Reset</button>
+<?php if ($standalone) { ?>
+			<button class="btn btn-sm btn-primary" id="reset" onclick="reset()">New chat</button>
+<?php } ?>
 		</div>
 		<div class="card-body chat">
 			<div class="chatbox">
