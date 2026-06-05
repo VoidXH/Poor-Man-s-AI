@@ -14,7 +14,7 @@ public sealed class Draw : SandwichTool {
     public override string OutputProperty => "image_prompt";
 
     /// <inheritdoc/>
-    public override string Execute(LlamaCpp caller, JsonNode parameters, Engine.Progress progressReporter) {
+    public override string Execute(LlamaCpp caller, JsonNode parameters, Command command, Engine.Progress progressReporter) {
         if (!caller.Others.TryGetValue(EngineType.Image, out Engine engine)) {
             return imageEngineNotRunning;
         }
@@ -24,11 +24,22 @@ public sealed class Draw : SandwichTool {
 
         string prompt = parameters[OutputProperty]?.ToString() ??
             throw new ArgumentNullException(OutputProperty, $"The '{OutputProperty}' property is missing in a drawing call.");
-
         caller.OverrideTimeout(Config.imageGenLoading + Config.imageGenTimeout);
-        string base64 = imageEngine.Generate(new(EngineType.Image, prompt));
+
+        void UpdateProgress(Command command, float progress, string status) => progressReporter.Invoke(command, .5f, $"Generating image({progress:0%})...");
+
+        imageEngine.OnProgress += UpdateProgress;
+        string base64;
+        try {
+            base64 = imageEngine.Generate(new(EngineType.Image, prompt));
+        } catch {
+            throw;
+        } finally {
+            imageEngine.OnProgress -= UpdateProgress;
+        }
+
         parameters[OutputProperty] = $"<img src=\"data:image/png;base64,{base64}\" alt=\"{prompt}\">";
-        return base.Execute(caller, parameters, progressReporter);
+        return base.Execute(caller, parameters, command, progressReporter);
     }
 
     readonly static string imageEngineNotRunning = "Shhh! The image generating computer is sleeping and can't work now.";

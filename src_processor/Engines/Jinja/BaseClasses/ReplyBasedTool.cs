@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Nodes;
+
 using PoorMansAI.Configuration;
 using PoorMansAI.Engines.BaseClasses;
 
@@ -14,6 +15,6 @@ public abstract class ReplyBasedTool : Tool {
     public abstract string OutputProperty { get; }
 
     /// <inheritdoc/>
-    public override string Execute(LlamaCpp caller, JsonNode parameters, Engine.Progress progressReporter) =>
+    public override string Execute(LlamaCpp caller, JsonNode parameters, Command command, Engine.Progress progressReporter) =>
         parameters[OutputProperty]?.ToString() ?? Config.internalErrorMessage;
 }

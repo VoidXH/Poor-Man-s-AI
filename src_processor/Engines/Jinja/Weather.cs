@@ -11,7 +11,7 @@ namespace PoorMansAI.Engines.Jinja;
 /// </summary>
 public sealed class Weather : Tool {
     /// <inheritdoc/>
-    public override string Execute(LlamaCpp caller, JsonNode parameters, Engine.Progress progressReporter) {
+    public override string Execute(LlamaCpp caller, JsonNode parameters, Command command, Engine.Progress progressReporter) {
         string location = parameters["location"]?.ToString();
         if (location == null) {
             return Config.internalErrorMessage;

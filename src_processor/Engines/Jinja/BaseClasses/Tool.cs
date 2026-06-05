@@ -16,9 +16,10 @@ public abstract class Tool {
     /// </summary>
     /// <param name="caller">The calling engine, and with the <see cref="Engine.Others"/> property, it can see some other engines</param>
     /// <param name="parameters">Parameters for this called tool as output by the model</param>
+    /// <param name="command">The command that triggered this tool</param>
     /// <param name="progressReporter">Callback with progress reporting for displaying partial progress to the user</param>
     /// <returns>What is put to the chat output.</returns>
-    public abstract string Execute(LlamaCpp caller, JsonNode parameters, Engine.Progress progressReporter);
+    public abstract string Execute(LlamaCpp caller, JsonNode parameters, Command command, Engine.Progress progressReporter);
 
     /// <summary>
     /// Parse a tool from a configuration file.

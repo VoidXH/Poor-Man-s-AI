@@ -84,13 +84,13 @@ public class JinjaConfig {
     /// Handles the tool launch and progress reporting when all parameters are received.
     /// </summary>
     /// <param name="progressReporter">The final output of the launched tool.</param>
-    public string LaunchTool(LlamaCpp caller, Engine.Progress progressReporter) {
+    public string LaunchTool(LlamaCpp caller, Command command, Engine.Progress progressReporter) {
         if (!tools.TryGetValue(usedTool, out Tool tool)) {
             Logger.Warning($"Requested tool ({usedTool}) is not configured.");
             return Config.internalErrorMessage;
         }
 
         JsonNode parameters = JsonNode.Parse(toolParams.ToString());
-        return tool.Execute(caller, parameters, progressReporter);
+        return tool.Execute(caller, parameters, command, progressReporter);
     }
 }

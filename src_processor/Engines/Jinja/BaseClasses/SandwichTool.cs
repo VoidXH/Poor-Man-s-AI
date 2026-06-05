@@ -8,7 +8,7 @@ namespace PoorMansAI.Engines.Jinja.BaseClasses {
     /// </summary>
     public abstract class SandwichTool : ReplyBasedTool {
         /// <inheritdoc/>
-        public override string Execute(LlamaCpp caller, JsonNode parameters, Engine.Progress progressReporter) {
+        public override string Execute(LlamaCpp caller, JsonNode parameters, Command command, Engine.Progress progressReporter) {
             JsonNode prefix = parameters["prefix"];
             string prefixOut = string.Empty;
             if (prefix != null) {
@@ -21,7 +21,7 @@ namespace PoorMansAI.Engines.Jinja.BaseClasses {
                 suffixOut = "<br>" + suffix.ToString();
             }
 
-            return prefixOut + base.Execute(caller, parameters, progressReporter) + suffixOut;
+            return prefixOut + base.Execute(caller, parameters, command, progressReporter) + suffixOut;
         }
     }
 }

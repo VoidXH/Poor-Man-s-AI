@@ -157,7 +157,7 @@ public partial class LlamaCpp : ChatEngine {
         }
 
         if (model.Jinja?.ToolSelected ?? false) {
-            result = model.Jinja.LaunchTool(this, UpdateProgress);
+            result = model.Jinja.LaunchTool(this, command, UpdateProgress);
         }
 
         canceller.Dispose();

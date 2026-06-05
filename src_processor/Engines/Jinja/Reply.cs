@@ -10,7 +10,7 @@ namespace PoorMansAI.Engines.Jinja {
     /// </summary>
     internal class Reply : Tool {
         /// <inheritdoc/>
-        public override string Execute(LlamaCpp caller, JsonNode parameters, Engine.Progress progressReporter) {
+        public override string Execute(LlamaCpp caller, JsonNode parameters, Command command, Engine.Progress progressReporter) {
             string reply = parameters["reply"]?.ToString();
             if (reply == null) {
                 return Config.internalErrorMessage;
