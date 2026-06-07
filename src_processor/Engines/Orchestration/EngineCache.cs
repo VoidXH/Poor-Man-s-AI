@@ -92,7 +92,6 @@ public class EngineCache : IDisposable {
             EngineType.Image => engines.TryGetValue(EngineType.Image, out Engine engine) ?
                 engine.Generate(command) :
                 File.ReadAllText("Data/OfflineImage.txt"),
-            EngineType.Shell => ShellAccess.Instance.Generate(command),
             _ => null
         };
     }

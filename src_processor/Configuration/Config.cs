@@ -32,11 +32,6 @@ public static partial class Config {
     public static readonly int imageGenWeight = int.Parse(Values["ImageGenWeight"]);
 
     /// <summary>
-    /// Priority of the shell access across all distributed nodes.
-    /// </summary>
-    public static readonly int shellWeight = int.Parse(Values["ShellWeight"]);
-
-    /// <summary>
     /// Command poller user's name.
     /// </summary>
     internal static readonly string adminUsername = Values["AdminUsername"];
@@ -74,7 +69,7 @@ public static partial class Config {
                 }
 
                 int GetWeight(string key) => int.TryParse(data[key], out int weight) ? weight : int.MinValue;
-                int currentMax = Math.Max(GetWeight("ChatWeight"), Math.Max(GetWeight("ImageGenWeight"), GetWeight("ShellWeight")));
+                int currentMax = Math.Max(GetWeight("ChatWeight"), GetWeight("ImageGenWeight"));
                 if (currentMax > maxWeight) {
                     maxWeight = currentMax;
                     result = data;

@@ -5,7 +5,7 @@
 	GET:
 		?llm: set chat availability for a given server weight
 		&moa: same for image generation
-		&shell: same for shell access
+		&agent: same for agentic CLI access
 	Also cleans old unprocessed commands and sets engine availability in ai_vars
 */
 
@@ -34,7 +34,7 @@ function availability($engine) {
 
 $llm = availability("llm");
 $moa = availability("moa");
-$shell = availability("shell");
+$agent = availability("agent");
 
 // Delete old unprocessed entries
 $time = date("Y-m-d H:i:s", strtotime("-$commandClear minutes"));

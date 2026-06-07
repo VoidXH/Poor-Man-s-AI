@@ -15,9 +15,5 @@
         /// Image generator.
         /// </summary>
         Image,
-        /// <summary>
-        /// Access to a server console.
-        /// </summary>
-        Shell,
     }
 }

@@ -231,7 +231,6 @@ public class CommandRunner : IDisposable {
         }
 
         AddEngine(EngineType.Image, "moa", Config.imageGenWeight);
-        AddEngine(EngineType.Shell, "shell", Config.shellWeight);
         return result.ToString();
     }
 

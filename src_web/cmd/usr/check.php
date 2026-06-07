@@ -21,12 +21,12 @@ if ($commandTS == 0) {
 }
 
 $pipePos = strpos($command, '|');
-$isShell = $pipePos === false || strpos(substr($command, 0, $pipePos), 'Shell') !== false;
-if ($isShell && !$admin) {
+$isAgent = $pipePos === false || strpos(substr($command, 0, $pipePos), 'Agent') !== false;
+if ($isAgent && !$admin) {
     die('100|');
 }
 
-if ($isShell) {
+if ($isAgent) {
     $stmt = execute("UPDATE ai_commands SET command_ts = NOW() WHERE id = ?", $id);
     $stmt->close();
 }
