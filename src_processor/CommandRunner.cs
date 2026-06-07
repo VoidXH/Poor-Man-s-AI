@@ -231,6 +231,7 @@ public class CommandRunner : IDisposable {
         }
 
         AddEngine(EngineType.Image, "moa", Config.imageGenWeight);
+        AddEngine(EngineType.Agent, "agent", Config.agentWeight);
         return result.ToString();
     }
 

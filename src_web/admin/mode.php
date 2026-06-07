@@ -47,4 +47,7 @@ function modeButton($name, $value, $activeClass) {
 	<button class="btn btn-primary" onclick="modeSwap(2)" <?= $online ? '' : 'disabled' ?>>Switch to LLM</button>
 </div>
 <div id="mode-status" class="mt-3"></div>
+<script src="<?=$jqueryPath ?>"></script>
+<script src="js/admin.js"></script>
+<script src="js/command.js"></script>
 <script src="js/index.js"></script>

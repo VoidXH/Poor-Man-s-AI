@@ -15,5 +15,9 @@
         /// Image generator.
         /// </summary>
         Image,
+        /// <summary>
+        /// CLI-based agent engine.
+        /// </summary>
+        Agent,
     }
 }
