@@ -1,5 +1,6 @@
 using VoidX.WPF;
 
+using PoorMansAI.Configuration;
 using PoorMansAI.Engines.BaseClasses;
 
 namespace PoorMansAI.Engines.Orchestration;
@@ -60,18 +61,27 @@ public class EngineFactory {
     /// </summary>
     /// <returns>If no errors were found and the requested engines were started.</returns>
     bool Startup(Dictionary<EngineType, Engine> engines, EngineCacheMode mode, Engine.Progress onProgress) {
-        if (mode.IsImage() && !engines.ContainsKey(EngineType.Image)) {
+        if (mode.IsImage() && !engines.ContainsKey(EngineType.Image) && Config.chatWeight >= 0) {
             ImageEngine imageEngine = StartImage();
             imageEngine.Others = engines;
             imageEngine.OnProgress += onProgress;
             engines[EngineType.Image] = imageEngine;
         }
 
-        if (mode.IsChat() && !engines.ContainsKey(EngineType.Chat)) {
+        if (mode.IsChat() && !engines.ContainsKey(EngineType.Chat) && Config.imageGenWeight >= 1) {
             ChatEngine chatEngine = mode.IsLLM() ? StartLLM() : StartSLM();
             chatEngine.Others = engines;
             chatEngine.OnProgress += onProgress;
             engines[EngineType.Chat] = chatEngine;
+        }
+
+        if (!engines.ContainsKey(EngineType.Agent) && Config.agentWeight >= 0) {
+            AgentEngine agentEngine = new(new(true)) {
+                Others = engines
+            };
+            agentEngine.OnProgress += onProgress;
+            engines[EngineType.Agent] = agentEngine;
+            Logger.Info("Agentic command handling enabled.");
         }
 
         return true;

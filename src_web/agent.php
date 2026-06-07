@@ -1,0 +1,57 @@
+<?php
+require_once('proc/loading.php');
+if (!$admin) {
+	die;
+}
+
+$time = time();
+$offline = $time - getAIVar("agent-available") > $procTimeout;
+?>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<?=$viewport ?>
+	<title><?=$chatName ?></title>
+	<link rel="stylesheet" href="<?=$bootstrapPath ?>">
+	<link rel="stylesheet" href="css/dark.css">
+</head>
+<body>
+<link rel="stylesheet" href="css/chat.css">
+<div class="container">
+	<div class="card">
+		<div class="card-header d-flex align-items-center">
+<?php
+	require('proc/chat/menu.php');
+?>
+			<span class="text-center flex-grow-1"><?=$chatName ?></span>
+		</div>
+		<div class="chat">
+			<div id="display">
+<?php if ($offline) { ?>
+				<div class="alert alert-danger" role="alert">No agent-running Processor is online.</div>
+<?php } ?>
+			</div>
+<?php require('proc/chat/disclaimer.php'); ?>
+    	</div>
+		<div class="card-footer">
+<?php if (!$offline) { ?>
+			<div class="input-group">
+				<textarea class="form-control" id="input" placeholder="Give <?=$chatName ?> a task..." autofocus></textarea>
+				<button class="btn btn-danger" id="stop" style="display:none;" onclick="stop()">Stop</button>
+				<button class="btn btn-primary" id="send" onclick="send()">Send</button>
+			</div>
+<?php } ?>
+		</div>
+	</div>
+</div>
+<script>
+const you = "<?=htmlspecialchars($_COOKIE['username']) ?>";
+</script>
+<script src="<?=$jqueryPath ?>"></script>
+<script src="<?=$bootstrapJSPath ?>"></script>
+<script src="<?=$markedPath ?>"></script>
+<script src="js/agent.js"></script>
+<script src="js/command.js"></script>
+<a class="br" href="https://github.com/VoidXH/Poor-Man-s-AI"><img src="img/github.svg"></a>
+</body>
+</html>

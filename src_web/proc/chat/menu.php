@@ -6,15 +6,18 @@
 <?php if ($uid) { ?>
         <li><a class="dropdown-item" href="profile.php"><?=htmlspecialchars($_COOKIE["username"]) ?></a></li>
 <?php if ($admin) { ?>
-        <li><a class="dropdown-item" href="admin.php">Admin Panel</a></li>
+        <li><a class="dropdown-item" href="admin.php">Admin panel</a></li>
 <?php } ?>
         <li><a class="dropdown-item" href="logout.php">Logout</a></li>
 <?php } else { ?>
         <li><a class="dropdown-item" href="login.php">Login</a></li>
 <?php } ?>
         <li><hr class="dropdown-divider"></li>
-        <li><a class="dropdown-item" onclick="reset()" return false;">New Chat</a></li>
+        <li><a class="dropdown-item" onclick="reset()">New chat</a></li>
         <li><hr class="dropdown-divider"></li>
+<?php if ($admin) { ?>
+        <li><a class="dropdown-item" href="agent.php">Remote agent</a></li>
+<?php } ?>
         <li><a class="dropdown-item" href="image.php">Custom images</a></li>
     </ul>
 </div>

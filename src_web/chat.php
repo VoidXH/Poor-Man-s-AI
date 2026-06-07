@@ -36,9 +36,7 @@ if ($standalone) {
 		</div>
 		<div class="card-body chat">
 			<div class="chatbox">
-<?php
-if ($offline) {
-?>
+<?php if ($offline) { ?>
 				<div class="alert alert-danger" role="alert">Shhh! The chatting computer is sleeping and can't work now. Wait until it wakes up!</div>
 <?php
 } else {
@@ -57,9 +55,7 @@ if ($offline) {
 <?php require('proc/chat/disclaimer.php'); ?>
     	</div>
 		<div class="card-footer">
-<?php
-if (!$offline) {
-?>
+<?php if (!$offline) { ?>
 			<div id="model" class="mb-1">
 <?php
 	$models = preg_split('/\s*,\s*/', $chatModels);

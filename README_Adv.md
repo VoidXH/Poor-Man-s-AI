@@ -56,6 +56,21 @@ another, only the higher weight will process anything. When setting a weight to
 this way. When multiple computers log in with the same weight, they share the
 load for the corresponding engine.
 
+## Setting up Agent mode
+Agent mode allows the Processor to use an AI agent (such as GitHub Copilot CLI)
+to handle more complex tasks. To enable it:
+
+1. Install [GitHub Copilot CLI](https://github.com/github/copilot-cli) or other
+   agentic command-line tool on the computer running the Processor.
+1. Open the Processor configuration file and set the `AgentWeight` parameter to
+   a value greater than `-1` (e.g., `1`). `-1` disables agent processing.
+1. Optionally, the console command used to invoke the agent can be customized
+   by editing the `AgentCommand` configuration entry. This allows calling CLIs
+   other than Copilot, or changing the allowed tools for Copilot.
+
+When the `AgentWeight` is active, incoming agent requests will be routed to the Processor
+node(s) with the highest weight, similar to how `ChatWeight` and `ImageGenWeight` work.
+
 ## Miscellaneous
 * To add a new background to the chat or image generator components on your
   website, just go to its img folder, and create new diffbgXX.jpg or gptbgXX.jpg

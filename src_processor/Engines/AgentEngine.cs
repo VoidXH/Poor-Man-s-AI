@@ -66,7 +66,7 @@ public class AgentEngine(AgentSettings settings) : Engine {
                     }
                 }
             }, canceller.Token).GetAwaiter().GetResult();
-            instance.WaitForExit();
+            instance.KillSafe();
         } catch (OperationCanceledException) {
             instance.KillSafe(); // Timeout
         } catch (Exception e) {

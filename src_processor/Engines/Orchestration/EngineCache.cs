@@ -85,15 +85,15 @@ public class EngineCache : IDisposable {
             return "OK";
         }
 
-        return command.EngineType switch {
-            EngineType.Chat => engines.TryGetValue(EngineType.Chat, out Engine engine) ?
+        if (command.EngineType == EngineType.Image) {
+            return engines.TryGetValue(EngineType.Image, out Engine engine) ?
                 engine.Generate(command) :
-                "Chat engine is offline.",
-            EngineType.Image => engines.TryGetValue(EngineType.Image, out Engine engine) ?
+                File.ReadAllText("Data/OfflineImage.txt");
+        } else {
+            return engines.TryGetValue(command.EngineType, out Engine engine) ?
                 engine.Generate(command) :
-                File.ReadAllText("Data/OfflineImage.txt"),
-            _ => null
-        };
+                command.EngineType + " engine is offline.";
+        }
     }
 
     /// <summary>

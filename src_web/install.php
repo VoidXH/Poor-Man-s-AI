@@ -39,6 +39,8 @@ $install = [
   PRIMARY KEY (`key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8",
 "INSERT INTO `ai_vars` (`key`, `value`) VALUES
+('agent-available',	'0'),
+('agent-weight',	'0'),
 ('llm-available',	'0'),
 ('llm-weight',	'0'),
 ('moa-available',	'0'),
@@ -60,7 +62,7 @@ if ($_POST["db_db"]) {
   } else if ($sqlink->connect_errno) {
     $sqlogin = true;
   } else {
-    $sqlink->set_charset('utf8');
+    $sqlink->set_charset('utf8mb4');
     $error = false;
     foreach ($install as $cmd) {
       $sqlink->query($cmd);
@@ -75,7 +77,7 @@ if ($_POST["db_db"]) {
       $sqlink->query("UPDATE ai_users SET admin = 1");
       $sqlPhp = '<'.'?php
 $sqlink = new mysqli("'.$db_host.'", "'.$db_name.'", "'.$db_pass.'", "'.$db_db.'");
-$sqlink->set_charset("utf8");
+$sqlink->set_charset('utf8mb4');
 ?'.'>';
       file_put_contents('sql.php', $sqlPhp);
       header("Location: index.php");

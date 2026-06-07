@@ -6,6 +6,8 @@ if (!$admin) {
 require_once("proc/addon.php");
 
 $description = [
+    "agent-available" => "Last availability of a Processor with agent support (Unix timestamp)",
+    "agent-weight" => "The highest priority among the agents",
     "llm-available" => "Last availability of a Processor with chat support (Unix timestamp)",
     "llm-weight" => "The highest priority among the chat Processors",
     "local-ip" => "Local IP of the Processor that has the <code>LocalIPLogger</code> extension enabled",
