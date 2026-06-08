@@ -7,7 +7,22 @@ $(document).ready(function() {
 		$("#chat, #think, #code").removeClass("btn-primary").addClass("btn-secondary");
 		$(this).removeClass("btn-secondary").addClass("btn-primary");
 	});
+
+	$("#path button").click(function() {
+		$("#path button").removeClass("btn-primary").addClass("btn-secondary");
+		$(this).removeClass("btn-secondary").addClass("btn-primary");
+	});
 });
+
+function getPath() {
+	var res = "";
+	$("#path button").each(function() {
+		if ($(this).attr("class").includes("btn-primary")) {
+			res = $(this).text();
+		}
+	});
+	return res;
+}
 
 function activate(running) {
 	$("#send").prop("disabled", running);
@@ -58,9 +73,14 @@ function send() {
 		$("#display").html('<div class="message"><p class="username">' + you + '</p><p class="text">' + escape(input) + '</p></div>' +
 			'<div class="message reply"><p class="username">Agent</p><p id="result" class="text">...</p></div>');
 		$("#input").val("");
-		sendCommand("Agent", input, customPath);
+		sendCommand("Agent", getPath() + "|" + input, customPath);
 		$("#display").animate({ scrollTop: $("#display").prop("scrollHeight") }, 500);
 	}
+}
+
+function reset() {
+	$("#input").val("");
+	$("#display").html("");
 }
 
 function stop() {

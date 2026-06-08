@@ -103,7 +103,7 @@ namespace VoidX.WPF {
             using MultipartFormDataContent content = [];
             for (int i = 0; i < data.Length; i++) {
                 if (data[i].Value != null) {
-                    content.Add(new StringContent(data[i].Value), data[i].Key);
+                    content.Add(new StringContent(data[i].Value, Encoding.UTF8), data[i].Key);
                 }
             }
             return POST(url, content, cookies, timeoutSeconds);

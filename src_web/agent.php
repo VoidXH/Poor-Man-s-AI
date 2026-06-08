@@ -11,7 +11,7 @@ $offline = $time - getAIVar("agent-available") > $procTimeout;
 <head>
 	<meta charset="UTF-8">
 	<?=$viewport ?>
-	<title><?=$chatName ?></title>
+	<title>Agent <?=$chatName ?></title>
 	<link rel="stylesheet" href="<?=$bootstrapPath ?>">
 	<link rel="stylesheet" href="css/dark.css">
 </head>
@@ -23,7 +23,7 @@ $offline = $time - getAIVar("agent-available") > $procTimeout;
 <?php
 	require('proc/chat/menu.php');
 ?>
-			<span class="text-center flex-grow-1"><?=$chatName ?></span>
+			<span class="text-center flex-grow-1">Agent <?=$chatName ?></span>
 		</div>
 		<div class="chat">
 			<div id="display">
@@ -35,6 +35,15 @@ $offline = $time - getAIVar("agent-available") > $procTimeout;
     	</div>
 		<div class="card-footer">
 <?php if (!$offline) { ?>
+			<div id="path" class="mb-1">
+<?php
+	$paths = preg_split('/\s*,\s*/', $agentPaths);
+	foreach ($paths as $index => $path) {
+		$class = ($index == 0) ? "btn btn-primary btn-sm" : "btn btn-secondary btn-sm";
+		echo "<button class=\"$class\" id=\"path_$index\">$path</button>\n";
+	}
+?>
+			</div>
 			<div class="input-group">
 				<textarea class="form-control" id="input" placeholder="Give <?=$chatName ?> a task..." autofocus></textarea>
 				<button class="btn btn-danger" id="stop" style="display:none;" onclick="stop()">Stop</button>

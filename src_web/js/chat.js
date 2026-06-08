@@ -68,7 +68,7 @@ function onPartialResult(progress, result) {
 	}
 	$("#msg" + sentMessages).html(think + marked.parse(split.result));
 	if (newMessage) {
-		$(".chatbox").animate({ scrollTop: $(".chatbox").prop("scrollHeight") }, 500);
+		$(".chat").animate({ scrollTop: $(".chat")[0].scrollHeight }, 500);
 		newMessage = false;
 	}
 }
@@ -127,7 +127,7 @@ function send() {
 			'<button class="btn btn-secondary btn-sm ms-2" id="wrong' + sentMessages + '" onclick="wrong(' + sentMessages + ')">&#128078;</button>' +
 			'</div></div>');
 		$("#input").val("");
-		$(".chatbox").animate({ scrollTop: $(".chatbox").prop("scrollHeight") }, 500);
+		$(".chat").animate({ scrollTop: $(".chat")[0].scrollHeight }, 500);
 	}
 }
 

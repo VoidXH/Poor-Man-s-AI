@@ -32,14 +32,32 @@ public class AgentEngine(AgentSettings settings) : Engine {
 
     /// <inheritdoc/>
     public override string Generate(Command command) {
-        string processCommand = settings.Command.Replace("{{PROMPT}}", command.Prompt.Replace("\"", "\\\""));
+        int splitter = command.Prompt.IndexOf('|');
+        string workingDir;
+        string prompt;
+        if (splitter >= 0) {
+            workingDir = command.Prompt[..splitter].Trim();
+            prompt = command.Prompt[(splitter + 1)..].Trim();
+        } else {
+            workingDir = "";
+            prompt = command.Prompt;
+        }
+        string processCommand = settings.Command.Replace("{{PROMPT}}", prompt.Replace("\"", "\\\""));
+
+        if (string.IsNullOrEmpty(workingDir) || !Directory.Exists(workingDir)) {
+            workingDir = Environment.CurrentDirectory;
+        }
+
         ProcessStartInfo info = new() {
             FileName = "cmd",
             Arguments = $"/c {processCommand}",
             RedirectStandardOutput = true,
             RedirectStandardError = true,
             UseShellExecute = false,
-            CreateNoWindow = true
+            CreateNoWindow = true,
+            WorkingDirectory = workingDir,
+            StandardOutputEncoding = Encoding.UTF8,
+            StandardErrorEncoding = Encoding.UTF8
         };
 
         StringBuilder output = new();
@@ -51,12 +69,20 @@ public class AgentEngine(AgentSettings settings) : Engine {
             instance = Process.Start(info) ?? throw new InvalidOperationException("Could not start the agent process.");
         }
 
+        StringBuilder errorOutput = new();
+        instance.ErrorDataReceived += (sender, e) => {
+            if (e.Data != null) {
+                errorOutput.AppendLine(e.Data);
+            }
+        };
+        instance.BeginErrorReadLine();
+
         try {
             Task.Run(async () => {
-                while (!canceller.Token.IsCancellationRequested) {
+                while (!canceller.Token.IsCancellationRequested && !instance.HasExited) {
                     string line = await instance.StandardOutput.ReadLineAsync(canceller.Token);
                     if (line == null) {
-                        break; // End of stream
+                        continue;
                     }
 
                     output.AppendLine(line);
@@ -73,6 +99,10 @@ public class AgentEngine(AgentSettings settings) : Engine {
             Logger.Error("Error executing agent process: " + e);
             instance.KillSafe();
         } finally {
+            if (errorOutput.Length > 0) {
+                Logger.Error("Shell error: " + errorOutput.ToString().Trim());
+            }
+
             instance.Dispose();
             instance = null;
             lock (cancellerLock) {
@@ -81,7 +111,15 @@ public class AgentEngine(AgentSettings settings) : Engine {
             }
         }
 
-        return output.ToString().Trim();
+        string reply = output.ToString().Trim();
+        if (reply.Length > uploadLimit) {
+            string window = reply[^uploadLimit..];
+            int split = window.IndexOf('\n');
+            if (split != -1) {
+                reply = reply[(split + 1)..];
+            }
+        }
+        return reply;
     }
 
     /// <inheritdoc/>
@@ -96,4 +134,9 @@ public class AgentEngine(AgentSettings settings) : Engine {
         StopGeneration();
         GC.SuppressFinalize(this);
     }
+
+    /// <summary>
+    /// Maximum length of a reply before truncating to the last chunk. This prevents excessive network usage on very long agent outputs.
+    /// </summary>
+    public const int uploadLimit = 32768;
 }

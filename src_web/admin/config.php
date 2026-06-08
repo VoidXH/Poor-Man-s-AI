@@ -51,6 +51,8 @@ editBool("Instant mode", "instantMode"); ?>
 <h2><br>Behavior</h2>
 <?php editVar("Chat models", "chatModels"); ?>
 <p class="mt-n3">The available models by name, as set up on the Processors.</p>
+<?php editVar("Agent paths", "agentPaths"); ?>
+<p>Available project folders for the Agent, comma-separated.</p>
 <?php editBool("SLM warnings", "slmWarning"); ?>
 <p>Show SLM warnings in chat when in Image + SLM mode. Recommended to disable when the Processor has unified memory and the models are large enough (like 7B).</p>
 <h2><br>Limits</h2>

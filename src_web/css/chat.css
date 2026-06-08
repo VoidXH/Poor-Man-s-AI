@@ -123,10 +123,14 @@ img {
 }
 
 .chat {
-  padding: 1.5rem !important;
+  padding: 0;
   font-size: 0.95rem;
   overflow-y: auto;
   flex: 1;
+}
+
+.message {
+  padding: 1.5rem;
 }
 
 .message {
@@ -427,6 +431,30 @@ img {
 
 .chat::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.2);
+}
+
+.starter-btn {
+  display: inline-block;
+  padding: 0.4rem 0.9rem;
+  margin: 0.25rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+  text-decoration: none;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.starter-btn:hover {
+  background: var(--glass-border);
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+  transform: translateY(-1px);
 }
 
 .suggestion-grid {
