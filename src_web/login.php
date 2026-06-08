@@ -34,38 +34,58 @@ if (isset($_POST["name"])) {
 	<title>Login</title>
 	<link href="<?=$bootstrapPath ?>" rel="stylesheet">
 	<link href="css/dark.css" rel="stylesheet">
-	<link href="css/user.css" rel="stylesheet">
+	<link href="css/chat.css" rel="stylesheet">
 </head>
-<body>
-	<div class="container mt-5">
-		<div class="login">
-			<form method="POST">
-				<h2>Login</h2>
-				<?php if ($failed) { ?>
-				<div class="alert alert-danger" role="alert">Invalid credentials.</div>
-				<?php } else if (isset($_GET["reg"])) { ?>
-				<div class="alert alert-success" role="alert">Registration successful, you can now log in.</div>
-				<?php } else if (isset($_GET["pass"])) { ?>
-				<div class="alert alert-success" role="alert">Password change successful, please log in again.</div>
-				<?php } else if (isset($_GET["del"])) { ?>
-				<div class="alert alert-success" role="alert">Account deleted successfully.</div>
-				<?php } ?>
-				<div class="form-group mb-2">
-					<label for="name">Username</label>
-					<input type="text" class="form-control" name="name" required>
+<body class="d-flex align-items-center justify-content-center" style="min-height: 100vh;">
+	<div class="container">
+		<div class="row justify-content-center">
+			<div class="col-12 col-sm-10 col-md-8 col-lg-5">
+				<div class="card">
+					<div class="card-body p-5">
+						<h2 class="text-center mb-4 fw-bold" style="letter-spacing: -0.01em;">Access <?=$siteName ?></h2>
+<?php if ($failed) { ?>
+						<div class="alert alert-danger" role="alert">
+							<strong>Invalid credentials.</strong> Please check your username and password.
+						</div>
+<?php } else if (isset($_GET["reg"])) { ?>
+						<div class="alert alert-success" role="alert">
+							<strong>Success!</strong> Registration complete. You can now log in.
+						</div>
+<?php } else if (isset($_GET["pass"])) { ?>
+						<div class="alert alert-success" role="alert">
+							<strong>Success!</strong> Password updated. Please log in again.
+						</div>
+<?php } else if (isset($_GET["del"])) { ?>
+						<div class="alert alert-success" role="alert">
+							<strong>Success!</strong> Account deleted.
+						</div>
+<?php } ?>
+						
+						<form method="POST" class="needs-validation">
+							<div class="mb-4">
+								<label for="name" class="form-label fw-500">Username</label>
+								<input type="text" class="form-control" id="name" name="name" placeholder="Enter your username" required autofocus>
+							</div>
+							
+							<div class="mb-4">
+								<label for="password" class="form-label fw-500">Password</label>
+								<input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+							</div>
+							
+							<button type="submit" class="btn btn-primary w-100 fw-600 py-2 mb-3">
+								<span>Sign In</span>
+							</button>
+						</form>
+						
+<?php if ($regOn) { ?>
+						<div class="text-center pt-3 border-top" style="border-color: var(--glass-border) !important;">
+							<p class="text-secondary mb-3" style="color: var(--text-secondary); font-size: 0.9rem;">Don't have an account?</p>
+							<a href="register.php" class="btn btn-secondary w-100 fw-500 py-2">Create Account</a>
+						</div>
+<?php } ?>
+					</div>
 				</div>
-				<div class="form-group mb-3">
-					<label for="password">Password</label>
-					<input type="password" class="form-control" name="password" required>
-				</div>
-				<button type="submit" class="btn btn-primary mb-3">Login</button>
-			</form>
-			<?php if ($regOn) { ?>
-			<div class="register">
-				<h2>No account?</h2>
-				<a href="register.php" class="btn btn-secondary mb-3">Register here!</a>
 			</div>
-			<?php } ?>
 		</div>
 	</div>
 </body>
