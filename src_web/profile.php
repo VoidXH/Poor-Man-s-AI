@@ -44,39 +44,62 @@ $prompts = $sqlink->query("SELECT prompts FROM ai_users WHERE id = $uid")->fetch
   <title>Profile</title>
   <link href="<?=$bootstrapPath ?>" rel="stylesheet">
   <link href="css/dark.css" rel="stylesheet">
-  <link href="css/user.css" rel="stylesheet">
+  <link href="css/chat.css" rel="stylesheet">
 </head>
 <body>
   <div class="container">
-    <a href="index.php" class="btn btn-primary back mt-3">Back</a>
-    <h2><?=$name ?></h2>
-    <p>Number of prompts written: <b><?=$prompts ?></b></p>
-    <div class="login mt-3">
-      <form method="POST">
-        <h2>Change password</h2>
+    <a href="index.php" class="btn btn-secondary back mt-3">← Back</a>
+    <div class="card h-auto mt-4">
+      <div class="card-header d-flex align-items-center gap-3">
+        <div class="rounded-circle d-flex align-items-center justify-content-center" style="width:48px;height:48px;background:var(--accent);font-size:1.25rem;font-weight:700;color:#0a0e14;"><?=strtoupper(substr($name, 0, 1))?></div>
+        <h5 class="mb-0"><?=$name?></h5>
+      </div>
+      <div class="card-body">
+        <div class="d-flex align-items-center gap-2 mb-1">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <span style="color:var(--text-secondary)">Prompts written:</span>
+          <strong style="color:var(--accent);font-size:1.1rem"><?=$prompts?></strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="card h-auto mt-3">
+      <div class="card-header">
+        <span>Change password</span>
+      </div>
+      <div class="card-body">
         <?php if ($match) { ?>
         <div class="alert alert-danger" role="alert">The new passwords didn't match.</div>
         <?php } else if ($wrong) { ?>
         <div class="alert alert-danger" role="alert">The current password was incorrect.</div>
         <?php } ?>
-        <div class="form-group mb-2">
-          <label for="current">Current password</label>
-          <input type="password" class="form-control" name="current" required>
-        </div>
-        <div class="form-group mb-2">
-          <label for="new">New password</label>
-          <input type="password" class="form-control" name="new" required>
-        </div>
-        <div class="form-group mb-3">
-          <label for="new2">New password again</label>
-          <input type="password" class="form-control" name="new2" required>
-        </div>
-        <button type="submit" class="btn btn-primary mr-3">Change password</button>
-      </form>
-      <div class="register">
+        <form method="POST">
+          <div class="mb-3">
+            <label class="form-label">Current password</label>
+            <input type="password" class="form-control" name="current" placeholder="Enter current password" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">New password</label>
+            <input type="password" class="form-control" name="new" placeholder="Enter new password" required>
+          </div>
+          <div class="mb-4">
+            <label class="form-label">Confirm new password</label>
+            <input type="password" class="form-control" name="new2" placeholder="Confirm new password" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Change password</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="card h-auto mt-3">
+      <div class="card-header">
+        <span class="text-danger">Delete account</span>
+      </div>
+      <div class="card-body">
+        <p style="color:var(--text-secondary);margin-bottom:1rem">Once deleted, your account and all associated data cannot be recovered.</p>
         <form method="POST" onsubmit="return confirm('Do you really want to delete your account?')">
           <input type="hidden" name="key" value="<?=$deleteKey ?>">
-          <button type="submit" class="btn btn-danger mb-3">Delete account</button>
+          <button type="submit" class="btn btn-danger">Delete account</button>
         </form>
       </div>
     </div>
