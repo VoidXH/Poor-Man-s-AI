@@ -373,11 +373,11 @@ img {
   padding: 1rem 1.5rem !important;
 }
 
-#model {
+.target {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
-  margin-bottom: 0.75rem;
+  row-gap: 0.4rem;
 }
 
 .alert {

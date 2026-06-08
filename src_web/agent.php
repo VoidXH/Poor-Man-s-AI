@@ -35,7 +35,7 @@ $offline = $time - getAIVar("agent-available") > $procTimeout;
     	</div>
 		<div class="card-footer">
 <?php if (!$offline) { ?>
-			<div id="path" class="mb-1">
+			<div id="path" class="target mb-1">
 <?php
 	$paths = preg_split('/\s*,\s*/', $agentPaths);
 	foreach ($paths as $index => $path) {

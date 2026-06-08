@@ -56,7 +56,7 @@ if ($standalone) {
     	</div>
 		<div class="card-footer">
 <?php if (!$offline) { ?>
-			<div id="model" class="mb-1">
+			<div id="model" class="target mb-1">
 <?php
 	$models = preg_split('/\s*,\s*/', $chatModels);
 	foreach ($models as $index => $model) {
