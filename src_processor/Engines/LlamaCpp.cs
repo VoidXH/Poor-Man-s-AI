@@ -211,28 +211,20 @@ public partial class LlamaCpp : ChatEngine {
         if (subfolders.Length == 1 && !Directory.GetFiles(workingDir).Any(x => !x.EndsWith(".DS_Store"))) {
             workingDir = subfolders[0];
         }
+        string executable = Path.Combine(workingDir, OperatingSystem.IsWindows() ? "llama-server.exe" : "llama-server");
 
-        ProcessStartInfo info = new() {
-            WorkingDirectory = workingDir,
-            Arguments = $"-m \"{lastModel.FilePath}\" --port {settings.Port} -c {settings.Context} -np {settings.Parallel} --keep {settings.Keep}" +
-                $" --reasoning-budget {Config.chatReasoningBudget}",
-            RedirectStandardError = true,
-            RedirectStandardOutput = true,
-            UseShellExecute = false
-        };
+        ProcessStartInfo info = ProcessUtils.CreateRedirectedStartInfo(executable, workingDir);
+        info.Arguments = $"-m \"{lastModel.FilePath}\" --port {settings.Port} -c {settings.Context} -np {settings.Parallel} --keep {settings.Keep}" +
+                $" --reasoning-budget {Config.chatReasoningBudget}";
         if (settings.GPU) {
             info.Arguments += " -ngl 999";
         }
         if (Config.chatLocalhost) {
             info.Arguments += " --host 0.0.0.0";
         }
-        if (OperatingSystem.IsWindows()) {
-            info.FileName = Path.Combine(workingDir, "llama-server.exe");
-        } else {
-            info.FileName = Path.Combine(workingDir, "llama-server");
-        }
-        Logger.Debug("Llama.cpp launched with: " + info.Arguments);
+
         Process instance = Process.Start(info);
+        Logger.Debug("Llama.cpp launched with: " + info.Arguments);
         instance.ErrorDataReceived += SanitizeLog;
         instance.OutputDataReceived += SanitizeLog;
         instance.BeginErrorReadLine();

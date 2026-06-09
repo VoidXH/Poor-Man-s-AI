@@ -1,6 +1,6 @@
 const customPath = typeof pmaiPath !== "undefined" ? pmaiPath : "";
 
-const escape = (x) => x.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;").replaceAll("\n", "<br>");
+const escape = (x) => x.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;");
 
 $(document).ready(function() {
 	$("#chat, #think, #code").click(function() {
@@ -94,3 +94,8 @@ $("#input").keypress(function(e) {
 		$("#send").click();
 	}
 });
+
+function sendCommandByPrompt(command) {
+	$("#input").val("[" + command + "]");
+	send();
+}

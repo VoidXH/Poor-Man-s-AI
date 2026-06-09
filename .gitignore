@@ -6,3 +6,4 @@ WebLocation.txt
 src_processor/Configuration/custom_mac.ini
 src_processor/Configuration/custom_win.ini
 src_processor/Extensions/_Local.cs
+tests\TestData\GitWithChanges

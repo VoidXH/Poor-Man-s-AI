@@ -14,7 +14,7 @@ namespace PoorMansAI.Engines;
 /// LLM chatbot running an external CLI agent per prompt.
 /// </summary>
 /// <param name="settings">How this instance is configured</param>
-public class AgentEngine(AgentSettings settings) : Engine {
+public partial class AgentEngine(AgentSettings settings) : Engine {
     /// <summary>
     /// Safely handles <see cref="canceller"/> from multiple threads.
     /// </summary>
@@ -42,27 +42,29 @@ public class AgentEngine(AgentSettings settings) : Engine {
             workingDir = "";
             prompt = command.Prompt;
         }
-        string processCommand = settings.Command.Replace("{{PROMPT}}", prompt.Replace("\"", "\\\""));
 
         if (string.IsNullOrEmpty(workingDir) || !Directory.Exists(workingDir)) {
             workingDir = Environment.CurrentDirectory;
         }
 
-        ProcessStartInfo info = new() {
-            FileName = "cmd",
-            Arguments = $"/c {processCommand}",
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            UseShellExecute = false,
-            CreateNoWindow = true,
-            WorkingDirectory = workingDir,
-            StandardOutputEncoding = Encoding.UTF8,
-            StandardErrorEncoding = Encoding.UTF8
-        };
-
         StringBuilder output = new();
-        DateTime lastUpdate = DateTime.UtcNow;
-        TimeSpan updateTimeSpan = TimeSpan.FromMilliseconds(Config.serverPollInterval);
+        if (prompt.StartsWith('[')) {
+            int commandClose = prompt.IndexOf(']', StringComparison.Ordinal);
+            if (commandClose > 0) {
+                string extraCommand = prompt[1..commandClose];
+                string result = ExtraCommandHandler(workingDir, extraCommand);
+                if (!string.IsNullOrEmpty(result)) {
+                    output.AppendLine(result);
+                    prompt = prompt[(commandClose + 1)..];
+                }
+            }
+        }
+        if (string.IsNullOrEmpty(prompt)) {
+            return output.ToString();
+        }
+
+        ProcessStartInfo info = ProcessUtils.CreateRedirectedStartInfo("cmd", workingDir);
+        info.Arguments = "/c " + settings.Command.Replace("{{PROMPT}}", prompt.Replace("\"", "\\\""));
 
         lock (cancellerLock) {
             canceller = new CancellationTokenSource(TimeSpan.FromSeconds(settings.Timeout));
@@ -77,6 +79,8 @@ public class AgentEngine(AgentSettings settings) : Engine {
         };
         instance.BeginErrorReadLine();
 
+        DateTime lastUpdate = DateTime.UtcNow;
+        TimeSpan updateTimeSpan = TimeSpan.FromMilliseconds(Config.serverPollInterval);
         try {
             Task.Run(async () => {
                 while (!canceller.Token.IsCancellationRequested && !instance.HasExited) {

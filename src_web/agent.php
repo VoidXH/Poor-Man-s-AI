@@ -24,6 +24,15 @@ $offline = $time - getAIVar("agent-available") > $procTimeout;
 	require('proc/chat/menu.php');
 ?>
 			<span class="text-center flex-grow-1">Agent <?=$chatName ?></span>
+			<div class="dropdown">
+				<button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+					<span class="fas fa-terminal"></span>
+				</button>
+				<ul class="dropdown-menu dropdown-menu-end">
+					<li><a class="dropdown-item" onclick="sendCommandByPrompt('GitStatus')">List changed files</a></li>
+					<li><a class="dropdown-item" onclick="sendCommandByPrompt('GitDiff')">List all changes</a></li>
+				</ul>
+			</div>
 		</div>
 		<div class="chat">
 			<div id="display">

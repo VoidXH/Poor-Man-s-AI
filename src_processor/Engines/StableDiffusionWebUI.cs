@@ -9,6 +9,7 @@ using PoorMansAI.NewTech.VoidMoA;
 
 using Config = PoorMansAI.Configuration.Config;
 using Timer = System.Threading.Timer;
+using PoorMansAI.Engines.Utilities;
 
 namespace PoorMansAI.Engines;
 
@@ -88,19 +89,15 @@ public partial class StableDiffusionWebUI : ImageEngine {
             }
         }
 
-        ProcessStartInfo info = new() {
-            WorkingDirectory = dir,
-            RedirectStandardError = true,
-            RedirectStandardOutput = true,
-            UseShellExecute = false
-        };
+        string executable;
         if (OperatingSystem.IsWindows()) {
             PrepareForWindows(root);
-            info.FileName = Path.Combine(dir, "webui.bat");
+            executable = Path.Combine(dir, "webui.bat");
         } else {
             PrepareForMac(dir);
-            info.FileName = Path.Combine(dir, "webui.sh");
+            executable = Path.Combine(dir, "webui.sh");
         }
+        ProcessStartInfo info = ProcessUtils.CreateRedirectedStartInfo(executable, dir);
         Process instance = Process.Start(info);
         instance.ErrorDataReceived += SanitizeLog;
         instance.OutputDataReceived += SanitizeLog;
