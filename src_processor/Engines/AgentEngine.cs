@@ -83,13 +83,16 @@ public partial class AgentEngine(AgentSettings settings) : Engine {
         TimeSpan updateTimeSpan = TimeSpan.FromMilliseconds(Config.serverPollInterval);
         try {
             Task.Run(async () => {
-                while (!canceller.Token.IsCancellationRequested && !instance.HasExited) {
+                while (true) {
+                    canceller.Token.ThrowIfCancellationRequested();
+
                     string line = await instance.StandardOutput.ReadLineAsync(canceller.Token);
                     if (line == null) {
-                        continue;
+                        break;
                     }
 
                     output.AppendLine(line);
+
                     if (DateTime.UtcNow >= lastUpdate + updateTimeSpan) {
                         UpdateProgress(command, .5f, output.ToString().Trim());
                         lastUpdate = DateTime.UtcNow;
