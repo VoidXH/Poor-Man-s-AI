@@ -37,7 +37,8 @@ public static class ChangedFiles {
     static readonly string gitDiffDisplay = @"
 <link rel=""stylesheet"" href=""https://cdn.jsdelivr.net/npm/diff2html/bundles/css/diff2html.min.css"" />
 <script src=""https://cdn.jsdelivr.net/npm/diff2html/bundles/js/diff2html-ui.min.js""></script>
-<style>table .d2h-info, table .d2h-ins, table .d2h-del, .d2h-file-header {{ color: black; }}</style>
+<style>table .d2h-info, table .d2h-ins, table .d2h-del, .d2h-file-header {{ color: black; }}
+.d2h-code-linenumber, .d2h-code-side-linenumber {{ display: none !important; }}</style>
 <div id=""diffDisplay""></div>
 <script>
   (function() {{
