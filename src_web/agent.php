@@ -29,8 +29,13 @@ $offline = $time - getAIVar("agent-available") > $procTimeout;
 					<span class="fas fa-terminal"></span>
 				</button>
 				<ul class="dropdown-menu dropdown-menu-end">
+					<li><a class="dropdown-item" onclick="sendCommandByPrompt('Files')">List files</a></li>
 					<li><a class="dropdown-item" onclick="sendCommandByPrompt('GitStatus')">List changed files</a></li>
-					<li><a class="dropdown-item" onclick="sendCommandByPrompt('GitDiff')">List all changes</a></li>
+					<li><a class="dropdown-item" onclick="sendCommandByPrompt('GitDiff')">Show all changes</a></li>
+        			<li><hr class="dropdown-divider"></li>
+					<li><a class="dropdown-item" onclick="sendCommandByPrompt('Queue:' + $('#input').val())">Queue written prompt</a></li>
+					<li><a class="dropdown-item" onclick="sendCommandByPrompt('Queue')">Show queue</a></li>
+					<li><a class="dropdown-item" onclick="sendCommandByPrompt('QueueClear')">Clear queue</a></li>
 				</ul>
 			</div>
 		</div>

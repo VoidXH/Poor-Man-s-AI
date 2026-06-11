@@ -13,8 +13,12 @@ namespace PoorMansAI.Engines;
 /// <summary>
 /// LLM chatbot running an external CLI agent per prompt.
 /// </summary>
-/// <param name="settings">How this instance is configured</param>
-public partial class AgentEngine(AgentSettings settings) : Engine {
+public partial class AgentEngine : Engine {
+    /// <summary>
+    /// How this instance is configured.
+    /// </summary>
+    readonly AgentSettings settings;
+
     /// <summary>
     /// Safely handles <see cref="canceller"/> from multiple threads.
     /// </summary>
@@ -29,6 +33,15 @@ public partial class AgentEngine(AgentSettings settings) : Engine {
     /// The currently working agent's handle.
     /// </summary>
     Process instance;
+
+    /// <summary>
+    /// LLM chatbot running an external CLI agent per prompt.
+    /// </summary>
+    /// <param name="settings">How this instance is configured</param>
+    public AgentEngine(AgentSettings settings) {
+        this.settings = settings;
+        LaunchQueueThread();
+    }
 
     /// <inheritdoc/>
     public override string Generate(Command command) {
@@ -139,6 +152,7 @@ public partial class AgentEngine(AgentSettings settings) : Engine {
     /// <inheritdoc/>
     public override void Dispose() {
         StopGeneration();
+        StopQueueThread();
         GC.SuppressFinalize(this);
     }
 

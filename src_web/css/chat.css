@@ -500,12 +500,12 @@ img {
     border-radius: 0;
   }
 
-  .reply .text {
-    max-width: 100%;
-  }
-
   .message .text {
     max-width: 85%;
+  }
+
+  .reply .text {
+    max-width: 100%;
   }
 
   .suggestion-grid {

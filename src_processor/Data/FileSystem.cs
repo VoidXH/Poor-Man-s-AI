@@ -42,7 +42,7 @@ public static class FileSystem {
 
             foreach (string file in files.OrderBy(f => Path.GetFileName(f))) {
                 string name = Path.GetFileName(file);
-                result.Append($"<li>{name}</li>");
+                result.Append($"<li><a href=\"javascript:void(0)\" onclick=\"sendCommandByPrompt('File:{file.Replace("\\", "\\\\")}')\">{name}</a></li>");
             }
 
             result.Append("</ul>");
