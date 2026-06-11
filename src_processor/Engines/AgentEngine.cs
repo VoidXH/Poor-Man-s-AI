@@ -43,6 +43,21 @@ public partial class AgentEngine : Engine {
         LaunchQueueThread();
     }
 
+    /// <summary>
+    /// Cut the beginning of the <paramref name="output"/> of an agent to make it fit into the <see cref="uploadLimit"/>.
+    /// </summary>
+    static string CutOutput(string output) {
+        string result = output.Trim();
+        if (result.Length > uploadLimit) {
+            string window = result[^uploadLimit..];
+            int split = window.IndexOf('\n');
+            if (split != -1) {
+                result = result[(split + 1)..];
+            }
+        }
+        return result;
+    }
+
     /// <inheritdoc/>
     public override string Generate(Command command) {
         int splitter = command.Prompt.IndexOf('|');
@@ -65,7 +80,7 @@ public partial class AgentEngine : Engine {
             int commandClose = prompt.IndexOf(']', StringComparison.Ordinal);
             if (commandClose > 0) {
                 string extraCommand = prompt[1..commandClose];
-                string result = ExtraCommandHandler(workingDir, extraCommand);
+                string result = ExtraCommandHandler(workingDir, extraCommand, command.ID);
                 if (!string.IsNullOrEmpty(result)) {
                     output.AppendLine(result);
                     prompt = prompt[(commandClose + 1)..];
@@ -76,11 +91,37 @@ public partial class AgentEngine : Engine {
             return output.ToString();
         }
 
+        RunAgentEngine(workingDir, prompt, output, () => UpdateProgress(command, .5f, CutOutput(output.ToString())));
+        return CutOutput(output.ToString());
+    }
+
+    /// <inheritdoc/>
+    public override void StopGeneration() {
+        lock (cancellerLock) {
+            canceller?.Cancel();
+        }
+    }
+
+    /// <inheritdoc/>
+    public override void Dispose() {
+        StopGeneration();
+        StopQueueThread();
+        GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// Perform a <paramref name="prompt"/> in a <paramref name="workingDir"/> on the agent engine, and put its result in the <paramref name="output"/>.
+    /// </summary>
+    void RunAgentEngine(string workingDir, string prompt, StringBuilder output, Action onUpdate) {
         ProcessStartInfo info = ProcessUtils.CreateRedirectedStartInfo("cmd", workingDir);
         info.Arguments = "/c " + settings.Command.Replace("{{PROMPT}}", prompt.Replace("\"", "\\\""));
 
+        bool disposeCanceller = false;
         lock (cancellerLock) {
-            canceller = new CancellationTokenSource(TimeSpan.FromSeconds(settings.Timeout));
+            if (canceller == null) {
+                canceller = new CancellationTokenSource(TimeSpan.FromSeconds(settings.Timeout));
+                disposeCanceller = true;
+            }
             instance = Process.Start(info) ?? throw new InvalidOperationException("Could not start the agent process.");
         }
 
@@ -107,7 +148,7 @@ public partial class AgentEngine : Engine {
                     output.AppendLine(line);
 
                     if (DateTime.UtcNow >= lastUpdate + updateTimeSpan) {
-                        UpdateProgress(command, .5f, output.ToString().Trim());
+                        onUpdate();
                         lastUpdate = DateTime.UtcNow;
                     }
                 }
@@ -125,35 +166,13 @@ public partial class AgentEngine : Engine {
 
             instance.Dispose();
             instance = null;
-            lock (cancellerLock) {
-                canceller?.Dispose();
-                canceller = null;
+            if (disposeCanceller) {
+                lock (cancellerLock) {
+                    canceller?.Dispose();
+                    canceller = null;
+                }
             }
         }
-
-        string reply = output.ToString().Trim();
-        if (reply.Length > uploadLimit) {
-            string window = reply[^uploadLimit..];
-            int split = window.IndexOf('\n');
-            if (split != -1) {
-                reply = reply[(split + 1)..];
-            }
-        }
-        return reply;
-    }
-
-    /// <inheritdoc/>
-    public override void StopGeneration() {
-        lock (cancellerLock) {
-            canceller?.Cancel();
-        }
-    }
-
-    /// <inheritdoc/>
-    public override void Dispose() {
-        StopGeneration();
-        StopQueueThread();
-        GC.SuppressFinalize(this);
     }
 
     /// <summary>

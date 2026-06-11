@@ -46,9 +46,10 @@ partial class AgentEngine {
     /// Handler for extra commands enclosed in square brackets at the start of a prompt.
     /// If the command is valid, it's removed from the prompt and its result is appended to the result.
     /// </summary>
-    string ExtraCommandHandler(string projectFolder, string command) => command switch {
+    string ExtraCommandHandler(string projectFolder, string command, int commandID) => command switch {
         string cmd when cmd.StartsWith("File:") => ReadFile(cmd[5..]),
         string task when task.StartsWith("Queue:") => AddToQueue(task[6..]),
+        string task when task.StartsWith("Scrum:") => RunInScrumMode(new(EngineType.Agent, commandID, task)),
         "Files" => FileSystem.GetTree(projectFolder, ".git", ".vs", "bin", "obj", "Library"),
         "GitDiff" => ChangedFiles.GetAllDiffs(projectFolder),
         "GitStatus" => string.Join("<br>", ChangedFiles.GetChangedFiles(projectFolder)),

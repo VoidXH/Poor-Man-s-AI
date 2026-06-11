@@ -33,9 +33,11 @@ $offline = $time - getAIVar("agent-available") > $procTimeout;
 					<li><a class="dropdown-item" onclick="sendCommandByPrompt('GitStatus')">List changed files</a></li>
 					<li><a class="dropdown-item" onclick="sendCommandByPrompt('GitDiff')">Show all changes</a></li>
         			<li><hr class="dropdown-divider"></li>
-					<li><a class="dropdown-item" onclick="sendCommandByPrompt('Queue:' + $('#input').val())">Queue written prompt</a></li>
+					<li><a class="dropdown-item" onclick="sendCommandByPrompt('Queue:' + $('#input').val())">Queue prompt</a></li>
 					<li><a class="dropdown-item" onclick="sendCommandByPrompt('Queue')">Show queue</a></li>
 					<li><a class="dropdown-item" onclick="sendCommandByPrompt('QueueClear')">Clear queue</a></li>
+        			<li><hr class="dropdown-divider"></li>
+					<li><a class="dropdown-item" onclick="sendCommandByPrompt('Scrum:' + $('#input').val())">Perform in Scrum Mode</a></li>
 				</ul>
 			</div>
 		</div>

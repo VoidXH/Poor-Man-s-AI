@@ -42,6 +42,14 @@ models.
 Poor Man's AI has a few tricks up its sleeve either first introduced in this
 software or rarely found in the wild.
 
+### Scrum Mode
+Makes small models able to perform even the most complex of tasks. By splitting
+agentic prompts into subtasks, and running subtasks until completion, a level of
+prompt following and success rate can be achieved that even frontier models
+struggle to reach. This is the kind of agentic workflow you can finally leave
+running while you're leaving your computer, without the need for continuous
+review and intervention. The Processor will do the job of a manager for you.
+
 ### Mixture-of-Artists (MoA)
 The image generation part is based on allowing model swapping on demand. Prompts
 are either fed to an LLM to choose the best "artist" for the job, or they can
