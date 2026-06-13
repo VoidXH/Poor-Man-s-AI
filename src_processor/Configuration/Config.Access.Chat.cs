@@ -102,6 +102,11 @@
         public static readonly int chatDiscard = int.Parse(Values["ChatDiscard"]);
 
         /// <summary>
+        /// When using models with Multi-Token Prediction, predict this many at once.
+        /// </summary>
+        public static readonly int chatMTP = int.Parse(Values["ChatMTP"]);
+
+        /// <summary>
         /// Parallel requests chat can serve, larger values take up more RAM.
         /// </summary>
         public static readonly int chatParallel = int.Parse(Values["ChatParallel"]);

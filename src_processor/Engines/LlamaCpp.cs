@@ -214,10 +214,13 @@ public partial class LlamaCpp : ChatEngine {
         string executable = Path.Combine(workingDir, OperatingSystem.IsWindows() ? "llama-server.exe" : "llama-server");
 
         ProcessStartInfo info = ProcessUtils.CreateRedirectedStartInfo(executable, workingDir);
-        info.Arguments = $"-m \"{lastModel.FilePath}\" --port {settings.Port} -c {settings.Context} -np {settings.Parallel} --keep {settings.Keep}" +
+        info.Arguments = $"-m \"{lastModel.FilePath}\" --port {settings.Port} -c {settings.Context} -np {settings.Parallel} -fa on --keep {settings.Keep}" +
                 $" --reasoning-budget {Config.chatReasoningBudget}";
         if (settings.GPU) {
             info.Arguments += " -ngl 999";
+        }
+        if (settings.MTP > 1) {
+            info.Arguments += " --spec-type draft-mtp --spec-draft-n-max " + settings.MTP;
         }
         if (Config.chatLocalhost) {
             info.Arguments += " --host 0.0.0.0";

@@ -49,6 +49,11 @@ public class LlamaCppSettings {
     public int Discard { get; set; } = 512;
 
     /// <summary>
+    /// When using models with Multi-Token Prediction, predict this many at once.
+    /// </summary>
+    public int MTP { get; set; } = 1;
+
+    /// <summary>
     /// Parallel requests chat can serve, larger values take up more RAM.
     /// </summary>
     public int Parallel { get; set; } = 1;
@@ -70,6 +75,8 @@ public class LlamaCppSettings {
         Context = llm ? Config.chatContextLLM : Config.chatContextSLM;
         Keep = Config.chatKeep;
         Discard = Config.chatDiscard;
+        MTP = Config.chatMTP;
+        Parallel = Config.chatParallel;
     }
 
     /// <summary>
