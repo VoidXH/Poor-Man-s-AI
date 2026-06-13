@@ -48,6 +48,9 @@ function onPartialResult(progress, result) {
 	const rawBytes = Uint8Array.from([...result].map(char => char.charCodeAt(0)));
 	result = decoder.decode(rawBytes);
 	$("#result").html(marked.parse(result));
+	$("#result pre code").each(function(i, block) {
+		hljs.highlightElement(block);
+	});
 }
 
 function onFinalResult(progress, result) {

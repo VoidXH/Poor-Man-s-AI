@@ -71,6 +71,10 @@ function onPartialResult(progress, result) {
 		$(".chat").animate({ scrollTop: $(".chat")[0].scrollHeight }, 500);
 		newMessage = false;
 	}
+
+	$(".reply pre code").each(function(i, block) {
+		hljs.highlightElement(block);
+	});
 }
 
 function onFinalResult(progress, result) {

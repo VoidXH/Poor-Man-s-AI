@@ -76,8 +76,10 @@ const you = "<?=htmlspecialchars($_COOKIE['username']) ?>";
 <script src="<?=$jqueryPath ?>"></script>
 <script src="<?=$bootstrapJSPath ?>"></script>
 <script src="<?=$markedPath ?>"></script>
+<script src="<?=$highlightPath ?>"></script>
 <script src="js/agent.js"></script>
 <script src="js/command.js"></script>
+<link rel="stylesheet" href="<?=$highlightCSSPath ?>">
 <a class="br" href="https://github.com/VoidXH/Poor-Man-s-AI"><img src="img/github.svg"></a>
 </body>
 </html>

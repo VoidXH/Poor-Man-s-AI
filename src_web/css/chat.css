@@ -185,11 +185,6 @@ img {
   font-size: 0.85rem;
 }
 
-.message .text code {
-  background: rgba(0, 0, 0, 0.25);
-  color: #a8a4ff;
-}
-
 .message .text table {
   width: 100%;
   border-collapse: collapse;

@@ -71,6 +71,8 @@ editVar("Bootstrap CSS path", "bootstrapPath");
 editVar("Bootstrap JS path", "bootstrapJSPath");
 editVar("JQuery path", "jqueryPath");
 editVar("Marked path", "markedPath");
+editVar("Highlight.JS JS path", "highlightPath");
+editVar("Highlight.JS CSS path", "highlightCSSPath");
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     file_put_contents("__config.php", "<"."?php".PHP_EOL.$result."?".">");
 }

@@ -50,4 +50,6 @@ $bootstrapPath= 'https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap
 $bootstrapJSPath= 'https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js';
 $jqueryPath = "https://code.jquery.com/jquery-3.6.0.min.js";
 $markedPath = "https://cdn.jsdelivr.net/npm/marked/marked.min.js";
+$highlightPath = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js";
+$highlightCSSPath = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css";
 ?>

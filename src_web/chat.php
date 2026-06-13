@@ -84,7 +84,9 @@ const gpt = "<?=htmlspecialchars($chatName) ?>";
 </script>
 <script src="<?=$jqueryPath ?>"></script>
 <script src="<?=$markedPath ?>"></script>
+<script src="<?=$highlightPath ?>"></script>
 <script src="js/chat.js"></script>
+<link rel="stylesheet" href="<?=$highlightCSSPath ?>">
 <?php if ($standalone) { ?>
 <script src="<?=$bootstrapJSPath ?>"></script>
 <script src="js/command.js"></script>
