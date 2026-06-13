@@ -14,6 +14,10 @@ public static class FileSystem {
             return "<p>Folder not found.</p>";
         }
 
+        if (Directory.GetDirectories(folder).Length == 0 && Directory.GetFiles(folder).Length == 0) {
+            return "<p>The folder is empty.</p>";
+        }
+
         StringBuilder result = new();
         Array.Sort(skipped);
         BuildTree(result, folder, skipped);
@@ -42,7 +46,8 @@ public static class FileSystem {
 
             foreach (string file in files.OrderBy(f => Path.GetFileName(f))) {
                 string name = Path.GetFileName(file);
-                result.Append($"<li><a href=\"javascript:void(0)\" onclick=\"sendCommandByPrompt('File:{file.Replace("\\", "\\\\")}')\">{name}</a></li>");
+                string path = file.Replace("\\", "\\\\");
+                result.Append($"<li><a href=\"javascript:void(0)\" onclick=\"sendCommandByPrompt('File:{path}')\">{name}</a> <button class=\"btn btn-secondary btn-sm p-0\" onclick=\"prependFileCommand('{path}')\">+</button></li>");
             }
 
             result.Append("</ul>");

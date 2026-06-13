@@ -76,23 +76,35 @@ public partial class AgentEngine : Engine {
         }
 
         StringBuilder output = new();
-        if (prompt.StartsWith('[')) {
+        while (prompt.StartsWith('[')) {
             int commandClose = prompt.IndexOf(']', StringComparison.Ordinal);
-            if (commandClose > 0) {
-                string extraCommand = prompt[1..commandClose];
-                string result = ExtraCommandHandler(workingDir, extraCommand, command.ID);
-                if (!string.IsNullOrEmpty(result)) {
-                    output.AppendLine(result);
-                    prompt = prompt[(commandClose + 1)..];
-                }
+            if (commandClose < 0) {
+                break;
             }
+
+            string extraCommand = prompt[1..commandClose];
+            string result = ExtraCommandHandler(workingDir, extraCommand, command.ID);
+            if (!string.IsNullOrEmpty(result)) {
+                output.AppendLine(result);
+            }
+            prompt = prompt[(commandClose + 1)..];
         }
+
+        string preprocessing = output.ToString();
         if (string.IsNullOrEmpty(prompt)) {
-            return output.ToString();
+            return preprocessing;
+        }
+
+        if (!string.IsNullOrEmpty(preprocessing)) {
+            output.Clear();
+            prompt = $"{preprocessing.Replace("\"", "\\\"")}\n{prompt}";
         }
 
         RunAgentEngine(workingDir, prompt, output, () => UpdateProgress(command, .5f, CutOutput(output.ToString())));
-        return CutOutput(output.ToString());
+        string finalOutput = CutOutput(output.ToString());
+        return string.IsNullOrEmpty(finalOutput) ?
+            "Error." :
+            finalOutput;
     }
 
     /// <inheritdoc/>

@@ -31,12 +31,13 @@ partial class AgentEngine {
     /// </summary>
     static string ReadFile(string path) {
         if (!File.Exists(path)) {
-            return $"<p style=\"color:red;\">File not found: {path}</p>";
+            return string.Format(fileNotFound, path);
         }
 
         try {
-            string content = File.ReadAllText(path).Replace("<", "&lt;").Replace(">", "&gt;");
-            return $"<pre>{content}</pre>";
+            string language = Markdown.GetLanguageCodeword(Path.GetExtension(path));
+            string content = File.ReadAllText(path);
+            return $"## Contents of {path}\n```{language}\n{content}\n```\n------------------------------";
         } catch (Exception ex) {
             return $"<p style=\"color:red;\">Error reading file: {path} - {ex.Message}</p>";
         }
@@ -47,7 +48,7 @@ partial class AgentEngine {
     /// If the command is valid, it's removed from the prompt and its result is appended to the result.
     /// </summary>
     string ExtraCommandHandler(string projectFolder, string command, int commandID) => command switch {
-        string cmd when cmd.StartsWith("File:") => ReadFile(cmd[5..]),
+        string cmd when cmd.StartsWith("File:") => cmd[5..].StartsWith(projectFolder) ? ReadFile(cmd[5..]) : string.Format(fileNotFound, cmd[5..]),
         string task when task.StartsWith("Queue:") => AddToQueue(task[6..]),
         string task when task.StartsWith("Scrum:") => RunInScrumMode(new(EngineType.Agent, commandID, task)),
         "Files" => FileSystem.GetTree(projectFolder, ".git", ".vs", "bin", "obj", "Library"),
@@ -127,4 +128,9 @@ partial class AgentEngine {
         queueRunner.Join();
         queueCanceller = null;
     }
+
+    /// <summary>
+    /// Error message for wrong paths.
+    /// </summary>
+    const string fileNotFound = "<p style=\"color:red;\">File not found: {0}</p>";
 }

@@ -63,16 +63,25 @@ function onHTTPError(errorCode) {
 	onPartialResult(50, "Temporary error (HTTP " + errorCode + "), retrying...");
 }
 
+function getPrompt() {
+	const fileBlocks = [];
+	$("#file-blocks-container .file-block").each(function() {
+		fileBlocks.push("[File:" + $(this).attr("data-path") + "]");
+	});
+	return fileBlocks.join('') + $("#input").val();
+}
+
 function send() {
 	if ($("#send").prop("disabled")) {
 		return;
 	}
-	const input = $("#input").val();
+	const input = getPrompt();
 	if (input) {
 		activate(true);
 		$("#display").html('<div class="message"><p class="username">' + you + '</p><p class="text">' + escape(input) + '</p></div>' +
 			'<div class="message reply"><p class="username">Agent</p><p id="result" class="text">...</p></div>');
 		$("#input").val("");
+		$("#file-blocks-container").empty();
 		sendCommand("Agent", getPath() + "|" + input, customPath);
 		$("#display").animate({ scrollTop: $("#display").prop("scrollHeight") }, 500);
 	}
@@ -80,6 +89,7 @@ function send() {
 
 function reset() {
 	$("#input").val("");
+	$("#file-blocks-container").empty();
 	$("#display").html("");
 }
 
@@ -98,4 +108,23 @@ $("#input").keypress(function(e) {
 function sendCommandByPrompt(command) {
 	$("#input").val("[" + command + "]");
 	send();
+}
+
+function removeFileBlock(blockId) {
+	$("#file-block-" + blockId).remove();
+	reindexFileBlocks();
+}
+
+function reindexFileBlocks() {
+	$("#file-blocks-container .file-block").each(function(index) {
+		$(this).attr("data-index", index);
+	});
+}
+
+function prependFileCommand(path) {
+	const index = $("#file-blocks-container .file-block").length;
+	const fileName = path.split(/[\\/]/).pop();
+	const blockHtml = '<div class="file-block" id="file-block-' + index + '" data-path="' + escape(path) + '"><span class="file-block-name">' + escape(fileName) + '</span><button class="file-block-remove" onclick="removeFileBlock(' + index + ')" title="Remove">×</button></div>';
+	$("#file-blocks-container").append(blockHtml);
+	$("#input").focus();
 }

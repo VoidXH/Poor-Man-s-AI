@@ -60,6 +60,7 @@ $offline = $time - getAIVar("agent-available") > $procTimeout;
 	}
 ?>
 			</div>
+			<div class="file-input-container" id="file-blocks-container"></div>
 			<div class="input-group">
 				<textarea class="form-control" id="input" placeholder="Give <?=$chatName ?> a task..." autofocus></textarea>
 				<button class="btn btn-danger" id="stop" style="display:none;" onclick="stop()">Stop</button>
