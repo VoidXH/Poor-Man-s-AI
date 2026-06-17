@@ -18,7 +18,7 @@ function getPath() {
 	var res = "";
 	$("#path button").each(function() {
 		if ($(this).attr("class").includes("btn-primary")) {
-			res = $(this).text();
+			res = $(this).attr("data-path");
 		}
 	});
 	return res;
@@ -43,11 +43,7 @@ function onPartialResult(progress, result) {
 		return;
 	}
 
-	const decoder = new TextDecoder('utf-8');
-	const encoder = new TextEncoder();
-	const rawBytes = Uint8Array.from([...result].map(char => char.charCodeAt(0)));
-	result = decoder.decode(rawBytes);
-	$("#result").html(marked.parse(result));
+	$("#result").html(marked.parse(result, { breaks: true }));
 	$("#result pre code").each(function(i, block) {
 		hljs.highlightElement(block);
 	});

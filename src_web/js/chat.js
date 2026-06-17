@@ -77,6 +77,14 @@ function onPartialResult(progress, result) {
 	});
 }
 
+function stripImageTags(text) {
+	return text.replace(/<img[\s\S]*?>/gi, function(tag) {
+		const altMatch = tag.match(/alt=["']([^"']*)["']/i);
+		const titleMatch = tag.match(/title=["']([^"']*)["']/i);
+		return altMatch ? altMatch[1] : (titleMatch ? titleMatch[1] : "");
+	});
+}
+
 function onFinalResult(progress, result) {
 	onPartialResult(progress, result);
 	activate(false);
@@ -88,7 +96,7 @@ function onFinalResult(progress, result) {
 	if (endIdx != -1) {
 		result = result.substring(endIdx + thinkEnd.length).trim();
 	}
-	hist.push(result);
+	hist.push(stripImageTags(result));
 }
 
 function onHTTPError(errorCode) {

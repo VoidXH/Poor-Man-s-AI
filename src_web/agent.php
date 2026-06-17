@@ -56,7 +56,8 @@ $offline = $time - getAIVar("agent-available") > $procTimeout;
 	$paths = preg_split('/\s*,\s*/', $agentPaths);
 	foreach ($paths as $index => $path) {
 		$class = ($index == 0) ? "btn btn-primary btn-sm" : "btn btn-secondary btn-sm";
-		echo "<button class=\"$class\" id=\"path_$index\">$path</button>\n";
+		$label = basename(str_replace('\\', '/', $path));
+		echo "<button class=\"$class\" id=\"path_$index\" data-path=\"".$path."\">".$label."</button>\n";
 	}
 ?>
 			</div>

@@ -11,4 +11,39 @@ partial class Config {
     /// If agent replies are not done in this many seconds, cancel the generation.
     /// </summary>
     public static readonly int agentTimeout = int.Parse(Values["AgentTimeout"]);
+
+    /// <summary>
+    /// Whether to enable sending emails from the agent.
+    /// </summary>
+    public static readonly bool agentSendEmail = bool.Parse(Values["AgentSendEmail"]);
+
+    /// <summary>
+    /// SMTP server address for sending emails.
+    /// </summary>
+    public static readonly string agentEmailServer = Values["AgentEmailServer"];
+
+    /// <summary>
+    /// SMTP port (587 for TLS, 465 for SSL, 25 for unencrypted).
+    /// </summary>
+    public static readonly int agentSmtpPort = int.Parse(Values["AgentSMTPPort"]);
+
+    /// <summary>
+    /// Whether to use STARTTLS for the SMTP connection.
+    /// </summary>
+    public static readonly bool agentSmtpStartTLS = bool.Parse(Values["AgentSMTPStartTLS"]);
+
+    /// <summary>
+    /// Email account username for SMTP authentication.
+    /// </summary>
+    public static readonly string agentEmailUser = Values["AgentEmailUser"];
+
+    /// <summary>
+    /// Email account password for SMTP authentication.
+    /// </summary>
+    public static readonly string agentEmailPassword = Values["AgentEmailPassword"];
+
+     /// <summary>
+     /// Email recipient for agent completion notifications.
+     /// </summary>
+     public static readonly string agentEmailRecipient = Values["AgentEmailRecipient"];
 }

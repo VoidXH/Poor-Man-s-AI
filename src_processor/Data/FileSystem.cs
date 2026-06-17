@@ -20,32 +20,39 @@ public static class FileSystem {
 
         StringBuilder result = new();
         Array.Sort(skipped);
-        BuildTree(result, folder, skipped);
+        BuildTree(result, new(folder), folder, skipped);
         return result.ToString();
     }
 
     /// <summary>
     /// Recursively build a HTML unordered list tree of all folders and files.
     /// </summary>
-    static void BuildTree(StringBuilder result, string root, string[] skipped) {
+    static void BuildTree(StringBuilder result, GitIgnoreParser gitIgnoreParser, string root, string[] skipped) {
         try {
             string[] folders = Directory.GetDirectories(root);
             string[] files = Directory.GetFiles(root);
             result.Append("<ul>");
 
             foreach (string folder in folders.OrderBy(d => Path.GetFileName(d))) {
-                if (Array.BinarySearch(skipped, Path.GetFileName(folder)) >= 0) {
+                string name = Path.GetFileName(folder);
+                if (Array.BinarySearch(skipped, name) >= 0) {
+                    continue;
+                }
+                if (gitIgnoreParser.IsIgnored(folder, root)) {
                     continue;
                 }
 
-                string name = Path.GetFileName(folder);
-                result.Append($"<li><b>[DIR] {name}</b>");
-                BuildTree(result, folder, skipped);
+                result.Append($"<li><b>{name}</b>");
+                BuildTree(result, gitIgnoreParser, folder, skipped);
                 result.Append("</li>");
             }
 
             foreach (string file in files.OrderBy(f => Path.GetFileName(f))) {
                 string name = Path.GetFileName(file);
+                if (gitIgnoreParser.IsIgnored(file, root)) {
+                    continue;
+                }
+
                 string path = file.Replace("\\", "\\\\");
                 result.Append($"<li><a href=\"javascript:void(0)\" onclick=\"sendCommandByPrompt('File:{path}')\">{name}</a> <button class=\"btn btn-secondary btn-sm p-0\" onclick=\"prependFileCommand('{path}')\">+</button></li>");
             }

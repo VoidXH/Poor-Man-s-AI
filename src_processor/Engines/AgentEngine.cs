@@ -7,6 +7,7 @@ using PoorMansAI.Configuration;
 using PoorMansAI.Engines.BaseClasses;
 using PoorMansAI.Engines.Models;
 using PoorMansAI.Engines.Utilities;
+using PoorMansAI.Services;
 
 namespace PoorMansAI.Engines;
 
@@ -101,10 +102,20 @@ public partial class AgentEngine : Engine {
         }
 
         RunAgentEngine(workingDir, prompt, output, () => UpdateProgress(command, .5f, CutOutput(output.ToString())));
-        string finalOutput = CutOutput(output.ToString());
+        string fulloutput = output.ToString().Trim();
+        string finalOutput = CutOutput(fulloutput);
+
+        if (Config.agentSendEmail) {
+            try {
+                EmailSender.Send(Config.agentEmailRecipient, "Agent Process Completed", $"Working directory: {workingDir}\n\n{fulloutput}");
+            } catch (Exception) {
+                // Email sending failure is non-fatal; ignore silently
+            }
+        }
+
         return string.IsNullOrEmpty(finalOutput) ?
-            "Error." :
-            finalOutput;
+             "Error." :
+             finalOutput;
     }
 
     /// <inheritdoc/>

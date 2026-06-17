@@ -52,6 +52,12 @@ public static class ChangedFiles {
           matching: 'lines'
         }});
         diff2htmlUi.draw();
+        targetElement.querySelectorAll('.d2h-code-line-ctn').forEach(element => {{
+            if (element.innerHTML.includes('&amp;') || element.innerHTML.includes('&gt;') || element.innerHTML.includes('&lt;') || element.innerHTML.includes('&quot;')) {{
+                const doc = new DOMParser().parseFromString(element.innerHTML, 'text/html');
+                element.innerHTML = doc.documentElement.textContent;
+            }}
+        }});
       }}
     }}, 50);
   }})();

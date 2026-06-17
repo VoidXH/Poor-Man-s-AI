@@ -51,7 +51,7 @@ partial class AgentEngine {
         string cmd when cmd.StartsWith("File:") => cmd[5..].StartsWith(projectFolder) ? ReadFile(cmd[5..]) : string.Format(fileNotFound, cmd[5..]),
         string task when task.StartsWith("Queue:") => AddToQueue(task[6..]),
         string task when task.StartsWith("Scrum:") => RunInScrumMode(new(EngineType.Agent, commandID, task)),
-        "Files" => FileSystem.GetTree(projectFolder, ".git", ".vs", "bin", "obj", "Library"),
+        "Files" => FileSystem.GetTree(projectFolder, ".git", ".vs", ".vscode"),
         "GitDiff" => ChangedFiles.GetAllDiffs(projectFolder),
         "GitStatus" => string.Join("<br>", ChangedFiles.GetChangedFiles(projectFolder)),
         "Queue" => ShowQueue(),
