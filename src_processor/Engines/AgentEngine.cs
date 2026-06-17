@@ -107,7 +107,7 @@ public partial class AgentEngine : Engine {
 
         if (Config.agentSendEmail) {
             try {
-                EmailSender.Send(Config.agentEmailRecipient, "Agent Process Completed", $"Working directory: {workingDir}\n\n{fulloutput}");
+                EmailSender.Send(Config.agentEmailRecipient, "Agent Process Completed", $"Prompt: {prompt}\n\nProject folder: {workingDir}\n\n{fulloutput}");
             } catch (Exception) {
                 // Email sending failure is non-fatal; ignore silently
             }
