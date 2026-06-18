@@ -31,11 +31,6 @@ public partial class AgentEngine : Engine {
     CancellationTokenSource canceller;
 
     /// <summary>
-    /// The currently working agent's handle.
-    /// </summary>
-    Process instance;
-
-    /// <summary>
     /// LLM chatbot running an external CLI agent per prompt.
     /// </summary>
     /// <param name="settings">How this instance is configured</param>
@@ -139,6 +134,7 @@ public partial class AgentEngine : Engine {
         ProcessStartInfo info = ProcessUtils.CreateRedirectedStartInfo("cmd", workingDir);
         info.Arguments = "/c " + settings.Command.Replace("{{PROMPT}}", prompt.Replace("\"", "\\\""));
 
+        Process instance;
         bool disposeCanceller = false;
         lock (cancellerLock) {
             if (canceller == null) {
