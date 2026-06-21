@@ -21,14 +21,14 @@ public partial class AgentEngine : Engine {
     readonly AgentSettings settings;
 
     /// <summary>
-    /// Safely handles <see cref="canceller"/> from multiple threads.
+    /// Safely handles the <see cref="promptCancellers"/> dictionary from multiple threads.
     /// </summary>
-    readonly object cancellerLock = new();
+    readonly object cancellersLock = new();
 
     /// <summary>
-    /// Stops the generation when cancellation is triggered or a timeout is reached.
+    /// Maps each active prompt ID to its cancellation token source. Removed automatically when the prompt finishes or fails.
     /// </summary>
-    CancellationTokenSource canceller;
+    readonly Dictionary<int, CancellationTokenSource> promptCancellers = [];
 
     /// <summary>
     /// LLM chatbot running an external CLI agent per prompt.
@@ -96,7 +96,7 @@ public partial class AgentEngine : Engine {
             prompt = $"{preprocessing.Replace("\"", "\\\"")}\n{prompt}";
         }
 
-        RunAgentEngine(workingDir, prompt, output, () => UpdateProgress(command, .5f, CutOutput(output.ToString())));
+        RunAgentEngine(workingDir, command.ID, prompt, output, () => UpdateProgress(command, .5f, CutOutput(output.ToString())));
         string fulloutput = output.ToString().Trim();
         string finalOutput = CutOutput(fulloutput);
 
@@ -115,8 +115,10 @@ public partial class AgentEngine : Engine {
 
     /// <inheritdoc/>
     public override void StopGeneration() {
-        lock (cancellerLock) {
-            canceller?.Cancel();
+        lock (cancellersLock) {
+            foreach (KeyValuePair<int, CancellationTokenSource> pair in promptCancellers) {
+                pair.Value.Cancel();
+            }
         }
     }
 
@@ -130,17 +132,15 @@ public partial class AgentEngine : Engine {
     /// <summary>
     /// Perform a <paramref name="prompt"/> in a <paramref name="workingDir"/> on the agent engine, and put its result in the <paramref name="output"/>.
     /// </summary>
-    void RunAgentEngine(string workingDir, string prompt, StringBuilder output, Action onUpdate) {
+    void RunAgentEngine(string workingDir, int promptId, string prompt, StringBuilder output, Action onUpdate) {
         ProcessStartInfo info = ProcessUtils.CreateRedirectedStartInfo("cmd", workingDir);
         info.Arguments = "/c " + settings.Command.Replace("{{PROMPT}}", prompt.Replace("\"", "\\\""));
 
         Process instance;
-        bool disposeCanceller = false;
-        lock (cancellerLock) {
-            if (canceller == null) {
-                canceller = new CancellationTokenSource(TimeSpan.FromSeconds(settings.Timeout));
-                disposeCanceller = true;
-            }
+        CancellationTokenSource localCanceller = new(TimeSpan.FromSeconds(settings.Timeout));
+
+        lock (cancellersLock) {
+            promptCancellers[promptId] = localCanceller;
             instance = Process.Start(info) ?? throw new InvalidOperationException("Could not start the agent process.");
         }
 
@@ -157,9 +157,9 @@ public partial class AgentEngine : Engine {
         try {
             Task.Run(async () => {
                 while (true) {
-                    canceller.Token.ThrowIfCancellationRequested();
+                    localCanceller.Token.ThrowIfCancellationRequested();
 
-                    string line = await instance.StandardOutput.ReadLineAsync(canceller.Token);
+                    string line = await instance.StandardOutput.ReadLineAsync(localCanceller.Token);
                     if (line == null) {
                         break;
                     }
@@ -171,7 +171,7 @@ public partial class AgentEngine : Engine {
                         lastUpdate = DateTime.UtcNow;
                     }
                 }
-            }, canceller.Token).GetAwaiter().GetResult();
+            }, localCanceller.Token).GetAwaiter().GetResult();
             instance.KillSafe();
         } catch (OperationCanceledException) {
             instance.KillSafe(); // Timeout
@@ -185,10 +185,13 @@ public partial class AgentEngine : Engine {
 
             instance.Dispose();
             instance = null;
-            if (disposeCanceller) {
-                lock (cancellerLock) {
-                    canceller?.Dispose();
-                    canceller = null;
+
+            lock (cancellersLock) {
+                if (promptCancellers.TryGetValue(promptId, out CancellationTokenSource ct)) {
+                    if (ReferenceEquals(ct, localCanceller)) {
+                        promptCancellers.Remove(promptId);
+                        ct.Dispose();
+                    }
                 }
             }
         }

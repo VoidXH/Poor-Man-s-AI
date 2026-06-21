@@ -7,7 +7,7 @@ namespace PoorMansAI.Engines {
         string RunInScrumMode(Command command) {
             StringBuilder output = new();
             object tasks = SplitTask(command, command.Prompt, output);
-            if (canceller.IsCancellationRequested) {
+            if (promptCancellers[command.ID].IsCancellationRequested) {
                 return null;
             }
 
@@ -19,7 +19,7 @@ namespace PoorMansAI.Engines {
         /// Splits the task to subtasks. Each returned instance is either a subtask (string) or a set of further subtasks (object[]), recursively.
         /// </summary>
         object SplitTask(Command command, string task, StringBuilder output) {
-            if (canceller.IsCancellationRequested) {
+            if (promptCancellers[command.ID].IsCancellationRequested) {
                 return null;
             }
 
