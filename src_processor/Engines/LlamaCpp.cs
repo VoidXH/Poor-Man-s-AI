@@ -215,7 +215,7 @@ public partial class LlamaCpp : ChatEngine {
 
         ProcessStartInfo info = ProcessUtils.CreateRedirectedStartInfo(executable, workingDir);
         info.Arguments = $"-m \"{lastModel.FilePath}\" --port {settings.Port} -c {settings.Context} -np {settings.Parallel} -fa on --keep {settings.Keep}" +
-                $" --reasoning-budget {Config.chatReasoningBudget}";
+                $" --temp {lastModel.Temperature:0.00} --min-p {lastModel.MinP:0.00} --reasoning-budget {Config.chatReasoningBudget}";
         if (settings.GPU) {
             info.Arguments += " -ngl 999";
         }

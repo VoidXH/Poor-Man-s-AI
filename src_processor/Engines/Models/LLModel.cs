@@ -35,6 +35,11 @@ public class LLModel {
     public float Temperature { get; }
 
     /// <summary>
+    /// Minimum probability for token selection.
+    /// </summary>
+    public float MinP { get; }
+
+    /// <summary>
     /// List of supported external tools.
     /// </summary>
     public JinjaConfig Jinja { get; }
@@ -62,6 +67,9 @@ public class LLModel {
 
         string temperature = config.GetValueOrDefault(prefix + "Temperature", config["ChatTemperature"]);
         Temperature = float.Parse(temperature, CultureInfo.InvariantCulture);
+
+        string minP = config.GetValueOrDefault(prefix + "MinP", config["ChatMinP"]);
+        MinP = float.Parse(minP, CultureInfo.InvariantCulture);
 
         if (config.TryGetValue(prefix + "Jinja", out string jinja)) {
             Jinja = new(Path.Combine(Directory.GetCurrentDirectory(), "Configuration", jinja));
