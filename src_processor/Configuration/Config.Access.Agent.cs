@@ -43,7 +43,12 @@ partial class Config {
     public static readonly string agentEmailPassword = Values["AgentEmailPassword"];
 
      /// <summary>
-     /// Email recipient for agent completion notifications.
-     /// </summary>
-     public static readonly string agentEmailRecipient = Values["AgentEmailRecipient"];
+      /// Email recipient for agent completion notifications.
+      /// </summary>
+      public static readonly string agentEmailRecipient = Values["AgentEmailRecipient"];
+
+      /// <summary>
+      /// Interval in seconds between agent progress updates sent to the server.
+      /// </summary>
+      public static readonly int agentUpdateInterval = int.Parse(Values["AgentUpdateInterval"]);
 }

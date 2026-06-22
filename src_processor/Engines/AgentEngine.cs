@@ -152,28 +152,43 @@ public partial class AgentEngine : Engine {
         };
         instance.BeginErrorReadLine();
 
-        DateTime lastUpdate = DateTime.UtcNow;
-        TimeSpan updateTimeSpan = TimeSpan.FromMilliseconds(Config.serverPollInterval);
+        DateTime lastUpdate = DateTime.Today - TimeSpan.FromDays(1); // Force an update on the first line
+        TimeSpan updateTimeSpan = TimeSpan.FromSeconds(settings.UpdateInterval);
+
         try {
             Task.Run(async () => {
+                Task<string> readTask = null;
                 while (true) {
                     localCanceller.Token.ThrowIfCancellationRequested();
 
-                    string line = await instance.StandardOutput.ReadLineAsync(localCanceller.Token);
-                    if (line == null) {
-                        break;
+                    readTask ??= instance.StandardOutput.ReadLineAsync();
+                    Task completed = await Task.WhenAny(readTask, Task.Delay(updateTimeSpan, localCanceller.Token));
+
+                    if (completed == readTask) {
+                        string line = await readTask;
+                        if (line == null) {
+                            break;
+                        }
+
+                        output.AppendLine(line);
+                        readTask = null;
                     }
 
-                    output.AppendLine(line);
-
-                    if (DateTime.UtcNow >= lastUpdate + updateTimeSpan) {
-                        onUpdate();
-                        lastUpdate = DateTime.UtcNow;
-                    }
+                    onUpdate(); // Heartbeat even if nothing was read
                 }
             }, localCanceller.Token).GetAwaiter().GetResult();
             instance.KillSafe();
         } catch (OperationCanceledException) {
+            try { // Drain lines still in the standard output
+                while (true) {
+                    instance.StandardOutput.BaseStream.ReadTimeout = 100;
+                    string line = instance.StandardOutput.ReadLine();
+                    if (line == null) {
+                        break;
+                    }
+                    output.AppendLine(line);
+                }
+            } catch { }
             instance.KillSafe(); // Timeout
         } catch (Exception e) {
             Logger.Error("Error executing agent process: " + e);
