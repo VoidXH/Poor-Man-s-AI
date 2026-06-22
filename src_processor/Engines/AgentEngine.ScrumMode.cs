@@ -1,5 +1,6 @@
-﻿using PoorMansAI.Engines.BaseClasses;
-using System.Text;
+﻿using System.Text;
+
+using PoorMansAI.Engines.BaseClasses;
 
 namespace PoorMansAI.Engines {
     // A mode in the Agent engine that splits the tasks and works on each until it's done
