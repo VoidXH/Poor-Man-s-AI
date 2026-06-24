@@ -56,6 +56,7 @@ public partial class AgentEngine : Engine {
 
     /// <inheritdoc/>
     public override string Generate(Command command) {
+        Logger.Info("Agent command processing started.");
         int splitter = command.Prompt.IndexOf('|');
         string workingDir;
         string prompt;
@@ -108,6 +109,7 @@ public partial class AgentEngine : Engine {
             }
         }
 
+        Logger.Info("Agent command processed.");
         return string.IsNullOrEmpty(finalOutput) ?
              "Error." :
              finalOutput;
