@@ -23,9 +23,8 @@ if (getQueueLength() >= $maxQueueLength) {
 
 $command = $_POST['command'];
 $pipePos = strpos($command, '|');
-$adminOnlyCommand = $pipePos === false ||
-    strpos(substr($command, 0, $pipePos), 'Agent') !== false ||
-    strpos(substr($command, 0, $pipePos), 'Mode') !== false;
+$commandType = $pipePos === false ? $command : substr($command, 0, $pipePos);
+$adminOnlyCommand = $commandType === 'Agent' || $commandType === 'Mode';
 if ($adminOnlyCommand && !$admin) {
     die('100|');
 }

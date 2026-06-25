@@ -38,7 +38,8 @@ if ($admin && isset($_POST["id"])) {
 	}
 
 	$pipePos = strpos($command, '|');
-	$isAgent = $pipePos === false || strpos(substr($command, 0, $pipePos), 'Agent') !== false;
+	$commandType = $pipePos === false ? $command : substr($command, 0, $pipePos);
+	$isAgent = $commandType === 'Agent';
 	$timestampUpdate = $isAgent && $newProgress != 100 ? "command_ts = NOW(), " : "";
 	$stmt = execute("UPDATE ai_commands SET result = ?, progress = ?, $timestampUpdate result_ts = NOW() WHERE id = ?", $result, $newProgress, $id);
 	$stmt->close();

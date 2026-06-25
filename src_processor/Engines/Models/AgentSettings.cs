@@ -22,6 +22,12 @@ public class AgentSettings {
     public int UpdateInterval { get; set; } = 10;
 
     /// <summary>
+    /// Comma-separated list of folder paths that the agent is allowed to use as working directory.
+    /// If set, any working directory whose path does not start with one of these entries is rejected.
+    /// </summary>
+    public string[] FolderWhitelist { get; set; } = [];
+
+    /// <summary>
     /// Create a settings holder with default values or read the settings for the agent engine from the main configuration file.
     /// </summary>
     public AgentSettings(bool readConfig) {
@@ -29,6 +35,7 @@ public class AgentSettings {
             Timeout = Config.agentTimeout;
             Command = Config.agentCommand;
             UpdateInterval = Config.agentUpdateInterval;
+            FolderWhitelist = Config.agentFolderWhitelist;
         }
     }
 }

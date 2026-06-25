@@ -42,13 +42,19 @@ partial class Config {
     /// </summary>
     public static readonly string agentEmailPassword = Values["AgentEmailPassword"];
 
-     /// <summary>
-      /// Email recipient for agent completion notifications.
-      /// </summary>
-      public static readonly string agentEmailRecipient = Values["AgentEmailRecipient"];
+    /// <summary>
+    /// Email recipient for agent completion notifications.
+    /// </summary>
+    public static readonly string agentEmailRecipient = Values["AgentEmailRecipient"];
 
-      /// <summary>
-      /// Interval in seconds between agent progress updates sent to the server.
-      /// </summary>
-      public static readonly int agentUpdateInterval = int.Parse(Values["AgentUpdateInterval"]);
+    /// <summary>
+    /// Interval in seconds between agent progress updates sent to the server.
+    /// </summary>
+    public static readonly int agentUpdateInterval = int.Parse(Values["AgentUpdateInterval"]);
+
+    /// <summary>
+    /// Comma-separated list of folder paths that the agent is allowed to use as working directory.
+    /// If set, any working directory whose path does not start with one of these entries is rejected.
+    /// </summary>
+    public static readonly string[] agentFolderWhitelist = Values["AgentFolderWhitelist"].Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
 }

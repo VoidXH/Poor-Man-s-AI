@@ -27,6 +27,21 @@ partial class AgentEngine {
     bool queuedProcessed;
 
     /// <summary>
+    /// Formats a queue item from <c>path|prompt</c> to <c>&lt;b&gt;last_folder_name:&lt;/b&gt; prompt</c>.
+    /// </summary>
+    static string FormatQueueItem(string item) {
+        int split = item.LastIndexOf('|');
+        if (split <= 0) {
+            return item;
+        }
+
+        string path = item[..split];
+        string prompt = item[(split + 1)..];
+        string lastFolder = Path.GetFileName(path);
+        return $"<b>{lastFolder}:</b> {prompt}";
+    }
+
+    /// <summary>
     /// Reads a file's contents and returns them as pre-formatted text.
     /// </summary>
     static string ReadFile(string path) {
@@ -68,10 +83,13 @@ partial class AgentEngine {
     }
 
     /// <summary>
-    /// Remove all queued tasks.
+    /// Remove all queued tasks except the first one (which is currently being processed).
     /// </summary>
     string ClearQueue() {
-        agentQueue.Clear();
+        if (agentQueue.TryDequeue(out string first)) {
+            agentQueue.Clear();
+            agentQueue.Enqueue(first);
+        }
         return "Queue cleared.";
     }
 
@@ -86,7 +104,8 @@ partial class AgentEngine {
         StringBuilder result = new("<ul>");
         bool showHandled = queuedProcessed;
         foreach (string item in agentQueue) {
-            result.Append("<li>").Append(item);
+            string display = FormatQueueItem(item);
+            result.Append("<li>").Append(display);
             if (showHandled) {
                 result.Append(" <b>(in progress)</b>");
                 showHandled = false;
@@ -114,7 +133,11 @@ partial class AgentEngine {
             if (agentQueue.TryPeek(out string task)) {
                 queuedProcessed = true;
                 Generate(new(EngineType.Agent, task));
-                agentQueue.TryDequeue(out _);
+                if (agentQueue.TryPeek(out string peek)) {
+                    if (task == peek) { // Not thread-safe, but highly unlikely to break here and not fatal
+                        agentQueue.TryDequeue(out _);
+                    }
+                }
                 queuedProcessed = false;
             }
         }

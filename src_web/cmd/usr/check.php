@@ -21,7 +21,8 @@ if ($commandTS == 0) {
 }
 
 $pipePos = strpos($command, '|');
-$isAgent = $pipePos === false || strpos(substr($command, 0, $pipePos), 'Agent') !== false;
+$commandType = $pipePos === false ? $command : substr($command, 0, $pipePos);
+$isAgent = $commandType === 'Agent';
 if ($isAgent && !$admin) {
 	die('100|');
 }

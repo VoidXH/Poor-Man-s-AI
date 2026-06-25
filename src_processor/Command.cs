@@ -36,7 +36,11 @@ namespace PoorMansAI {
             ID = int.Parse(entry["id"].GetValue<string>());
             string command = entry["command"].GetValue<string>();
             int split = command.IndexOf('|');
-            EngineType = Enum.Parse<EngineType>(command[..split]);
+            string engineName = command[..split];
+            if (int.TryParse(engineName, out _)) {
+                throw new FormatException($"EngineType must be a named enum value, not an integer: '{engineName}'");
+            }
+            EngineType = Enum.Parse<EngineType>(engineName);
             Prompt = command[(split + 1)..];
         }
 
