@@ -15,4 +15,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\src_processor\PoorMansAI.csproj" />
 	</ItemGroup>
+	<ItemGroup>
+		<None Include="..\..\src_processor\Configuration\*GB*.ini" LinkBase="Configuration" CopyToOutputDirectory="PreserveNewest" />
+	</ItemGroup>
 </Project>

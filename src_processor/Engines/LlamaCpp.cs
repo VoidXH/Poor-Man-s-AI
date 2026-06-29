@@ -107,10 +107,11 @@ public partial class LlamaCpp : ChatEngine {
             runner = new(Launch);
         }
 
+        string systemMessage = model.SystemMessage.Replace("{DATE}", DateTime.Now.ToString("yyyy-MM-dd"));
         JsonArray messages = [];
         messages.Add(new JsonObject {
             ["role"] = "system",
-            ["content"] = Config.augmentWithSystemPrompt ? model.SystemMessage : contextDocs.TransformPrompt(model.SystemMessage)
+            ["content"] = Config.augmentWithSystemPrompt ? systemMessage : contextDocs.TransformPrompt(systemMessage)
         });
 
         string[] chat = command.Prompt[(split + 1)..].Split('|');
@@ -122,7 +123,7 @@ public partial class LlamaCpp : ChatEngine {
             bool user = i % 2 == 0;
             string message = chat[i].Replace("&vert;", "|").Replace("\"", "\\\"");
             if (user && (!Config.augmentLatestOnly || i == last)) {
-                message = contextDocs.TransformPrompt(message, Config.augmentWithSystemPrompt ? model.SystemMessage : null);
+                message = contextDocs.TransformPrompt(message, Config.augmentWithSystemPrompt ? systemMessage : null);
             }
             messages.Add(new JsonObject {
                 ["role"] = user ? "user" : "assistant",
@@ -225,6 +226,12 @@ public partial class LlamaCpp : ChatEngine {
         if (Config.chatLocalhost) {
             info.Arguments += " --host 0.0.0.0";
         }
+        if (Config.chatFixes) {
+            string templateFile = FindChatTemplateFile(lastModel.FilePath);
+            if (templateFile != null) {
+                info.Arguments += $" --chat-template-file \"{templateFile}\"";
+            }
+        }
 
         Process instance = Process.Start(info);
         Logger.Debug("Llama.cpp launched with: " + info.Arguments);
@@ -249,4 +256,25 @@ public partial class LlamaCpp : ChatEngine {
     /// Error message produced when a model name could not be found in the configuration.
     /// </summary>
     public static string ModelNotFound => "Model not found.";
+
+    /// <summary>
+    /// Find a matching Jinja chat template fix file for the given model file path.
+    /// </summary>
+    /// <param name="modelFilePath">The full path to the model file.</param>
+    /// <returns>The path to the matching .jinja file, or null if no match is found.</returns>
+    static string FindChatTemplateFile(string modelFilePath) {
+        string modelBaseName = Path.GetFileNameWithoutExtension(modelFilePath);
+        string fixesDir = Path.Combine(Directory.GetCurrentDirectory(), "Configuration", "Fixes");
+        if (!Directory.Exists(fixesDir)) {
+            return null;
+        }
+
+        foreach (string file in Directory.GetFiles(fixesDir, "*.jinja")) {
+            string fixBaseName = Path.GetFileNameWithoutExtension(file);
+            if (modelBaseName.StartsWith(fixBaseName, StringComparison.OrdinalIgnoreCase)) {
+                return Path.GetFullPath(file);
+            }
+        }
+        return null;
+    }
 }

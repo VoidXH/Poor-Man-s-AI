@@ -112,6 +112,11 @@
         public static readonly int chatParallel = int.Parse(Values["ChatParallel"]);
 
         /// <summary>
+        /// Apply PMAI-supplied fixes to some known wrong LLM templates.
+        /// </summary>
+        public static readonly bool chatFixes = bool.Parse(Values["ChatFixes"]);
+
+        /// <summary>
         /// Enumerate the names of configured models.
         /// </summary>
         public static IEnumerable<string> GetModelNames() => ForEachModel().Select(x => Values[x]);

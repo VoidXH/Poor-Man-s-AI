@@ -29,9 +29,13 @@ public class EngineFactory {
             return false;
         }
 
-        if (activeChat != null && ((!mode.IsSLM() || activeChat.GPU == true) || (!mode.IsLLM() || activeChat.GPU == false))) {
-            activeChat.Dispose();
-            engines.Remove(EngineType.Chat);
+        if (activeChat != null) {
+            bool slmRunsButNotNeeded = !activeChat.GPU && !mode.IsSLM();
+            bool llmRunsButNotNeeded = activeChat.GPU && !mode.IsLLM();
+            if (slmRunsButNotNeeded || llmRunsButNotNeeded) {
+                activeChat.Dispose();
+                engines.Remove(EngineType.Chat);
+            }
         }
         if (!mode.IsImage() && engines.TryGetValue(EngineType.Image, out Engine imageEngineToRemove)) {
             imageEngineToRemove.Dispose();
