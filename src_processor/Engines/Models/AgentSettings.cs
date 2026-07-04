@@ -28,6 +28,26 @@ public class AgentSettings {
     public string[] FolderWhitelist { get; set; } = [];
 
     /// <summary>
+    /// How GitHub Copilot (if used as agent) will display the model.
+    /// </summary>
+    public string CopilotModel { get; set; } = "Poor Man's AI";
+
+    /// <summary>
+    /// GitHub Copilot (if used as agent) shall not connect to GitHub at all.
+    /// </summary>
+    public string CopilotOffline { get; set; } = "true";
+
+    /// <summary>
+    /// Where your chat model is ran at if GitHub Copilot is used as agent.
+    /// </summary>
+    public string CopilotProviderBaseUrl { get; set; } = "http://localhost:64100/v1";
+
+    /// <summary>
+    /// Maximum input/output tokens for the agent model. For BYOM, at the time of implementation, both are the context size.
+    /// </summary>
+    public int CopilotMaxTokens { get; set; } = 4096;
+
+    /// <summary>
     /// Create a settings holder with default values or read the settings for the agent engine from the main configuration file.
     /// </summary>
     public AgentSettings(bool readConfig) {
@@ -36,6 +56,10 @@ public class AgentSettings {
             Command = Config.agentCommand;
             UpdateInterval = Config.agentUpdateInterval;
             FolderWhitelist = Config.agentFolderWhitelist;
+            CopilotModel = Config.agentCopilotModel;
+            CopilotOffline = Config.agentCopilotOffline;
+            CopilotProviderBaseUrl = Config.agentCopilotProviderBaseUrl;
+            CopilotMaxTokens = Config.agentCopilotMaxTokens;
         }
     }
 }

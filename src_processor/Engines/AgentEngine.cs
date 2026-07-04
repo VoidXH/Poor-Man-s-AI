@@ -164,6 +164,13 @@ public partial class AgentEngine : Engine {
         ProcessStartInfo info = ProcessUtils.CreateRedirectedStartInfo("cmd", workingDir);
         info.Arguments = "/c " + settings.Command.Replace("{{PROMPT}}", prompt.Replace("\"", "\\\""));
 
+        info.Environment["COPILOT_MODEL"] = settings.CopilotModel;
+        info.Environment["COPILOT_OFFLINE"] = settings.CopilotOffline;
+        info.Environment["COPILOT_PROVIDER_BASE_URL"] = settings.CopilotProviderBaseUrl;
+        string contextWindow = settings.CopilotMaxTokens.ToString();
+        info.Environment["COPILOT_PROVIDER_MAX_OUTPUT_TOKENS"] = contextWindow;
+        info.Environment["COPILOT_PROVIDER_MAX_PROMPT_TOKENS"] = contextWindow;
+
         Process instance;
         CancellationTokenSource localCanceller = new(TimeSpan.FromSeconds(settings.Timeout));
 
