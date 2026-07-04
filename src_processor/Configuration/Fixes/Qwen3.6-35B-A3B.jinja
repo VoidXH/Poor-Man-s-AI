@@ -100,7 +100,7 @@
             {%- endif %}
         {%- endif %}
         {%- set reasoning_content = reasoning_content|trim %}
-		{%- if reasoning_content and ((preserve_thinking is defined and preserve_thinking is true) or (loop.index0 > ns.last_query_index)) %}
+		{%- if reasoning_content|length > 0 and ((preserve_thinking is defined and preserve_thinking is true) or (loop.index0 > ns.last_query_index)) %}
             {{- '<|im_start|>' + message.role + '\n<think>\n' + reasoning_content + '\n</think>\n\n' + content }}
         {%- else %}
             {{- '<|im_start|>' + message.role + '\n' + content }}
@@ -156,3 +156,4 @@
     {%- endif %}
 {%- endif %}
 {#- Unsloth fixes - developer role, tool calling #}
+{#- Poor Man's AI fix - indentation #}
