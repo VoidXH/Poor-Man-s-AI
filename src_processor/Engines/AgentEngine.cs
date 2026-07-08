@@ -16,9 +16,14 @@ namespace PoorMansAI.Engines;
 /// </summary>
 public partial class AgentEngine : Engine {
     /// <summary>
-    /// How this instance is configured.
+    /// Each selectable agent with its key from the website.
     /// </summary>
-    readonly AgentSettings settings;
+    readonly Dictionary<string, AgentModel> agents;
+
+    /// <summary>
+    /// The default agent used when no agent is specified in the command.
+    /// </summary>
+    readonly AgentModel defaultAgent;
 
     /// <summary>
     /// Safely handles the <see cref="promptCancellers"/> dictionary from multiple threads.
@@ -36,11 +41,18 @@ public partial class AgentEngine : Engine {
     volatile int currentPromptId = -1;
 
     /// <summary>
-    /// LLM chatbot running an external CLI agent per prompt.
+    /// LLM chatbot running an external CLI agent per prompt, loading agents from the root configuration file.
     /// </summary>
     /// <param name="settings">How this instance is configured</param>
-    public AgentEngine(AgentSettings settings) {
-        this.settings = settings;
+    public AgentEngine() : this(AgentSettings.GetConfiguredAgents()) { }
+
+    /// <summary>
+    /// LLM chatbot running an external CLI agent per prompt.
+    /// </summary>
+    /// <param name="agents">Each agent with its key from the website</param>
+    public AgentEngine(Dictionary<string, AgentModel> agents) {
+        this.agents = agents;
+        defaultAgent = agents.First().Value;
         LaunchQueueThread();
     }
 
@@ -61,24 +73,33 @@ public partial class AgentEngine : Engine {
 
     /// <inheritdoc/>
     public override string Generate(Command command) {
-        int splitter = command.Prompt.IndexOf('|');
-        string workingDir;
-        string prompt;
+        string prompt = command.Prompt;
+        AgentModel selectedAgent = defaultAgent;
+        if (prompt.StartsWith('<')) {
+            int closeBracket = prompt.IndexOf('>');
+            if (closeBracket > 0) {
+                string agentName = prompt[1..closeBracket].Trim();
+                if (agents.TryGetValue(agentName, out AgentModel agent)) {
+                    selectedAgent = agent;
+                    prompt = prompt[(closeBracket + 1)..].Trim();
+                }
+            }
+        }
+
+        string workingDir = string.Empty;
+        int splitter = prompt.IndexOf('|');
         if (splitter >= 0) {
-            workingDir = command.Prompt[..splitter].Trim();
-            prompt = command.Prompt[(splitter + 1)..].Trim();
-        } else {
-            workingDir = "";
-            prompt = command.Prompt;
+            workingDir = prompt[..splitter].Trim();
+            prompt = prompt[(splitter + 1)..].Trim();
         }
 
         if (string.IsNullOrEmpty(workingDir) || !Directory.Exists(workingDir)) {
             workingDir = Environment.CurrentDirectory;
         }
 
-        if (settings.FolderWhitelist.Length > 0) {
+        if (Config.agentFolderWhitelist.Length > 0) {
             bool allowed = false;
-            foreach (string whitelistEntry in settings.FolderWhitelist) {
+            foreach (string whitelistEntry in Config.agentFolderWhitelist) {
                 if (workingDir.StartsWith(whitelistEntry, StringComparison.OrdinalIgnoreCase)) {
                     allowed = true;
                     break;
@@ -92,7 +113,7 @@ public partial class AgentEngine : Engine {
 
         StringBuilder output = new();
         while (prompt.StartsWith('[')) {
-            int commandClose = prompt.IndexOf(']', StringComparison.Ordinal);
+            int commandClose = FindClosingBracket(prompt);
             if (commandClose < 0) {
                 break;
             }
@@ -117,7 +138,7 @@ public partial class AgentEngine : Engine {
 
         Logger.Info("Agent command processing started.");
         Stopwatch stopwatch = Stopwatch.StartNew();
-        RunAgentEngine(workingDir, command.ID, prompt, output, () => UpdateProgress(command, .5f, CutOutput(output.ToString())));
+        RunAgentEngine(workingDir, command.ID, prompt, output, selectedAgent, () => UpdateProgress(command, .5f, CutOutput(output.ToString())));
         stopwatch.Stop();
         string fulloutput = output.ToString().Trim();
         string finalOutput = CutOutput(fulloutput);
@@ -160,19 +181,30 @@ public partial class AgentEngine : Engine {
     /// <summary>
     /// Perform a <paramref name="prompt"/> in a <paramref name="workingDir"/> on the agent engine, and put its result in the <paramref name="output"/>.
     /// </summary>
-    void RunAgentEngine(string workingDir, int promptId, string prompt, StringBuilder output, Action onUpdate) {
+    void RunAgentEngine(string workingDir, int promptId, string prompt, StringBuilder output, AgentModel agent, Action onUpdate) {
         ProcessStartInfo info = ProcessUtils.CreateRedirectedStartInfo("cmd", workingDir);
-        info.Arguments = "/c " + settings.Command.Replace("{{PROMPT}}", prompt.Replace("\"", "\\\""));
+        info.Arguments = "/c " + agent.Command.Replace("{{PROMPT}}", prompt.Replace("\"", "\\\""));
 
-        info.Environment["COPILOT_MODEL"] = settings.CopilotModel;
-        info.Environment["COPILOT_OFFLINE"] = settings.CopilotOffline;
-        info.Environment["COPILOT_PROVIDER_BASE_URL"] = settings.CopilotProviderBaseUrl;
-        string contextWindow = settings.CopilotMaxTokens.ToString();
-        info.Environment["COPILOT_PROVIDER_MAX_OUTPUT_TOKENS"] = contextWindow;
-        info.Environment["COPILOT_PROVIDER_MAX_PROMPT_TOKENS"] = contextWindow;
+        if (!string.IsNullOrEmpty(agent.CopilotModel)) {
+            info.Environment["COPILOT_MODEL"] = agent.CopilotModel;
+        }
+        if (!string.IsNullOrEmpty(agent.CopilotOffline)) {
+            info.Environment["COPILOT_OFFLINE"] = agent.CopilotOffline;
+        }
+        if (!string.IsNullOrEmpty(agent.CopilotProviderBaseUrl)) {
+            info.Environment["COPILOT_PROVIDER_BASE_URL"] = agent.CopilotProviderBaseUrl;
+        }
+        if (!string.IsNullOrEmpty(agent.CopilotProviderApiKey)) {
+            info.Environment["COPILOT_PROVIDER_API_KEY"] = agent.CopilotProviderApiKey;
+        }
+        if (agent.CopilotMaxTokens.HasValue) {
+            string contextWindow = agent.CopilotMaxTokens.Value.ToString();
+            info.Environment["COPILOT_PROVIDER_MAX_OUTPUT_TOKENS"] = contextWindow;
+            info.Environment["COPILOT_PROVIDER_MAX_PROMPT_TOKENS"] = contextWindow;
+        }
 
         Process instance;
-        CancellationTokenSource localCanceller = new(TimeSpan.FromSeconds(settings.Timeout));
+        CancellationTokenSource localCanceller = new(TimeSpan.FromSeconds(Config.agentTimeout));
 
         if (promptId != -1) {
             currentPromptId = promptId;
@@ -191,7 +223,7 @@ public partial class AgentEngine : Engine {
         instance.BeginErrorReadLine();
 
         DateTime lastUpdate = DateTime.Today - TimeSpan.FromDays(1); // Force an update on the first line
-        TimeSpan updateTimeSpan = TimeSpan.FromSeconds(settings.UpdateInterval);
+        TimeSpan updateTimeSpan = TimeSpan.FromSeconds(Config.agentUpdateInterval);
 
         try {
             Task.Run(async () => {
@@ -251,6 +283,27 @@ public partial class AgentEngine : Engine {
                 currentPromptId = -1;
             }
         }
+    }
+
+    /// <summary>
+    /// Finds the index of the closing bracket ']' that matches the opening bracket at position 0.
+    /// Counts internal bracket depth so that brackets inside the command text don't
+    /// cause premature termination. Returns -1 if no matching closing bracket is found.
+    /// </summary>
+    static int FindClosingBracket(string prompt) {
+        int depth = 0;
+        for (int i = 0; i < prompt.Length; i++) {
+            char c = prompt[i];
+            if (c == '[') {
+                depth++;
+            } else if (c == ']') {
+                depth--;
+                if (depth == 0) {
+                    return i;
+                }
+            }
+        }
+        return -1;
     }
 
     /// <summary>

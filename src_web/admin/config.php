@@ -51,6 +51,8 @@ editBool("Instant mode", "instantMode"); ?>
 <h2><br>Behavior</h2>
 <?php editVar("Chat models", "chatModels"); ?>
 <p class="mt-n3">The available models by name, as set up on the Processors.</p>
+<?php editVar("Agent engines", "agentModels"); ?>
+<p class="mt-n3">The available agent engines by name, as set up on the Processors.</p>
 <?php editVar("Agent paths", "agentPaths"); ?>
 <p>Available project folders for the Agent, comma-separated.</p>
 <?php editBool("SLM warnings", "slmWarning"); ?>

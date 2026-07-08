@@ -112,6 +112,11 @@ public static partial class Config {
     }
 
     /// <summary>
+    /// Enumerates the user-set agents and returns the prefix for each of them.
+    /// </summary>
+    internal static IEnumerable<string> ForEachAgent() => ForEach("Agent");
+
+    /// <summary>
     /// Parse a <paramref name="source"/> comma-separated list and trim whitespaces of the entries.
     /// </summary>
     static string[] GetList(string source) {

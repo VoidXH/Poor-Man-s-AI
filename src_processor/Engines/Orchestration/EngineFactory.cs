@@ -2,6 +2,7 @@ using VoidX.WPF;
 
 using PoorMansAI.Configuration;
 using PoorMansAI.Engines.BaseClasses;
+using PoorMansAI.Engines.Models;
 
 namespace PoorMansAI.Engines.Orchestration;
 
@@ -80,7 +81,7 @@ public class EngineFactory {
         }
 
         if (!engines.ContainsKey(EngineType.Agent) && Config.agentWeight >= 0) {
-            AgentEngine agentEngine = new(new(true)) {
+            AgentEngine agentEngine = new(AgentSettings.GetConfiguredAgents()) {
                 Others = engines
             };
             agentEngine.OnProgress += onProgress;

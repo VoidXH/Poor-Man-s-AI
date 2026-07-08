@@ -33,7 +33,7 @@ $offline = $time - getAIVar("agent-available") > $procTimeout;
 					<li><a class="dropdown-item" onclick="sendCommandByPrompt('GitStatus')">List changed files</a></li>
 					<li><a class="dropdown-item" onclick="sendCommandByPrompt('GitDiff')">Show all changes</a></li>
         			<li><hr class="dropdown-divider"></li>
-					<li><a class="dropdown-item" onclick="sendCommandByPrompt('Queue:' + getPath() + '|' + $('#input').val())">Queue prompt</a></li>
+					<li><a class="dropdown-item" onclick="send(<?= $agentQueueByDefault ? 'false' : 'true' ?>)"><?= $agentQueueByDefault ? 'Perform now' : 'Queue prompt' ?></a></li>
 					<li><a class="dropdown-item" onclick="sendCommandByPrompt('Queue')">Show queue</a></li>
 					<li><a class="dropdown-item" onclick="sendCommandByPrompt('QueueClear')">Clear queue</a></li>
         			<li><hr class="dropdown-divider"></li>
@@ -51,21 +51,40 @@ $offline = $time - getAIVar("agent-available") > $procTimeout;
     	</div>
 		<div class="card-footer">
 <?php if (!$offline) { ?>
-			<div id="path" class="target mb-1">
+			<div class="mb-2">
+				<div class="dropdown d-inline" id="agent-dropdown">
+						<button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="agentDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">
+							<span id="agentLabel"></span>
+						</button>
+						<ul class="dropdown-menu" id="agentMenu">
+<?php
+	$agents = preg_split('/\s*,\s*/', $agentModels);
+	foreach ($agents as $index => $agent) {
+			echo "<li><a class=\"dropdown-item\" href=\"#\" data-agent=\"".$agent."\">".$agent."</a></li>\n";
+	}
+?>
+						</ul>
+					</div>
+				<div class="dropdown d-inline" id="path-dropdown">
+						<button class="btn btn-sm btn-primary dropdown-toggle" type="button" id="pathDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">
+							<span id="pathLabel"></span>
+						</button>
+						<ul class="dropdown-menu" id="pathMenu">
 <?php
 	$paths = preg_split('/\s*,\s*/', $agentPaths);
 	foreach ($paths as $index => $path) {
-		$class = ($index == 0) ? "btn btn-primary btn-sm" : "btn btn-secondary btn-sm";
-		$label = basename(str_replace('\\', '/', $path));
-		echo "<button class=\"$class\" id=\"path_$index\" data-path=\"".$path."\">".$label."</button>\n";
+			$label = basename(str_replace('\\', '/', $path));
+			echo "<li><a class=\"dropdown-item\" href=\"#\" data-path=\"".$path."\">".$label."</a></li>\n";
 	}
 ?>
+						</ul>
+					</div>
 			</div>
 			<div class="file-input-container" id="file-blocks-container"></div>
-			<div class="input-group">
+				<div class="input-group">
 				<textarea class="form-control" id="input" placeholder="Give <?=$chatName ?> a task..." autofocus></textarea>
 				<button class="btn btn-danger" id="stop" style="display:none;" onclick="stop()">Stop</button>
-				<button class="btn btn-primary" id="send" onclick="send()">Send</button>
+				<button class="btn btn-primary" id="send" onclick="send()"><?= $agentQueueByDefault ? 'Queue' : 'Send' ?></button>
 			</div>
 <?php } ?>
 		</div>
@@ -73,6 +92,7 @@ $offline = $time - getAIVar("agent-available") > $procTimeout;
 </div>
 <script>
 const you = "<?=htmlspecialchars($_COOKIE['username']) ?>";
+const agentQueueByDefault = <?= $agentQueueByDefault ? 'true' : 'false' ?>;
 </script>
 <script src="<?=$jqueryPath ?>"></script>
 <script src="<?=$bootstrapJSPath ?>"></script>

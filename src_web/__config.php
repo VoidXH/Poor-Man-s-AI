@@ -24,8 +24,12 @@ $loginTimeout = 604800;
 
 // The available models by name, as set up on the Processors:
 $chatModels = "Chat, Think, Code";
+// The available agent engines by name, as set up on the Processors:
+$agentModels = "Local, OpenRouter";
 // Available project folders for the Agent:
 $agentPaths = "%USERPROFILE%, C:\\";
+// Queue agent tasks by default instead of sending immediately (true/false):
+$agentQueueByDefault = false;
 // To disable showing "The quality and generation speed of answers will be
 // dramatically worse" warning in chats in SLM mode, because your VRAM is so
 // much that the reduced size models are still very large, set this to false:

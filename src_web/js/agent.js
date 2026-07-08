@@ -2,26 +2,55 @@ const customPath = typeof pmaiPath !== "undefined" ? pmaiPath : "";
 
 const escape = (x) => x.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;");
 
-$(document).ready(function() {
-	$("#chat, #think, #code").click(function() {
+$(document).ready(function () {
+	var firstItem = $("#pathMenu a:first");
+	if (firstItem.length > 0) {
+		firstItem.addClass("active");
+		$("#pathLabel").text(firstItem.text());
+	}
+
+	var firstAgent = $("#agentMenu a:first");
+	if (firstAgent.length > 0) {
+		firstAgent.addClass("active");
+		$("#agentLabel").text(firstAgent.text());
+	}
+
+	$("#chat, #think, #code").click(function () {
 		$("#chat, #think, #code").removeClass("btn-primary").addClass("btn-secondary");
 		$(this).removeClass("btn-secondary").addClass("btn-primary");
 	});
 
-	$("#path button").click(function() {
-		$("#path button").removeClass("btn-primary").addClass("btn-secondary");
-		$(this).removeClass("btn-secondary").addClass("btn-primary");
+	$("#pathMenu a").click(function (e) {
+		e.preventDefault();
+		$("#pathMenu a").removeClass("active");
+		$(this).addClass("active");
+		$("#pathLabel").text($(this).text());
+		$('#pathDropdownBtn').dropdown('toggle');
+	});
+
+	$("#agentMenu a").click(function (e) {
+		e.preventDefault();
+		$("#agentMenu a").removeClass("active");
+		$(this).addClass("active");
+		$("#agentLabel").text($(this).text());
+		$('#agentDropdownBtn').dropdown('toggle');
 	});
 });
 
 function getPath() {
-	var res = "";
-	$("#path button").each(function() {
-		if ($(this).attr("class").includes("btn-primary")) {
-			res = $(this).attr("data-path");
-		}
-	});
-	return res;
+	var activeItem = $("#pathMenu a.active");
+	if (activeItem.length > 0) {
+		return activeItem.attr("data-path");
+	}
+	return "";
+}
+
+function getAgent() {
+	var activeItem = $("#agentMenu a.active");
+	if (activeItem.length > 0) {
+		return activeItem.attr("data-agent");
+	}
+	return "";
 }
 
 function activate(running) {
@@ -44,7 +73,7 @@ function onPartialResult(progress, result) {
 	}
 
 	$("#result").html(marked.parse(result, { breaks: true }));
-	$("#result pre code").each(function(i, block) {
+	$("#result pre code").each(function (i, block) {
 		hljs.highlightElement(block);
 	});
 }
@@ -64,16 +93,17 @@ function onHTTPError(errorCode) {
 
 function getPrompt() {
 	const fileBlocks = [];
-	$("#file-blocks-container .file-block").each(function() {
+	$("#file-blocks-container .file-block").each(function () {
 		fileBlocks.push("[File:" + $(this).attr("data-path") + "]");
 	});
 	return fileBlocks.join('') + $("#input").val();
 }
 
-function send() {
+function send(forceQueue) {
 	if ($("#send").prop("disabled")) {
 		return;
 	}
+	const inputRaw = $("#input").val().trim();
 	const input = getPrompt();
 	if (input) {
 		activate(true);
@@ -81,7 +111,15 @@ function send() {
 			'<div class="message reply"><p class="username">Agent</p><p id="result" class="text">...</p></div>');
 		$("#input").val("");
 		$("#file-blocks-container").empty();
-		sendCommand("Agent", getPath() + "|" + input, customPath);
+		const prompt = input;
+		const agent = getAgent();
+		const agentPrefix = agent ? "<" + agent + ">" : "";
+		const fullCommand = agentPrefix + getPath() + "|" + prompt;
+		if (forceQueue === true || (forceQueue !== false && agentQueueByDefault && !inputRaw.startsWith('['))) {
+			sendCommand("Agent", "[Queue:" + fullCommand + "]", customPath);
+		} else {
+			sendCommand("Agent", fullCommand, customPath);
+		}
 		$("#display").animate({ scrollTop: $("#display").prop("scrollHeight") }, 500);
 	}
 }
@@ -97,7 +135,7 @@ function stop() {
 	$.post(customPath + "commands.php", { stop: workingCommandId });
 }
 
-$("#input").keypress(function(e) {
+$("#input").keypress(function (e) {
 	if (e.key === "Enter" && !e.shiftKey) {
 		e.preventDefault();
 		$("#send").click();
@@ -115,7 +153,7 @@ function removeFileBlock(blockId) {
 }
 
 function reindexFileBlocks() {
-	$("#file-blocks-container .file-block").each(function(index) {
+	$("#file-blocks-container .file-block").each(function (index) {
 		$(this).attr("data-index", index);
 	});
 }

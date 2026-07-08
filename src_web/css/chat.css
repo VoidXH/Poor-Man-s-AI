@@ -308,8 +308,10 @@ img {
 
 .dropdown-menu .dropdown-item {
   color: var(--text-primary);
-  border-radius: 0;
   padding: 0.5rem 1rem;
+  width: calc(100% - 0.7rem);
+  margin: 0 0.35rem;
+  border-radius: var(--radius-sm);
 }
 
 .dropdown-menu .dropdown-item:first-child {
@@ -331,6 +333,17 @@ img {
 .dropdown-menu .dropdown-item:active {
   background: rgba(0, 200, 150, 0.22);
   color: var(--accent-hover);
+}
+
+.dropdown-menu .dropdown-item.active {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+.dropdown-menu .dropdown-item.active:hover,
+.dropdown-menu .dropdown-item.active:focus {
+  background: var(--accent-hover);
+  color: #ffffff;
 }
 
 .dropdown-menu {

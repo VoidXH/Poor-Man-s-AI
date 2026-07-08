@@ -3,29 +3,13 @@ using PoorMansAI.Configuration;
 namespace PoorMansAI.Engines.Models;
 
 /// <summary>
-/// All settings for the agent engine with their default values.
+/// All settings for an agent engine with their default values.
 /// </summary>
 public class AgentSettings {
-    /// <summary>
-    /// If chat replies are not done in this many seconds, cancel the generation.
-    /// </summary>
-    public int Timeout { get; set; } = 600;
-
     /// <summary>
     /// The command template to run. Replace {{PROMPT}} with the user's input.
     /// </summary>
     public string Command { get; set; } = "copilot -p \"{{PROMPT}}\"";
-
-    /// <summary>
-    /// Interval in seconds between agent progress updates sent to the server.
-    /// </summary>
-    public int UpdateInterval { get; set; } = 10;
-
-    /// <summary>
-    /// Comma-separated list of folder paths that the agent is allowed to use as working directory.
-    /// If set, any working directory whose path does not start with one of these entries is rejected.
-    /// </summary>
-    public string[] FolderWhitelist { get; set; } = [];
 
     /// <summary>
     /// How GitHub Copilot (if used as agent) will display the model.
@@ -43,23 +27,45 @@ public class AgentSettings {
     public string CopilotProviderBaseUrl { get; set; } = "http://localhost:64100/v1";
 
     /// <summary>
+    /// API key for the model provider, if the provider requires authentication.
+    /// </summary>
+    public string CopilotProviderApiKey { get; set; }
+
+    /// <summary>
     /// Maximum input/output tokens for the agent model. For BYOM, at the time of implementation, both are the context size.
     /// </summary>
     public int CopilotMaxTokens { get; set; } = 4096;
 
     /// <summary>
-    /// Create a settings holder with default values or read the settings for the agent engine from the main configuration file.
+    /// Read settings for a specific numbered agent (e.g. Agent1Command).
     /// </summary>
-    public AgentSettings(bool readConfig) {
-        if (readConfig) {
-            Timeout = Config.agentTimeout;
-            Command = Config.agentCommand;
-            UpdateInterval = Config.agentUpdateInterval;
-            FolderWhitelist = Config.agentFolderWhitelist;
-            CopilotModel = Config.agentCopilotModel;
-            CopilotOffline = Config.agentCopilotOffline;
-            CopilotProviderBaseUrl = Config.agentCopilotProviderBaseUrl;
-            CopilotMaxTokens = Config.agentCopilotMaxTokens;
+    /// <param name="agentPrefix">The agent prefix, e.g. "Agent1".</param>
+    public AgentSettings(string agentPrefix) {
+        Dictionary<string, string> config = Config.Values;
+        Command = config[agentPrefix + "Command"];
+        config.TryGetValue(agentPrefix + "CopilotModel", out string copilotModel);
+        CopilotModel = copilotModel;
+        config.TryGetValue(agentPrefix + "CopilotOffline", out string copilotOffline);
+        CopilotOffline = copilotOffline;
+        config.TryGetValue(agentPrefix + "CopilotProviderBaseUrl", out string copilotProviderBaseUrl);
+        CopilotProviderBaseUrl = copilotProviderBaseUrl;
+        config.TryGetValue(agentPrefix + "CopilotProviderApiKey", out string copilotProviderApiKey);
+        CopilotProviderApiKey = copilotProviderApiKey;
+        if (config.TryGetValue(agentPrefix + "CopilotMaxTokens", out string copilotMaxTokens) && int.TryParse(copilotMaxTokens, out int maxTokens)) {
+            CopilotMaxTokens = maxTokens;
         }
+    }
+
+    /// <summary>
+    /// Get the agent list from the main configuration file.
+    /// </summary>
+    /// <returns>A dictionary mapping each agent's name to its settings.</returns>
+    public static Dictionary<string, AgentModel> GetConfiguredAgents() {
+        Dictionary<string, AgentModel> agents = [];
+        foreach (string prefix in Config.ForEachAgent()) {
+            AgentModel agent = new(prefix);
+            agents[agent.Name] = agent;
+        }
+        return agents;
     }
 }

@@ -1,12 +1,9 @@
-﻿namespace PoorMansAI.Configuration;
+using PoorMansAI.Engines.Models;
+
+namespace PoorMansAI.Configuration;
 
 // Parsed config values related to remote agentic tool control
 partial class Config {
-    /// <summary>
-    /// Command template for the agent engine. Replace {{PROMPT}} with the user's input.
-    /// </summary>
-    public static readonly string agentCommand = Values["AgentCommand"];
-
     /// <summary>
     /// If agent replies are not done in this many seconds, cancel the generation.
     /// </summary>
@@ -59,22 +56,11 @@ partial class Config {
     public static readonly string[] agentFolderWhitelist = Values["AgentFolderWhitelist"].Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
 
     /// <summary>
-    /// How GitHub Copilot (if used as agent) will display the model.
+    /// Parse and return all configured agent settings (Agent1*, Agent2*, etc.).
     /// </summary>
-    public static readonly string agentCopilotModel = Values["AgentCopilotModel"];
-
-    /// <summary>
-    /// GitHub Copilot (if used as agent) shall not connect to GitHub at all.
-    /// </summary>
-    public static readonly string agentCopilotOffline = Values["AgentCopilotOffline"];
-
-    /// <summary>
-    /// Where your chat model is ran at if GitHub Copilot is used as agent.
-    /// </summary>
-    public static readonly string agentCopilotProviderBaseUrl = Values["AgentCopilotProviderBaseUrl"];
-
-    /// <summary>
-    /// Maximum input/output tokens for the agent model. For BYOM, at the time of implementation, both are the context size.
-    /// </summary>
-    public static readonly int agentCopilotMaxTokens = int.Parse(Values["AgentCopilotMaxTokens"]);
+    public static IEnumerable<AgentSettings> GetAllAgentSettings() {
+        foreach (string agentPrefix in ForEachAgent()) {
+            yield return new AgentSettings(agentPrefix);
+        }
+    }
 }
