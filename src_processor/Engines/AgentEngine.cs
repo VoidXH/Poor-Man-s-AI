@@ -74,6 +74,11 @@ public partial class AgentEngine : Engine {
     /// <inheritdoc/>
     public override string Generate(Command command) {
         string prompt = command.Prompt;
+
+        if (prompt.StartsWith("[Queue:") && prompt[^1] == ']') {
+            return ExtraCommandHandler(string.Empty, prompt[1..^1], command.ID);
+        }
+
         AgentModel selectedAgent = defaultAgent;
         if (prompt.StartsWith('<')) {
             int closeBracket = prompt.IndexOf('>');
