@@ -55,27 +55,26 @@ public class LLModel {
     /// <param name="prefix">The model is referred to as this in the config file (Model1 and so on)</param>
     /// <param name="large">The file path shall be the large version that runs when the machine only processes LLMs and nothing else</param>
     public LLModel(string prefix, bool large) {
-        Dictionary<string, string> config = Config.Values;
-        Name = config[prefix];
-        FilePath = Path.Combine(Config.models, Path.GetFileName(config[prefix + (large ? "LLM" : "SLM")]));
-        SystemMessage = config[prefix + "SystemMessage"];
+        Name = Config.GetValue(prefix);
+        FilePath = Path.Combine(Config.models, Path.GetFileName(Config.GetValue(prefix + (large ? "LLM" : "SLM"))));
+        SystemMessage = Config.GetValue(prefix + "SystemMessage");
 
         string postMessageKey = prefix + "PostMessage";
-        if (config.TryGetValue(postMessageKey, out string postMessage)) {
+        if (Config.TryGetValue(postMessageKey, out string postMessage)) {
             PostMessage = postMessage;
         }
 
-        string temperature = config.GetValueOrDefault(prefix + "Temperature", config["ChatTemperature"]);
+        string temperature = Config.GetValueOrDefault(prefix + "Temperature", Config.GetValue("ChatTemperature"));
         Temperature = float.Parse(temperature, CultureInfo.InvariantCulture);
 
-        string minP = config.GetValueOrDefault(prefix + "MinP", config["ChatMinP"]);
+        string minP = Config.GetValueOrDefault(prefix + "MinP", Config.GetValue("ChatMinP"));
         MinP = float.Parse(minP, CultureInfo.InvariantCulture);
 
-        if (config.TryGetValue(prefix + "Jinja", out string jinja)) {
+        if (Config.TryGetValue(prefix + "Jinja", out string jinja)) {
             Jinja = new(Path.Combine(Directory.GetCurrentDirectory(), "Configuration", jinja));
         }
 
-        string reasoning = config.GetValueOrDefault(prefix + "Reasoning", "true");
+        string reasoning = Config.GetValueOrDefault(prefix + "Reasoning", "true");
         Reasoning = bool.Parse(reasoning);
     }
 

@@ -7,7 +7,7 @@ $mode = getAIVar("mode");
 $moaClass = $mode == 5 ? "text-primary" : "text-secondary";
 $llmClass = $mode == 2 ? "text-primary" : "text-secondary";
 ?>
-<html lang="en">
+<html lang="en" class="theme-<?=$theme ?>">
 <head>
   <meta charset="UTF-8">
   <?=$viewport ?>

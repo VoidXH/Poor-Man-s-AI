@@ -19,5 +19,14 @@
         <li><a class="dropdown-item" href="agent.php">Remote agent</a></li>
 <?php } ?>
         <li><a class="dropdown-item" href="image.php">Custom images</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li>
+            <div class="theme-swatches">
+                <button type="button" class="theme-swatch theme-swatch-green" data-theme="green" title="Green theme"></button>
+                <button type="button" class="theme-swatch theme-swatch-blue" data-theme="blue" title="Blue theme"></button>
+                <button type="button" class="theme-swatch theme-swatch-red" data-theme="red" title="Red theme"></button>
+            </div>
+        </li>
     </ul>
 </div>
+<script src="js/menu.js"></script>

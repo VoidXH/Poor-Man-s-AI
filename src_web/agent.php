@@ -7,7 +7,7 @@ if (!$admin) {
 $time = time();
 $offline = $time - getAIVar("agent-available") > $procTimeout;
 ?>
-<html lang="en">
+<html lang="en" class="theme-<?=$theme ?>">
 <head>
 	<meta charset="UTF-8">
 	<?=$viewport ?>

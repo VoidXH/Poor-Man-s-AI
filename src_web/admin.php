@@ -15,7 +15,7 @@ function tabLink($i, $name) {
     return "<a class=\"$class\" href=\"?p=$i\">$name</a>";
 }
 ?>
-<html lang="en">
+<html lang="en" class="theme-<?=$theme ?>">
 <head>
     <meta charset="UTF-8">
     <?=$viewport ?>

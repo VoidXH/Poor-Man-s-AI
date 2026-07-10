@@ -46,18 +46,17 @@ public class AgentModel {
     /// </summary>
     /// <param name="prefix">The agent is referred to as this in the config file (Agent1 and so on)</param>
     public AgentModel(string prefix) {
-        Dictionary<string, string> config = Config.Values;
-        Name = config[prefix];
-        Command = config[prefix + "Command"];
-        config.TryGetValue(prefix + "CopilotModel", out string copilotModel);
+        Name = Config.GetValue(prefix);
+        Command = Config.GetValue(prefix + "Command");
+        Config.TryGetValue(prefix + "CopilotModel", out string copilotModel);
         CopilotModel = copilotModel;
-        config.TryGetValue(prefix + "CopilotOffline", out string copilotOffline);
+        Config.TryGetValue(prefix + "CopilotOffline", out string copilotOffline);
         CopilotOffline = copilotOffline;
-        config.TryGetValue(prefix + "CopilotProviderBaseUrl", out string copilotProviderBaseUrl);
+        Config.TryGetValue(prefix + "CopilotProviderBaseUrl", out string copilotProviderBaseUrl);
         CopilotProviderBaseUrl = copilotProviderBaseUrl;
-        config.TryGetValue(prefix + "CopilotProviderApiKey", out string copilotProviderApiKey);
+        Config.TryGetValue(prefix + "CopilotProviderApiKey", out string copilotProviderApiKey);
         CopilotProviderApiKey = copilotProviderApiKey;
-        if (config.TryGetValue(prefix + "CopilotMaxTokens", out string copilotMaxTokens) && int.TryParse(copilotMaxTokens, out int maxTokens)) {
+        if (Config.TryGetValue(prefix + "CopilotMaxTokens", out string copilotMaxTokens) && int.TryParse(copilotMaxTokens, out int maxTokens)) {
             CopilotMaxTokens = maxTokens;
         }
     }

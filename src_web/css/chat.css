@@ -21,8 +21,8 @@ body::before {
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(ellipse at 30% 20%, rgba(0, 200, 150, 0.06) 0%, transparent 50%),
-              radial-gradient(ellipse at 70% 80%, rgba(0, 163, 122, 0.04) 0%, transparent 50%);
+  background: radial-gradient(ellipse at 30% 20%, var(--accent-glow) 0%, transparent 50%),
+              radial-gradient(ellipse at 70% 80%, var(--accent-subtle) 0%, transparent 50%);
   pointer-events: none;
   z-index: 0;
 }
@@ -248,8 +248,8 @@ img {
 }
 
 .reply .text .collapse button {
-  background: rgba(0, 200, 150, 0.15);
-  border: 1px solid rgba(0, 200, 150, 0.3);
+  background: var(--accent-subtle);
+  border: 1px solid var(--accent-border);
   color: var(--accent);
   font-size: 0.8rem;
   padding: 0.35rem 0.75rem;
@@ -258,7 +258,7 @@ img {
 }
 
 .reply .text .collapse button:hover {
-  background: rgba(0, 200, 150, 0.25);
+  background: var(--accent-glow);
 }
 
 .btn {
@@ -331,7 +331,7 @@ img {
 }
 
 .dropdown-menu .dropdown-item:active {
-  background: rgba(0, 200, 150, 0.22);
+  background: var(--accent-glow);
   color: var(--accent-hover);
 }
 
@@ -347,7 +347,7 @@ img {
 }
 
 .dropdown-menu {
-  background: rgba(15, 35, 25, 0.96);
+  background: var(--menu-bg, rgba(15, 35, 25, 0.96));
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-lg);
@@ -387,8 +387,8 @@ img {
   gap: 0.4rem;
   padding: 0.3rem 0.6rem;
   border-radius: var(--radius-sm);
-  background: rgba(0, 200, 150, 0.1);
-  border: 1px solid rgba(0, 200, 150, 0.3);
+  background: var(--accent-subtle);
+  border: 1px solid var(--accent-border);
   font-size: 0.82rem;
   color: var(--accent);
   white-space: nowrap;
@@ -458,30 +458,21 @@ img {
   color: #a8a4ff;
 }
 
-.close {
-  color: var(--text-primary);
-  text-shadow: none;
-  opacity: 0.7;
-}
-
-.close:hover {
-  opacity: 1;
-}
-
-.chat::-webkit-scrollbar {
+*::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 
-.chat::-webkit-scrollbar-track {
+*::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.chat::-webkit-scrollbar-thumb {
+*::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 3px;
 }
 
-.chat::-webkit-scrollbar-thumb:hover {
+*::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.2);
 }
 
@@ -507,37 +498,6 @@ img {
   border-color: var(--text-primary);
   color: var(--text-primary);
   transform: translateY(-1px);
-}
-
-.suggestion-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 0.75rem;
-  padding: 0.5rem;
-}
-
-.suggestion-card {
-  background: var(--ai-bubble);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-sm);
-  padding: 0.85rem;
-  cursor: pointer;
-  transition: var(--transition);
-  text-align: left;
-  color: var(--text-primary);
-  font-size: 0.85rem;
-}
-
-.suggestion-card:hover {
-  background: rgba(108, 99, 255, 0.08);
-  border-color: rgba(108, 99, 255, 0.3);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-}
-
-.suggestion-card .icon {
-  font-size: 1.25rem;
-  margin-bottom: 0.4rem;
 }
 
 @media (max-width: 767px) {

@@ -8,7 +8,7 @@ namespace PoorMansAI.Configuration {
         /// <summary>
         /// Download path for the checkpoint file.
         /// </summary>
-        public readonly string url = Config.Values[configKey];
+        public readonly string url = Config.GetValue(configKey);
 
         /// <summary>
         /// If a keyword is present in the prompt, the artist is selected. Prepared for binary search.
@@ -28,18 +28,18 @@ namespace PoorMansAI.Configuration {
         /// <summary>
         /// Number of sampling iterations.
         /// </summary>
-        public readonly int steps = int.Parse(Config.Values.GetValueOrDefault(configKey + "Steps", Config.Values["ImageGenSteps"]));
+        public readonly int steps = int.Parse(Config.GetValueOrDefault(configKey + "Steps", Config.GetValue("ImageGenSteps")));
 
         /// <summary>
         /// Per-artist override for the CFG scale or the global default.
         /// </summary>
         public readonly float guidance =
-            float.Parse(Config.Values.GetValueOrDefault(configKey + "Guidance", Config.Values["ImageGenGuidance"]).Replace(',', '.'), CultureInfo.InvariantCulture);
+            float.Parse(Config.GetValueOrDefault(configKey + "Guidance", Config.GetValue("ImageGenGuidance")).Replace(',', '.'), CultureInfo.InvariantCulture);
 
         /// <summary>
         /// Per-artist override for the sampling method or the global default.
         /// </summary>
-        public readonly string sampler = Config.Values.GetValueOrDefault(configKey + "Sampler", Config.imageGenSampler);
+        public readonly string sampler = Config.GetValueOrDefault(configKey + "Sampler", Config.imageGenSampler);
 
         /// <summary>
         /// Parse negative prompts, with the URLs of negative embeddings changed to filenames.

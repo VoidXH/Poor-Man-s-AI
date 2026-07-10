@@ -1,3 +1,5 @@
+@import url('theme.css');
+
 :root {
   --bg-primary: #0a0e14;
   --bg-secondary: #0f1923;
@@ -5,13 +7,7 @@
   --glass-bg: rgba(255, 255, 255, 0.03);
   --glass-border: rgba(255, 255, 255, 0.07);
 
-  --accent: #00c896;
-  --accent-hover: #00e6ac;
-  --accent-glow: rgba(0, 200, 150, 0.22);
-  --user-bubble: linear-gradient(135deg, #00c896 0%, #00a37a 100%);
   --ai-bubble: rgba(255, 255, 255, 0.035);
-  --accent-subtle: rgba(0, 200, 150, 0.1);
-  --accent-border: rgba(0, 200, 150, 0.25);
 
   --text-primary: #e4eaf0;
   --text-secondary: #7e8da0;
@@ -55,9 +51,9 @@ body {
 }
 
 .alert-info {
-  background: rgba(0, 200, 150, 0.1);
-  border-color: rgba(0, 200, 150, 0.25);
-  color: #00e6ac;
+  background: var(--accent-subtle);
+  border-color: var(--accent-border);
+  color: var(--accent-hover);
 }
 
 .btn {
@@ -72,20 +68,6 @@ body {
   border-radius: 0.75rem;
 }
 
-.modal-content {
-  background: var(--bg-secondary);
-  border: 1px solid var(--glass-border);
-  color: var(--text-primary);
-}
-
-.modal-header {
-  border-bottom-color: var(--glass-border);
-}
-
-.modal-footer {
-  border-top-color: var(--glass-border);
-}
-
 .dropdown-menu {
   background: var(--bg-secondary);
   border: 1px solid var(--glass-border);
@@ -96,11 +78,7 @@ body {
 }
 
 .dropdown-item:hover {
-  background: rgba(0, 200, 150, 0.12);
-}
-
-.navbar {
-  background: var(--bg-secondary) !important;
+  background: var(--accent-subtle);
 }
 
 .table {

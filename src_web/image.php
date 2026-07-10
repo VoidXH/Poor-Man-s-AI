@@ -1,5 +1,5 @@
 <?php
-require_once("_check.php");
+require_once("proc/loading.php");
 if ($forceLogin && !$uid) {
     require_once("login.php");
 }
@@ -8,7 +8,7 @@ require_once("proc/addon.php");
 require_once("proc/ai_vars.php");
 $offline = time() - getAIVar("moa-available") > $procTimeout;
 ?>
-<html lang="en">
+<html lang="en" class="theme-<?=$theme ?>">
 <head>
   <meta charset="UTF-8">
   <?=$viewport ?>
@@ -16,14 +16,22 @@ $offline = time() - getAIVar("moa-available") > $procTimeout;
   <link rel="stylesheet" href="<?=$bootstrapPath ?>">
   <link rel="stylesheet" href="css/moa.css">
   <link rel="stylesheet" href="css/dark.css">
+  <link rel="stylesheet" href="css/chat.css">
 </head>
 <body>
 <div class="container">
-  <a href="index.php" class="btn btn-primary back mt-3">Back</a>
-  <div class="text-center mb-3 pt-3">
-    <img src="img/moa_banner.png">
-    <h5 class="font-weight-light">Mixture-of-Artists image generator</h5>
-  </div>
+  <div class="card">
+    <div class="card-header d-flex align-items-center">
+      <a href="index.php" class="btn btn-sm btn-primary">Back</a>
+      <span class="text-center flex-grow-1">Mixture-of-Artists image generator</span>
+<?php
+require('proc/chat/menu.php');
+?>
+    </div>
+    <div class="card-body d-flex flex-column" style="flex: 1; min-height: 0;">
+      <div class="text-center mb-3">
+        <img src="img/moa_banner.png" style="max-height: 90px;">
+      </div>
 <?php
   if ($offline) {
 ?>
@@ -58,18 +66,23 @@ $offline = time() - getAIVar("moa-available") > $procTimeout;
     <p class="text-center mt-3"><small>By using <?=$moaName ?>, you state that you have read the <a href="tos.php">Terms of Service</a> and the <a href="gdpr.php">Privacy Policy</a>, and agree to both.</small></p>
     <?php } ?>
   </form>
-  <div class="progress mb-3" style="height: 30px; position: relative;">
+  <div class="progress mt-3 mb-3" style="height: 30px; position: relative;">
     <div id="progress-bar" class="progress-bar" role="progressbar" style="width: 0%;">0%</div>
     <div id="message" class="text-center" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; color: black;"> </div>
   </div>
-  <div id="image-partial" class="text-center"></div>
-  <div id="image-results" class="text-center"></div>
+  <div id="image-scroll" class="flex-grow-1 overflow-auto" style="min-height: 0;">
+    <div id="image-partial" class="text-center"></div>
+    <div id="image-results" class="text-center"></div>
+  </div>
 <?php } ?>
+    </div>
+  </div>
 </div>
 <a class="br" href="https://github.com/VoidXH/Poor-Man-s-AI"><img src="img/github.svg"></a>
 <script src="<?=$jqueryPath ?>"></script>
 <script src="<?=$bootstrapJSPath ?>"></script>
 <script src="js/command.js"></script>
+<script src="js/menu.js"></script>
 <script src="js/image.js"></script>
 </body>
 </html>

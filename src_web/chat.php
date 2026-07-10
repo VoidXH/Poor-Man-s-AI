@@ -8,7 +8,7 @@ $slm = $time - getAIVar("moa-available") <= $procTimeout;
 
 if ($standalone) {
 ?>
-<html lang="en">
+<html lang="en" class="theme-<?=$theme ?>">
 <head>
 	<meta charset="UTF-8">
 	<?=$viewport ?>

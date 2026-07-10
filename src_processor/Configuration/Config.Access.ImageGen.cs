@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 
 namespace PoorMansAI.Configuration;
 
@@ -7,47 +7,47 @@ partial class Config {
     /// <summary>
     /// Where AUTOMATIC1111's Stable Diffusion WebUI is unpacked to (has system and webui subfolders).
     /// </summary>
-    public static readonly string webUIRoot = Values["WebUIRoot"];
+    public static readonly string webUIRoot = GetValue("WebUIRoot");
 
     /// <summary>
     /// Stable Diffusion WebUI release build download path.
     /// </summary>
-    public static readonly string webUIDownload = Values["WebUIDownload"];
+    public static readonly string webUIDownload = GetValue("WebUIDownload");
 
     /// <summary>
     /// Use this port for image generation.
     /// </summary>
-    public static readonly string webUIPort = Values["WebUIPort"];
+    public static readonly string webUIPort = GetValue("WebUIPort");
 
     /// <summary>
     /// If images are not done in this many seconds, cancel the generation.
     /// </summary>
-    public static readonly int imageGenTimeout = int.Parse(Values["ImageGenTimeout"]);
+    public static readonly int imageGenTimeout = int.Parse(GetValue("ImageGenTimeout"));
 
     /// <summary>
     /// When switching models, allow this many extra seconds over the normal timeout.
     /// </summary>
-    public static readonly int imageGenLoading = int.Parse(Values["ImageGenLoading"]);
+    public static readonly int imageGenLoading = int.Parse(GetValue("ImageGenLoading"));
 
     /// <summary>
     /// When a reference image is used, allow this many extra seconds of timeout.
     /// </summary>
-    public static readonly int imageGenParsing = int.Parse(Values["ImageGenParsing"]);
+    public static readonly int imageGenParsing = int.Parse(GetValue("ImageGenParsing"));
 
     /// <summary>
     /// Number of times the image is refined for better results.
     /// </summary>
-    public static readonly int imageGenSteps = int.Parse(Values["ImageGenSteps"]);
+    public static readonly int imageGenSteps = int.Parse(GetValue("ImageGenSteps"));
 
     /// <summary>
     /// How close the prompts are followed, read your models' recommendation.
     /// </summary>
-    public static readonly float imageGenGuidance = float.Parse(Values["ImageGenGuidance"].Replace(',', '.'), CultureInfo.InvariantCulture);
+    public static readonly float imageGenGuidance = float.Parse(GetValue("ImageGenGuidance").Replace(',', '.'), CultureInfo.InvariantCulture);
 
     /// <summary>
     /// Sampler method used for image generation.
     /// </summary>
-    public static readonly string imageGenSampler = Values["ImageGenSampler"];
+    public static readonly string imageGenSampler = GetValue("ImageGenSampler");
 
     /// <summary>
     /// Base image size for non-HD generations, width.
@@ -142,17 +142,17 @@ partial class Config {
     /// <summary>
     /// Stable Diffusion checkpoints are stored in this folder.
     /// </summary>
-    public static readonly string artists = Values["Artists"];
+    public static readonly string artists = GetValue("Artists");
 
     /// <summary>
     /// Stable Diffusion embeddings are stored in this folder.
     /// </summary>
-    public static readonly string embeddings = Values["Embeddings"];
+    public static readonly string embeddings = GetValue("Embeddings");
 
     /// <summary>
     /// Default checkpoint to use for image generation.
     /// </summary>
-    public static readonly string defaultArtist = Values["DefaultArtist"];
+    public static readonly string defaultArtist = GetValue("DefaultArtist");
 
     /// <summary>
     /// Negative embeddings to be used in conjunction with the <see cref="defaultArtist"/>.
@@ -197,7 +197,7 @@ partial class Config {
     /// Get the X component of a resolution variable of WxH format.
     /// </summary>
     static int ResX(string key) {
-        string value = Values[key];
+        string value = GetValue(key);
         return int.Parse(value[..value.IndexOf('x')]);
     }
 
@@ -205,7 +205,7 @@ partial class Config {
     /// Get the Y component of a resolution variable of WxH format.
     /// </summary>
     static int ResY(string key) {
-        string value = Values[key];
+        string value = GetValue(key);
         return int.Parse(value[(value.IndexOf('x') + 1)..]);
     }
 }

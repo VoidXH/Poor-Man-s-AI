@@ -1,4 +1,4 @@
-﻿using VoidX.WPF;
+using VoidX.WPF;
 
 namespace PoorMansAI.Configuration;
 
@@ -14,52 +14,52 @@ public static partial class Config {
     /// <summary>
     /// Where to poll the commands from.
     /// </summary>
-    public static readonly string publicWebserver = Values["PublicWebserver"];
+    public static readonly string publicWebserver = GetValue("PublicWebserver");
 
     /// <summary>
     /// Send server messages at least this many milliseconds apart to prevent Cloudflare throttling.
     /// </summary>
-    public static readonly int serverPollInterval = int.Parse(Values["ServerPollInterval"]);
+    public static readonly int serverPollInterval = int.Parse(GetValue("ServerPollInterval"));
 
     /// <summary>
     /// Priority of the chat engine across all distributed nodes.
     /// </summary>
-    public static readonly int chatWeight = int.Parse(Values["ChatWeight"]);
+    public static readonly int chatWeight = int.Parse(GetValue("ChatWeight"));
 
     /// <summary>
     /// Priority of the chat engine across all distributed nodes.
     /// </summary>
-    public static readonly int imageGenWeight = int.Parse(Values["ImageGenWeight"]);
+    public static readonly int imageGenWeight = int.Parse(GetValue("ImageGenWeight"));
 
     /// <summary>
     /// Priority of the agent engine across all distributed nodes.
     /// </summary>
-    public static readonly int agentWeight = int.Parse(Values["AgentWeight"]);
+    public static readonly int agentWeight = int.Parse(GetValue("AgentWeight"));
 
     /// <summary>
     /// Command poller user's name.
     /// </summary>
-    internal static readonly string adminUsername = Values["AdminUsername"];
+    internal static readonly string adminUsername = GetValue("AdminUsername");
 
     /// <summary>
     /// Command poller user's password.
     /// </summary>
-    internal static readonly string adminPassword = Values["AdminPassword"];
+    internal static readonly string adminPassword = GetValue("AdminPassword");
 
     /// <summary>
     /// CPU and GPU use the same memory.
     /// </summary>
-    internal static readonly bool unified = bool.Parse(Values["Unified"]);
+    internal static readonly bool unified = bool.Parse(GetValue("Unified"));
 
     /// <summary>
     /// Class names of enabled extensions.
     /// </summary>
-    internal static string[] extensions = Values["Extensions"].Split(',', StringSplitOptions.TrimEntries);
+    internal static string[] extensions = GetValue("Extensions").Split(',', StringSplitOptions.TrimEntries);
 
     /// <summary>
     /// The config file in the application folder with the highest weight.
     /// </summary>
-    internal static Dictionary<string, string> Values {
+    static Dictionary<string, string> Values {
         get {
             if (loadedConfig != null) {
                 return loadedConfig;
@@ -86,6 +86,30 @@ public static partial class Config {
     static Dictionary<string, string> loadedConfig;
 
     /// <summary>
+    /// Returns the configuration value associated with <paramref name="key"/>. If the key is missing, logs a
+    /// clear message to the console and terminates the application before a confusing <see cref="KeyNotFoundException"/> is thrown.
+    /// </summary>
+    internal static string GetValue(string key) {
+        Dictionary<string, string> config = Values;
+        if (config.TryGetValue(key, out string value)) {
+            return value;
+        }
+        Logger.Error($"{key} is missing from the highest priority configuration file. Please check its integrity.");
+        Environment.Exit(1);
+        return null;
+    }
+
+    /// <summary>
+    /// Tries to read an optional configuration value. Returns <c>false</c> (without crashing) if the <paramref name="key"/> is absent.
+    /// </summary>
+    internal static bool TryGetValue(string key, out string value) => Values.TryGetValue(key, out value);
+
+    /// <summary>
+    /// Reads an optional configuration value, returning <paramref name="defaultValue"/> if the <paramref name="key"/> is absent.
+    /// </summary>
+    internal static string GetValueOrDefault(string key, string defaultValue) => TryGetValue(key, out string value) ? value : defaultValue;
+
+    /// <summary>
     /// Parse keywords or selectors to a binary searchable (sorted) array.
     /// </summary>
     internal static string[] GetKeywordList(string value) => GetKeywordList(GetList(value));
@@ -98,7 +122,7 @@ public static partial class Config {
     /// <summary>
     /// Parse a <paramref name="key"/> that contains a comma-separated list and trim whitespaces of the entries.
     /// </summary>
-    internal static string[] ReadList(string key) => GetList(Values[key]);
+    internal static string[] ReadList(string key) => GetList(GetValue(key));
 
     /// <summary>
     /// Parse keywords or selectors to a binary searchable (sorted) array.

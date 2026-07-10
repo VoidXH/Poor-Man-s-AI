@@ -37,7 +37,7 @@ if ($_POST['key'] == $deleteKey && $sqlink->query("DELETE FROM ai_users WHERE id
 
 $prompts = $sqlink->query("SELECT prompts FROM ai_users WHERE id = $uid")->fetch_assoc()['prompts'];
 ?>
-<html>
+<html class="theme-<?=$theme ?>">
 <head>
   <meta charset="UTF-8">
   <?=$viewport ?>

@@ -1,0 +1,75 @@
+.theme-green {
+  --accent: #00c896;
+  --accent-hover: #00e6ac;
+  --accent-glow: rgba(0, 200, 150, 0.22);
+  --user-bubble: linear-gradient(135deg, #00c896 0%, #00a37a 100%);
+  --accent-subtle: rgba(0, 200, 150, 0.1);
+  --accent-border: rgba(0, 200, 150, 0.25);
+  --menu-bg: rgba(15, 35, 25, 0.96);
+}
+
+.theme-blue {
+  --accent: #3b82f6;
+  --accent-hover: #60a5fa;
+  --accent-glow: rgba(59, 130, 246, 0.22);
+  --user-bubble: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  --accent-subtle: rgba(59, 130, 246, 0.1);
+  --accent-border: rgba(59, 130, 246, 0.25);
+  --menu-bg: rgba(15, 25, 35, 0.96);
+}
+
+.theme-red {
+  --accent: #f43f5e;
+  --accent-hover: #fb7185;
+  --accent-glow: rgba(244, 63, 94, 0.22);
+  --user-bubble: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+  --accent-subtle: rgba(244, 63, 94, 0.1);
+  --accent-border: rgba(244, 63, 94, 0.25);
+  --menu-bg: rgba(35, 15, 20, 0.96);
+}
+
+.dropdown-menu .theme-swatches {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  padding: 0.6rem 0.5rem 0.4rem;
+}
+
+.dropdown-divider {
+  height: 0;
+  margin: 0.35rem 0.5rem;
+  border: 0;
+  border-top: 1px solid var(--glass-border);
+  opacity: 1;
+}
+
+.theme-swatch {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: var(--transition);
+}
+
+.theme-swatch:hover {
+  transform: scale(1.12);
+}
+
+.theme-swatch.active {
+  border-color: var(--text-primary);
+  box-shadow: 0 0 0 2px var(--bg-secondary);
+}
+
+.theme-swatch-green {
+  background: #00c896;
+}
+
+.theme-swatch-blue {
+  background: #3b82f6;
+}
+
+.theme-swatch-red {
+  background: #f43f5e;
+}

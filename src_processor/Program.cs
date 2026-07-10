@@ -1,11 +1,11 @@
-﻿using VoidX.WPF;
+using VoidX.WPF;
 
 using PoorMansAI;
 using PoorMansAI.Configuration;
 using PoorMansAI.Extensions;
 using PoorMansAI.Engines;
 
-Logger.MinLogLevel = (LogLevel)Enum.Parse(typeof(LogLevel), Config.Values["LogLevel"]);
+Logger.MinLogLevel = (LogLevel)Enum.Parse(typeof(LogLevel), Config.GetValue("LogLevel"));
 // Prepare the environment, like downloading required models
 Downloader.Prepare();
 LlamaCpp.Ready();
