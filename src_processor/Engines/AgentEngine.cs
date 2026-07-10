@@ -74,7 +74,6 @@ public partial class AgentEngine : Engine {
     /// <inheritdoc/>
     public override string Generate(Command command) {
         string prompt = command.Prompt;
-
         if (prompt.StartsWith("[Queue:") && prompt[^1] == ']') {
             return ExtraCommandHandler(string.Empty, prompt[1..^1], command.ID);
         }
@@ -150,7 +149,7 @@ public partial class AgentEngine : Engine {
 
         if (Config.agentSendEmail) {
             try {
-                EmailSender.Send(Config.agentEmailRecipient, "Agent Process Completed",
+                EmailSender.Send(Config.agentEmailRecipient, $"Agent Process Completed ({selectedAgent.Name})",
                     $"Prompt: {prompt}\n\nProject folder: {workingDir}\n\nAgent time: {stopwatch.Elapsed:mm\\:ss}\n\n{fulloutput}");
             } catch (Exception) {
                 // Email sending failure is non-fatal; ignore silently

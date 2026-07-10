@@ -66,14 +66,14 @@ public class EngineFactory {
     /// </summary>
     /// <returns>If no errors were found and the requested engines were started.</returns>
     bool Startup(Dictionary<EngineType, Engine> engines, EngineCacheMode mode, Engine.Progress onProgress) {
-        if (mode.IsImage() && !engines.ContainsKey(EngineType.Image) && Config.chatWeight >= 0) {
+        if (mode.IsImage() && !engines.ContainsKey(EngineType.Image) && Config.imageGenWeight >= 0) {
             ImageEngine imageEngine = StartImage();
             imageEngine.Others = engines;
             imageEngine.OnProgress += onProgress;
             engines[EngineType.Image] = imageEngine;
         }
 
-        if (mode.IsChat() && !engines.ContainsKey(EngineType.Chat) && Config.imageGenWeight >= 1) {
+        if (mode.IsChat() && !engines.ContainsKey(EngineType.Chat) && Config.chatWeight >= 0) {
             ChatEngine chatEngine = mode.IsLLM() ? StartLLM() : StartSLM();
             chatEngine.Others = engines;
             chatEngine.OnProgress += onProgress;

@@ -51,25 +51,25 @@ $offline = $time - getAIVar("agent-available") > $procTimeout;
     	</div>
 		<div class="card-footer">
 <?php if (!$offline) { ?>
-			<div class="mb-2">
-				<div class="dropdown d-inline" id="agent-dropdown">
-						<button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="agentDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">
-							<span id="agentLabel"></span>
-						</button>
-						<ul class="dropdown-menu" id="agentMenu">
+			<div>
+				<div class="dropdown d-inline mb-2" id="agent-dropdown">
+					<button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="agentDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">
+						<span id="agentLabel"></span>
+					</button>
+					<ul class="dropdown-menu" id="agentMenu">
 <?php
 	$agents = preg_split('/\s*,\s*/', $agentModels);
 	foreach ($agents as $index => $agent) {
 			echo "<li><a class=\"dropdown-item\" href=\"#\" data-agent=\"".$agent."\">".$agent."</a></li>\n";
 	}
 ?>
-						</ul>
-					</div>
-				<div class="dropdown d-inline" id="path-dropdown">
-						<button class="btn btn-sm btn-primary dropdown-toggle" type="button" id="pathDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">
-							<span id="pathLabel"></span>
-						</button>
-						<ul class="dropdown-menu" id="pathMenu">
+					</ul>
+				</div>
+				<div class="dropdown d-inline mb-2" id="path-dropdown">
+					<button class="btn btn-sm btn-primary dropdown-toggle" type="button" id="pathDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">
+						<span id="pathLabel"></span>
+					</button>
+					<ul class="dropdown-menu" id="pathMenu">
 <?php
 	$paths = preg_split('/\s*,\s*/', $agentPaths);
 	foreach ($paths as $index => $path) {
@@ -77,8 +77,8 @@ $offline = $time - getAIVar("agent-available") > $procTimeout;
 			echo "<li><a class=\"dropdown-item\" href=\"#\" data-path=\"".$path."\">".$label."</a></li>\n";
 	}
 ?>
-						</ul>
-					</div>
+					</ul>
+				</div>
 			</div>
 			<div class="file-input-container" id="file-blocks-container"></div>
 				<div class="input-group">

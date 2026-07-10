@@ -22,11 +22,14 @@ $offline = time() - getAIVar("moa-available") > $procTimeout;
 <div class="container">
   <div class="card">
     <div class="card-header d-flex align-items-center">
-      <a href="index.php" class="btn btn-sm btn-primary">Back</a>
-      <span class="text-center flex-grow-1">Mixture-of-Artists image generator</span>
 <?php
-require('proc/chat/menu.php');
+if ($instantMode) {
+	require('proc/chat/menu.php');
+} else {
 ?>
+      <a href="index.php" class="btn btn-sm btn-primary">Back</a>
+<?php } ?>
+      <span class="text-center flex-grow-1"><?=$moaName ?></span>
     </div>
     <div class="card-body d-flex flex-column" style="flex: 1; min-height: 0;">
       <div class="text-center mb-3">
@@ -66,7 +69,7 @@ require('proc/chat/menu.php');
     <p class="text-center mt-3"><small>By using <?=$moaName ?>, you state that you have read the <a href="tos.php">Terms of Service</a> and the <a href="gdpr.php">Privacy Policy</a>, and agree to both.</small></p>
     <?php } ?>
   </form>
-  <div class="progress mt-3 mb-3" style="height: 30px; position: relative;">
+  <div class="progress mt-3 mb-3" style="height: 20px; position: relative;">
     <div id="progress-bar" class="progress-bar" role="progressbar" style="width: 0%;">0%</div>
     <div id="message" class="text-center" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; color: black;"> </div>
   </div>
