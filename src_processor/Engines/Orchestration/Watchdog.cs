@@ -32,7 +32,9 @@ class Watchdog : IDisposable {
     /// <param name="launcher">Operation that launches a new <see cref="instance"/></param>
     public Watchdog(Func<Process> launcher) {
         this.launcher = launcher;
-        watcher = new Thread(new ThreadStart(WatcherThread));
+        watcher = new(new ThreadStart(WatcherThread)) {
+            IsBackground = true
+        };
         watcher.Start();
 
         // Block until first launch

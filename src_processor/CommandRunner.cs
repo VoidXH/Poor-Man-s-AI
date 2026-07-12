@@ -48,7 +48,9 @@ public class CommandRunner : IDisposable {
         engine = new(cookies);
         engine.OnProgress += ProgressUpdate;
         canceller = new();
-        runner = new(new ThreadStart(ProcessCommands));
+        runner = new(new ThreadStart(ProcessCommands)) {
+            IsBackground = true
+        };
         runner.Start();
     }
 

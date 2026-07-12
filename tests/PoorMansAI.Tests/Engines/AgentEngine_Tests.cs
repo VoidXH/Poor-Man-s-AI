@@ -47,12 +47,12 @@ public class AgentEngine_Tests : TestWithContext {
     /// Run the <see cref="AgentEngine"/> with the <paramref name="prompt"/> sent into an echo command, and check if the echo contains an <paramref name="expectedReply"/>.
     /// </summary>
     static void RunEchoTest(string prompt, string expectedReply) {
-        AgentSettings settings = new(false) {
-            Timeout = 10,
-            Command = "echo {{PROMPT}}"
-        };
-
-        AgentEngine engine = new(settings);
+        using AgentEngine engine = new(new Dictionary<string, AgentModel> {
+            ["Test"] = new AgentModel("Agent1") {
+                Name = "Test",
+                Command = "echo {{PROMPT}}"
+            }
+        });
         Command command = new(EngineType.Agent, prompt);
         string result = engine.Generate(command);
 

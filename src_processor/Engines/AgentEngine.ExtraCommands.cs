@@ -120,7 +120,9 @@ partial class AgentEngine {
     /// </summary>
     void LaunchQueueThread() {
         queueCanceller = new();
-        queueRunner = new(QueueRunner);
+        queueRunner = new(QueueRunner) {
+            IsBackground = true
+        };
         queueRunner.Start();
     }
 
