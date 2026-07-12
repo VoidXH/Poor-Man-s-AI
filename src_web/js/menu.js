@@ -36,3 +36,12 @@
     } else {
         initThemeSwatches();
     }
+
+    function newChat() {
+        const here = location.pathname.substring(location.pathname.lastIndexOf("/") + 1);
+        if (here === chatHome) {
+            reset();
+        } else {
+            window.location.href = chatHome;
+        }
+    }

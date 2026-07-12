@@ -425,13 +425,6 @@ img {
   opacity: 1;
 }
 
-.target {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  row-gap: 0.4rem;
-}
-
 .alert {
   border-radius: var(--radius-sm);
   border: none;

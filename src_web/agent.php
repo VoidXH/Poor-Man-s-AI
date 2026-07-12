@@ -52,7 +52,7 @@ $offline = $time - getAIVar("agent-available") > $procTimeout;
 		<div class="card-footer">
 <?php if (!$offline) { ?>
 			<div>
-				<div class="dropdown d-inline mb-2" id="agent-dropdown">
+				<div class="dropdown d-inline-block mb-2 me-2" id="agent-dropdown">
 					<button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="agentDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">
 						<span id="agentLabel"></span>
 					</button>
@@ -64,8 +64,7 @@ $offline = $time - getAIVar("agent-available") > $procTimeout;
 	}
 ?>
 					</ul>
-				</div>
-				<div class="dropdown d-inline mb-2" id="path-dropdown">
+				</div><div class="dropdown d-inline-block mb-2 me-2" id="path-dropdown">
 					<button class="btn btn-sm btn-primary dropdown-toggle" type="button" id="pathDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">
 						<span id="pathLabel"></span>
 					</button>

@@ -13,7 +13,7 @@
         <li><a class="dropdown-item" href="login.php">Login</a></li>
 <?php } ?>
         <li><hr class="dropdown-divider"></li>
-        <li><a class="dropdown-item" onclick="reset()">New chat</a></li>
+        <li><a class="dropdown-item" onclick="newChat()">New chat</a></li>
         <li><hr class="dropdown-divider"></li>
 <?php if ($admin) { ?>
         <li><a class="dropdown-item" href="agent.php">Remote agent</a></li>
@@ -29,4 +29,5 @@
         </li>
     </ul>
 </div>
-<script src="js/menu.js"></script>
+<?php require("proc/chat/new_chat.php"); ?>
+

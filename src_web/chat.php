@@ -31,7 +31,7 @@ if ($standalone) {
 ?>
 			<span class="text-center flex-grow-1"><?=$chatName ?></span>
 <?php if ($standalone) { ?>
-			<button class="btn btn-sm btn-primary" id="reset" onclick="reset()">New chat</button>
+			<button class="btn btn-sm btn-primary" id="reset" onclick="newChat()">New chat</button>
 <?php } ?>
 		</div>
 		<div class="card-body chat">
@@ -56,13 +56,13 @@ if ($standalone) {
     	</div>
 		<div class="card-footer">
 <?php if (!$offline) { ?>
-			<div id="model" class="target mb-1">
+			<div id="model">
 <?php
 	$models = preg_split('/\s*,\s*/', $chatModels);
 	foreach ($models as $index => $model) {
-		$class = ($index == 0) ? "btn btn-primary btn-sm" : "btn btn-secondary btn-sm";
+		$class = ($index == 0) ? "btn btn-primary btn-sm mb-2 me-2" : "btn btn-secondary btn-sm mb-2 me-2";
 		$id = strtolower($model);
-		echo "<button class=\"$class\" id=\"$id\">$model</button>\n";
+		echo "<button class=\"$class\" id=\"$id\">$model</button>";
 	}
 ?>
 			</div>
@@ -89,6 +89,7 @@ const gpt = "<?=htmlspecialchars($chatName) ?>";
 <link rel="stylesheet" href="<?=$highlightCSSPath ?>">
 <?php if ($standalone) { ?>
 <script src="<?=$bootstrapJSPath ?>"></script>
+<?php require("proc/chat/new_chat.php"); ?>
 <script src="js/command.js"></script>
 <a class="br" href="https://github.com/VoidXH/Poor-Man-s-AI"><img src="img/github.svg"></a>
 </body>
