@@ -38,6 +38,12 @@ $install = [
   `value` varchar(32) NOT NULL,
   PRIMARY KEY (`key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8",
+"DROP TABLE IF EXISTS `ai_usage`",
+"CREATE TABLE `ai_usage` (
+  `time` timestamp NOT NULL,
+  `usage` int(11) DEFAULT '0',
+  PRIMARY KEY (`time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8",
 "INSERT INTO `ai_vars` (`key`, `value`) VALUES
 ('agent-available',	'0'),
 ('agent-weight',	'0'),

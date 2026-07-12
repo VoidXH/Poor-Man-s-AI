@@ -44,6 +44,9 @@ $maxQueueLength = 10;
 // maximized at 64 kB, so the default value of 1000 limits dislike storage to
 // 64 MB):
 $maxWrongAnswers = 1000;
+// Collect usage statistics (maximum queue length over time) for the admin Usage
+// page (true or false):
+$usageTracking = true;
 
 // To enable zooming on phones, just remove the last parameter from this:
 $viewport = '<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">';

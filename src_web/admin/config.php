@@ -66,6 +66,8 @@ editBool("Instant mode", "instantMode"); ?>
 <p class="mt-n3">Maximum number of prompts in queue. When the queue limit is reached, prompts will be canceled due to server overload.</p>
 <?php editVar("Max wrong answers", "maxWrongAnswers"); ?>
 <p class="mt-n3">Number of conversations with disliked responses to keep. Each dislike log is maximized at 64 kB, so the default value of 1000 limits dislike storage to 64 MB.</p>
+<?php editBool("Usage tracking", "usageTracking"); ?>
+<p class="mt-n3">Collect usage statistics (maximum queue length over time) for the admin Usage page.</p>
 <h2><br>For developers</h2>
 <?php
 editVar("Viewport", "viewport");

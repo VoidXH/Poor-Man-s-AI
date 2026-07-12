@@ -2,7 +2,8 @@
 This is the folder of example addons. In each subfolder, an addon is present
 with description, install instructions, and source code. Examples are:
 * [Censor](./Censor/README.md): prevents image generation with some words.
-* [Usage tracker](./Usage%20tracker/README.md): graphs server load over time.
+* [Cost calculator](./Cost%20calculator/README.md): estimates how much money
+  hosting the site has cost based on usage.
 
 ## Development
 The website features extension points where a PHP script is called when it
