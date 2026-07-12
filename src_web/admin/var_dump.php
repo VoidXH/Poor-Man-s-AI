@@ -17,7 +17,7 @@ $description = [
     "unreg-use" => "Number of prompts sent by unregistered users",
 ];
 ?>
-<h2>Var dump</h2>
+<h2>Var Dump</h2>
 <table class="table table-striped table-dark">
     <thead>
       <tr>
@@ -30,9 +30,12 @@ $description = [
         <?php
             $result = $sqlink->query("SELECT * FROM ai_vars");
             while($row = $result->fetch_assoc()) {
-                echo "<tr><td>".$row["key"]."</td><td>".$row["value"]."</td><td>".$description[$row["key"]]."</td></tr>";
+                $key = htmlspecialchars($row["key"]);
+                $value = htmlspecialchars($row["value"]);
+                $desc = $description[$row["key"]] ?? "";
+                echo "<tr><td>$key</td><td>$value</td><td>$desc</td></tr>";
             }
-			addon("var_dump");
+            addon("var_dump");
         ?>
     </tbody>
 </table>

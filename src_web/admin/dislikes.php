@@ -7,8 +7,7 @@ if (isset($_GET["del"])) {
     execute("DELETE FROM ai_reports WHERE time = ?", $_GET["del"]);
 }
 ?>
-<h2>Disliked chat messages</h1>
-<script src="<?=$jqueryPath ?>"></script>
+<h2>Disliked Chat Messages</h2>
 <script>
 function show(id) {
     $.get("admin/dislike_dump.php?id=" + id, function(response) {
@@ -37,10 +36,10 @@ if ($result->num_rows > 0) {
         $conversation = htmlspecialchars($row["data"]);
         echo "<tr><td>$time</td><td>$conversation</td>";
         echo "<td><button class=\"btn btn-primary\" onclick=\"show('$time')\">Show</button>";
-        echo "<a class=\"btn btn-danger\" href=\"?p=3&del=$time\">Delete</a></td></tr>";
+        echo "<a class=\"btn btn-danger ms-2\" href=\"?p=3&del=$time\">Delete</a></td></tr>";
     }
 } else {
-    echo "<tr><td colspan=\"3\">No reports found.</td></tr>";
+    echo "<tr><td colspan=\"3\" class=\"text-center\">No reports found.</td></tr>";
 }
 ?>
     </tbody>

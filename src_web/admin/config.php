@@ -9,13 +9,13 @@ function editVar($name, $var, $int = false) {
     global $$var, $result;
     if ($_POST["key"] == $var) { $$var = $int ? intval($_POST["value"]) : $_POST["value"]; }
     $result .= "$".$var."= ".var_export($$var, true).";".PHP_EOL;
-        echo '<form method="POST">
-	<div class="input-group mt-3">
-		<span class="input-group-text">'.$name.':</span>
-		<input class="form-control"'.($int ? " type=\"number\"" : "").' name="value" value="'.htmlspecialchars($$var).'">
-		<button type="submit" class="btn btn-primary">Set</button>
-	</div>
-	<input type="hidden" name="key" value="'.$var.'">
+    echo '<form method="POST">
+    <div class="input-group mt-3">
+        <span class="input-group-text">'.$name.':</span>
+        <input class="form-control"'.($int ? " type=\"number\"" : "").' name="value" value="'.htmlspecialchars($$var).'">
+        <button type="submit" class="btn btn-primary">Set</button>
+    </div>
+    <input type="hidden" name="key" value="'.$var.'">
 </form>';
 }
 
@@ -23,7 +23,7 @@ function editBool($name, $var) {
     global $$var, $result;
     if ($_POST["key"] == $var) { $$var = $_POST["value"] == "on"; }
     $result .= "$".$var."= ".var_export($$var, true).";".PHP_EOL;
-        echo '<form method="POST" class="mb-0">
+    echo '<form method="POST" class="mt-3 mb-0">
     <div class="form-check form-switch">
         <input class="form-check-input" type="checkbox" name="value"'.($$var ? " checked" : "").'>
         <label class="form-check-label" for="value">'.$name.'</label>
@@ -41,34 +41,34 @@ editVar("Chatbot name", "chatName");
 editVar("Image generator page title", "moaPage");
 editVar("Image generator name", "moaName");
 editBool("Instant mode", "instantMode"); ?>
-<p>Show a chat instead of the legacy tool selection page.</p>
-<h2><br>Registration</h2>
+<p class="text-secondary">Show a chat instead of the legacy tool selection page.</p>
+<h2 class="mt-4">Registration</h2>
 <?php editBool("Open the site", "open"); ?>
-<p>Allow anyone to use the website without logging in.</p>
+<p class="text-secondary">Allow anyone to use the website without logging in.</p>
 <?php editBool("Force login", "forceLogin"); ?>
-<p>Checking this will allow users to still use embedded chats, but not the site.</p>
+<p class="text-secondary">Checking this will allow users to still use embedded chats, but not the site.</p>
 <?php editBool("Allow registration", "regOn"); ?>
-<h2><br>Behavior</h2>
+<h2 class="mt-4">Behavior</h2>
 <?php editVar("Chat models", "chatModels"); ?>
-<p class="mt-n3">The available models by name, as set up on the Processors.</p>
+<p class="text-secondary mt-n3">The available models by name, as set up on the Processors.</p>
 <?php editVar("Agent engines", "agentModels"); ?>
-<p class="mt-n3">The available agent engines by name, as set up on the Processors.</p>
+<p class="text-secondary mt-n3">The available agent engines by name, as set up on the Processors.</p>
 <?php editVar("Agent paths", "agentPaths"); ?>
-<p>Available project folders for the Agent, comma-separated.</p>
+<p class="text-secondary">Available project folders for the Agent, comma-separated.</p>
 <?php editBool("SLM warnings", "slmWarning"); ?>
-<p>Show SLM warnings in chat when in Image + SLM mode. Recommended to disable when the Processor has unified memory and the models are large enough (like 7B).</p>
-<h2><br>Limits</h2>
+<p class="text-secondary">Show SLM warnings in chat when in Image + SLM mode. Recommended to disable when the Processor has unified memory and the models are large enough (like 7B).</p>
+<h2 class="mt-4">Limits</h2>
 <?php editVar("Command lifespan", "commandClear", true); ?>
-<p class="mt-n3">Unprocessed commands will be deleted from the database after this many minutes while the Processor is online.</p>
+<p class="text-secondary mt-n3">Unprocessed commands will be deleted from the database after this many minutes while the Processor is online.</p>
 <?php editVar("Processor timeout", "procTimeout", true); ?>
-<p class="mt-n3">Seconds to consider the processor offline after it was last seen.</p>
+<p class="text-secondary mt-n3">Seconds to consider the processor offline after it was last seen.</p>
 <?php editVar("Max queue length", "maxQueueLength"); ?>
-<p class="mt-n3">Maximum number of prompts in queue. When the queue limit is reached, prompts will be canceled due to server overload.</p>
+<p class="text-secondary mt-n3">Maximum number of prompts in queue. When the queue limit is reached, prompts will be canceled due to server overload.</p>
 <?php editVar("Max wrong answers", "maxWrongAnswers"); ?>
-<p class="mt-n3">Number of conversations with disliked responses to keep. Each dislike log is maximized at 64 kB, so the default value of 1000 limits dislike storage to 64 MB.</p>
+<p class="text-secondary mt-n3">Number of conversations with disliked responses to keep. Each dislike log is maximized at 64 kB, so the default value of 1000 limits dislike storage to 64 MB.</p>
 <?php editBool("Usage tracking", "usageTracking"); ?>
-<p class="mt-n3">Collect usage statistics (maximum queue length over time) for the admin Usage page.</p>
-<h2><br>For developers</h2>
+<p class="text-secondary mt-n3">Collect usage statistics (maximum queue length over time) for the admin Usage page.</p>
+<h2 class="mt-4">For developers</h2>
 <?php
 editVar("Viewport", "viewport");
 editVar("Bootstrap CSS path", "bootstrapPath");
@@ -78,6 +78,6 @@ editVar("Marked path", "markedPath");
 editVar("Highlight.JS JS path", "highlightPath");
 editVar("Highlight.JS CSS path", "highlightCSSPath");
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    file_put_contents("__config.php", "<"."?php".PHP_EOL.$result."?".">");
+    file_put_contents("../__config.php", "<"."?php".PHP_EOL.$result."?".">");
 }
 ?>
