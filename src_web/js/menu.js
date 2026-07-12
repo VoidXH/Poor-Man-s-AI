@@ -38,7 +38,10 @@
     }
 
     function newChat() {
-        const here = location.pathname.substring(location.pathname.lastIndexOf("/") + 1);
+        let here = location.pathname.substring(location.pathname.lastIndexOf("/") + 1);
+        if (here === "") {
+            here = "index.php";
+        }
         if (here === chatHome) {
             reset();
         } else {
