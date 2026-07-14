@@ -20,17 +20,20 @@ public static class FileSystem {
 
         StringBuilder result = new();
         Array.Sort(skipped);
-        BuildTree(result, new(folder), folder, skipped);
+        BuildTree(result, new(folder), folder, folder, skipped);
         return result.ToString();
     }
 
     /// <summary>
     /// Recursively build a HTML unordered list tree of all folders and files.
     /// </summary>
-    static void BuildTree(StringBuilder result, GitIgnoreParser gitIgnoreParser, string root, string[] skipped) {
+    /// <param name="currentDir">The directory whose direct children are being enumerated in this call.</param>
+    /// <param name="repoRoot">The original root the tree started from; used as the gitignore base path so
+    /// repo-root-relative patterns and negations (e.g. <c>!Assets/**</c>) keep matching during recursion.</param>
+    static void BuildTree(StringBuilder result, GitIgnoreParser gitIgnoreParser, string currentDir, string repoRoot, string[] skipped) {
         try {
-            string[] folders = Directory.GetDirectories(root);
-            string[] files = Directory.GetFiles(root);
+            string[] folders = Directory.GetDirectories(currentDir);
+            string[] files = Directory.GetFiles(currentDir);
             result.Append("<ul>");
 
             foreach (string folder in folders.OrderBy(d => Path.GetFileName(d))) {
@@ -38,18 +41,18 @@ public static class FileSystem {
                 if (Array.BinarySearch(skipped, name) >= 0) {
                     continue;
                 }
-                if (gitIgnoreParser.IsIgnored(folder, root)) {
+                if (gitIgnoreParser.IsIgnored(folder, repoRoot)) {
                     continue;
                 }
 
                 result.Append($"<li><b>{name}</b>");
-                BuildTree(result, gitIgnoreParser, folder, skipped);
+                BuildTree(result, gitIgnoreParser, folder, repoRoot, skipped);
                 result.Append("</li>");
             }
 
             foreach (string file in files.OrderBy(f => Path.GetFileName(f))) {
                 string name = Path.GetFileName(file);
-                if (gitIgnoreParser.IsIgnored(file, root)) {
+                if (gitIgnoreParser.IsIgnored(file, repoRoot)) {
                     continue;
                 }
 

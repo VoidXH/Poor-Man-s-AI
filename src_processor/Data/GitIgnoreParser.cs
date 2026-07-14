@@ -11,11 +11,14 @@ public class GitIgnoreParser {
     readonly List<IgnorePattern> patterns = [];
 
     public GitIgnoreParser(string folder) {
-        string parent = Directory.GetParent(folder)?.FullName;
-        if (parent != null && parent != folder) {
-            string parentGitignore = Path.Combine(parent, ".gitignore");
-            if (File.Exists(parentGitignore)) {
-                ParseFile(parentGitignore);
+        bool isRepoRoot = Directory.Exists(Path.Combine(folder, ".git")) || File.Exists(Path.Combine(folder, ".git"));
+        if (!isRepoRoot) {
+            string parent = Directory.GetParent(folder)?.FullName;
+            if (parent != null && parent != folder) {
+                string parentGitignore = Path.Combine(parent, ".gitignore");
+                if (File.Exists(parentGitignore)) {
+                    ParseFile(parentGitignore);
+                }
             }
         }
 
@@ -26,20 +29,22 @@ public class GitIgnoreParser {
     }
 
     static string PatternToRegex(string pattern) {
-        bool matchAnywhere = !pattern.Contains('/');
-        if (pattern.StartsWith('/')) {
+        bool anchored = pattern.StartsWith('/');
+        if (anchored) {
             pattern = pattern[1..];
         }
 
-        string regexPattern = Regex.Escape(pattern)
-            .Replace(@"\*\*/", ".*")     // Handle **/
-            .Replace(@"\*", "[^/]*")     // Handle *
-            .Replace(@"\?", "[^/]");     // Handle ?
+        bool matchAnywhere = !pattern.Contains('/');
 
-        if (matchAnywhere) {
-            return @"(^|/)" + regexPattern + @"($|/)";
-        }
-        return "^" + regexPattern + @"($|/)";
+        string regexPattern = Regex.Escape(pattern)
+            .Replace(@"\*\*/", ".*")      // Handle **/
+            .Replace(@"\*\*", ".*")       // Handle ** (must be before \* replacement)
+            .Replace(@"\*", "[^/]*")      // Handle *
+            .Replace(@"\?", "[^/]");      // Handle ?
+
+        string prefix = anchored ? "^" : (matchAnywhere ? @"(^|/)" : "^");
+        string suffix = @"($|/)";
+        return prefix + regexPattern + suffix;
     }
 
     public bool IsIgnored(string path, string basePath) {
