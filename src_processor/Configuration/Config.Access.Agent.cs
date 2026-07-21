@@ -56,6 +56,11 @@ partial class Config {
     public static readonly string[] agentFolderWhitelist = GetValue("AgentFolderWhitelist").Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
 
     /// <summary>
+    /// Remove disabled tools lines from agent output.
+    /// </summary>
+    public static readonly bool agentSanitization = bool.Parse(GetValue("AgentSanitization"));
+
+    /// <summary>
     /// Parse and return all configured agent settings (Agent1*, Agent2*, etc.).
     /// </summary>
     public static IEnumerable<AgentSettings> GetAllAgentSettings() {

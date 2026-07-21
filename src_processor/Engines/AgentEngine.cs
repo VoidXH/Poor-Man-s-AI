@@ -226,12 +226,12 @@ public partial class AgentEngine : Engine {
         };
         instance.BeginErrorReadLine();
 
-        DateTime lastUpdate = DateTime.Today - TimeSpan.FromDays(1); // Force an update on the first line
         TimeSpan updateTimeSpan = TimeSpan.FromSeconds(Config.agentUpdateInterval);
-
         try {
             Task.Run(async () => {
                 Task<string> readTask = null;
+                AgentOutputSanitizer sanitizer = Config.agentSanitization ? new() : null;
+
                 while (true) {
                     localCanceller.Token.ThrowIfCancellationRequested();
 
@@ -244,7 +244,9 @@ public partial class AgentEngine : Engine {
                             break;
                         }
 
-                        output.AppendLine(line);
+                        if (sanitizer == null || sanitizer.ShouldKeepLine(line)) {
+                            output.AppendLine(line);
+                        }
                         readTask = null;
                     }
 
