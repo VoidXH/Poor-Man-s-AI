@@ -67,7 +67,7 @@ public class LlamaCppSettings {
     /// Read the settings for llama.cpp from the main configuration file.
     /// </summary>
     public LlamaCppSettings(bool llm) {
-        GPU = llm || RuntimeInformation.IsOSPlatform(OSPlatform.OSX); // Mac is Unified, GPU mode is about 0.5% faster
+        GPU = llm;
         Port = Config.llamaCppPort;
         Timeout = Config.chatTimeout;
         Loading = Config.chatLoading;
