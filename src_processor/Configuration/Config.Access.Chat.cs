@@ -117,6 +117,11 @@ namespace PoorMansAI.Configuration {
         public static readonly bool chatFixes = bool.Parse(GetValue("ChatFixes"));
 
         /// <summary>
+        /// Comma-separated list of API keys for llama.cpp server authentication.
+        /// </summary>
+        public static readonly string[] chatApiKeys = GetList(GetValueOrDefault("ChatApiKeys", ""));
+
+        /// <summary>
         /// Enumerate the names of configured models.
         /// </summary>
         public static IEnumerable<string> GetModelNames() => ForEachModel().Select(x => GetValue(x));

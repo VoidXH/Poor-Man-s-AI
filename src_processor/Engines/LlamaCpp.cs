@@ -221,7 +221,7 @@ public partial class LlamaCpp : ChatEngine {
             info.Arguments += " -ngl 999";
         }
         if (settings.MTP > 1) {
-            info.Arguments += " --spec-type draft-mtp --spec-draft-n-max " + settings.MTP;
+            info.Arguments += $" --spec-type draft-mtp --spec-draft-n-max {settings.MTP}";
         }
         if (Config.chatLocalhost) {
             info.Arguments += " --host 0.0.0.0";
@@ -231,6 +231,9 @@ public partial class LlamaCpp : ChatEngine {
             if (templateFile != null) {
                 info.Arguments += $" --chat-template-file \"{templateFile}\"";
             }
+        }
+        if (Config.chatApiKeys.Length > 0) {
+            info.Arguments += $" --api-key {string.Join(',', Config.chatApiKeys)}";
         }
 
         Process instance = Process.Start(info);
