@@ -177,7 +177,7 @@ namespace PoorMansAI.Configuration {
             long? totalBytes = response.Content.Headers.ContentLength;
             using (Stream contentStream = await response.Content.ReadAsStreamAsync())
             using (FileStream file = new(path, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize, true)) {
-                var buffer = new byte[bufferSize];
+                byte[] buffer = new byte[bufferSize];
                 long totalRead = 0;
                 int bytesRead;
                 DateTime nextUpdate = default;

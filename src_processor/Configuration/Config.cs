@@ -67,7 +67,7 @@ public static partial class Config {
             string[] configs = Directory.GetFiles(Path.Combine(Directory.GetCurrentDirectory(), "Configuration"), "*.ini");
             Dictionary<string, string> result = null;
             int maxWeight = int.MinValue;
-            foreach (var iniFile in configs) {
+            foreach (string iniFile in configs) {
                 Dictionary<string, string> data = IniFile.ParseAll(iniFile);
                 if (!data.ContainsKey("ChatWeight")) {
                     continue;

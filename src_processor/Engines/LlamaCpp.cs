@@ -84,7 +84,7 @@ public partial class LlamaCpp : ChatEngine {
     /// </summary>
     public static void Ready() {
         Process[] processes = Process.GetProcessesByName("llama-server");
-        foreach (var process in processes) {
+        foreach (Process process in processes) {
             process.Kill();
             process.WaitForExit();
             Logger.Warning("A previously stuck llama-server instance was killed.");
@@ -150,7 +150,13 @@ public partial class LlamaCpp : ChatEngine {
         canceller.CancelAfter(timeout * 1000);
         string result;
         try {
-            result = HTTP.POST(Server + "/v1/chat/completions", root.ToJsonString(), x => UpdateProgress(command, .5f, x),
+            string authToken = null;
+            if (Config.chatApiKeys != null && Config.chatApiKeys.Length > 0 &&
+                !string.IsNullOrWhiteSpace(Config.chatApiKeys[0])) {
+                authToken = Config.chatApiKeys[0];
+            }
+
+            result = HTTP.POST(Server + "/v1/chat/completions", root.ToJsonString(), authToken, x => UpdateProgress(command, .5f, x),
                 Config.serverPollInterval / 3 /* final callback also limits */, Parse, canceller.Token, 3600 /* large enough, but not crash-causing */);
         } catch (Exception e) {
             Console.Error.WriteLine(e);

@@ -112,7 +112,7 @@ public class GitIgnoreParser_Tests {
                 File.WriteAllText(testPath, "test");
             }
 
-            var parser = new GitIgnoreParser(testDir);
+            GitIgnoreParser parser = new(testDir);
             bool ignored = parser.IsIgnored(testPath, testDir);
 
             Assert.AreEqual(expectedIgnored, ignored, $"Pattern: '{pattern}', Path: '{path}'");

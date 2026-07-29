@@ -52,7 +52,7 @@ namespace VoidX.WPF {
             };
             try {
                 // Send the POST request
-                var response = client.PostAsync(url, new FormUrlEncodedContent(data)).Result;
+                HttpResponseMessage response = client.PostAsync(url, new FormUrlEncodedContent(data)).Result;
                 response.EnsureSuccessStatusCode();
                 return handler.CookieContainer.GetCookies(new Uri(url));
             } catch {
@@ -91,6 +91,41 @@ namespace VoidX.WPF {
                 transformer, canceller, timeoutSeconds).Result;
 
         /// <summary>
+        /// Sends a POST request with JSON content and an optional auth token header (x-api-key + Authorization: Bearer).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string POST(string url, string json, string authToken, int timeoutSeconds = 5) =>
+            POST(url, new StringContent(json, Encoding.UTF8, "application/json"), null, authToken, timeoutSeconds);
+
+        /// <summary>
+        /// Sends a POST request with JSON content and an optional auth token header, and calls back with the partial message periodically.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string POST(string url, string json, string authToken, Action<string> callback, int callbackPeriodMs,
+            Func<string, string> transformer, CancellationToken canceller, int timeoutSeconds = 5) =>
+            POST(url, new StringContent(json, Encoding.UTF8, "application/json"), null, authToken, callback, callbackPeriodMs,
+                transformer, canceller, timeoutSeconds).Result;
+
+        /// <summary>
+        /// Sends an arbitrary POST request with an optional auth token header.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string POST(string url, HttpContent content, CookieCollection cookies, string authToken, int timeoutSeconds = 5) {
+            HttpRequestMessage request = CreatePostRequest(url, content, authToken);
+            return SendRequest(request, cookies, timeoutSeconds);
+        }
+
+        /// <summary>
+        /// Sends an arbitrary POST request with an optional auth token header, and calls back with the partial message periodically.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<string> POST(string url, HttpContent content, CookieCollection cookies, string authToken,
+            Action<string> callback, int callbackPeriodMs, Func<string, string> transformer, CancellationToken canceller, int timeoutSeconds = 5) {
+            HttpRequestMessage request = CreatePostRequest(url, content, authToken);
+            return await SendRequestStreamingAsync(request, cookies, callback, callbackPeriodMs, transformer, timeoutSeconds, canceller);
+        }
+
+        /// <summary>
         /// Sends a POST request of key-value pairs with a timeout.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -125,15 +160,8 @@ namespace VoidX.WPF {
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string POST(string url, HttpContent content, CookieCollection cookies, int timeoutSeconds = 5) {
-            HttpRequestMessage request = new(HttpMethod.Post, url) {
-                Content = content
-            };
-            try {
-                using HttpResponseMessage response = CreateClient(cookies, timeoutSeconds).SendAsync(request).Result;
-                response.EnsureSuccessStatusCode();
-                return response.Content.ReadAsStringAsync().Result;
-            } catch { }
-            return null;
+            HttpRequestMessage request = CreatePostRequest(url, content, null);
+            return SendRequest(request, cookies, timeoutSeconds);
         }
 
         /// <summary>
@@ -142,9 +170,59 @@ namespace VoidX.WPF {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async Task<string> POST(string url, HttpContent content, CookieCollection cookies,
             Action<string> callback, int callbackPeriodMs, Func<string, string> transformer, CancellationToken canceller, int timeoutSeconds = 5) {
-            HttpRequestMessage request = new(HttpMethod.Post, url) {
-                Content = content
-            };
+            HttpRequestMessage request = CreatePostRequest(url, content, null);
+            return await SendRequestStreamingAsync(request, cookies, callback, callbackPeriodMs, transformer, timeoutSeconds, canceller);
+        }
+
+        /// <summary>
+        /// Log the sent request headers and basic response info when the server returned a non-success status.
+        /// </summary>
+        static void LogRequestHeaders(HttpRequestMessage request, HttpResponseMessage response = null) {
+            if (request == null) return;
+            Console.WriteLine($"HTTP non-success response: {(int?)response?.StatusCode ?? 0} {response?.ReasonPhrase} for {request.Method} {request.RequestUri}");
+            if (request.Headers != null) {
+                foreach (KeyValuePair<string, IEnumerable<string>> header in request.Headers) {
+                    Console.WriteLine($"Request header: {header.Key}: {string.Join(',', header.Value)}");
+                }
+            }
+            if (request.Content?.Headers != null) {
+                foreach (KeyValuePair<string, IEnumerable<string>> header in request.Content.Headers) {
+                    Console.WriteLine($"Request content header: {header.Key}: {string.Join(',', header.Value)}");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Helper that builds a POST HttpRequestMessage and applies the optional auth token header.
+        /// </summary>
+        static HttpRequestMessage CreatePostRequest(string url, HttpContent content, string authToken) {
+            HttpRequestMessage request = new(HttpMethod.Post, url) { Content = content };
+            if (!string.IsNullOrWhiteSpace(authToken)) {
+                request.Headers.TryAddWithoutValidation("Authorization", "Bearer " + authToken);
+            }
+            return request;
+        }
+
+        /// <summary>
+        /// Helper that sends a non-streaming request and returns the body or null on error.
+        /// </summary>
+        static string SendRequest(HttpRequestMessage request, CookieCollection cookies, int timeoutSeconds) {
+            try {
+                using HttpResponseMessage response = CreateClient(cookies, timeoutSeconds).SendAsync(request).Result;
+                if (!response.IsSuccessStatusCode) {
+                    LogRequestHeaders(response.RequestMessage, response);
+                    return null;
+                }
+                return response.Content.ReadAsStringAsync().Result;
+            } catch { }
+            return null;
+        }
+
+        /// <summary>
+        /// Helper that sends a streaming request and invokes callback periodically while returning the accumulated transformed result.
+        /// </summary>
+        static async Task<string> SendRequestStreamingAsync(HttpRequestMessage request, CookieCollection cookies,
+            Action<string> callback, int callbackPeriodMs, Func<string, string> transformer, int timeoutSeconds, CancellationToken canceller) {
             string result = string.Empty;
             TimeSpan interval = TimeSpan.FromMilliseconds(callbackPeriodMs);
             DateTime sendAt = default;
