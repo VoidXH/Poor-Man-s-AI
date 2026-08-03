@@ -94,6 +94,9 @@ namespace PoorMansAI.Configuration {
             foreach (string prefix in Config.ForEachModel()) {
                 CheckLLM(Config.GetValue(prefix + "SLM"), ref prepTextSent);
                 CheckLLM(Config.GetValue(prefix + "LLM"), ref prepTextSent);
+                if (Config.TryGetValue(prefix + "MMProj", out string mmprojUrl)) {
+                    CheckLLM(mmprojUrl, ref prepTextSent);
+                }
             }
             if (!string.IsNullOrEmpty(Config.moaModel)) {
                 CheckLLM(Config.moaModel, ref prepTextSent);

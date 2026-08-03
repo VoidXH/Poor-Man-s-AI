@@ -20,6 +20,11 @@ public class LLModel {
     public string FilePath { get; }
 
     /// <summary>
+    /// Multimodal projector (mmproj) file path for vision-supporting multimodal models.
+    /// </summary>
+    public string MMProjPath { get; }
+
+    /// <summary>
     /// How the LLM should behave.
     /// </summary>
     public string SystemMessage { get; }
@@ -76,6 +81,10 @@ public class LLModel {
 
         string reasoning = Config.GetValueOrDefault(prefix + "Reasoning", "true");
         Reasoning = bool.Parse(reasoning);
+
+        if (Config.TryGetValue(prefix + "MMProj", out string mmprojUrl)) {
+            MMProjPath = Path.Combine(Config.models, Path.GetFileName(mmprojUrl));
+        }
     }
 
     /// <summary>
