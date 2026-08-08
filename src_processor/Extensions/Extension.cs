@@ -35,6 +35,9 @@ namespace PoorMansAI.Extensions {
                     case nameof(ChatPostprocessor):
                         new ChatPostprocessor().Register();
                         break;
+                    case nameof(ChatPreprocessor):
+                        new ChatPreprocessor().Register();
+                        break;
                     case nameof(LocalIPLogger):
                         new LocalIPLogger().Register();
                         break;

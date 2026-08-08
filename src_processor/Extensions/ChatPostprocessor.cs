@@ -9,8 +9,6 @@
         protected ChatMessageDelegate FurtherActions;
 
         /// <inheritdoc/>
-        protected internal override void Register() {
-            ChatPostprocessActions += FurtherActions;
-        }
+        protected internal override void Register() => ChatPostprocessActions += FurtherActions;
     }
 }

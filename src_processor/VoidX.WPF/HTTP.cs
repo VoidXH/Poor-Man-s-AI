@@ -8,6 +8,11 @@ namespace VoidX.WPF {
     /// </summary>
     static class HTTP {
         /// <summary>
+        /// Last HTTP status code received (0 if none or error).
+        /// </summary>
+        public static int LastStatusCode { get; private set; }
+
+        /// <summary>
         /// Merge a <paramref name="server"/> URL with an endpoint <paramref name="path"/>.
         /// </summary>
         public static string Combine(string server, string path) {
@@ -209,12 +214,15 @@ namespace VoidX.WPF {
         static string SendRequest(HttpRequestMessage request, CookieCollection cookies, int timeoutSeconds) {
             try {
                 using HttpResponseMessage response = CreateClient(cookies, timeoutSeconds).SendAsync(request).Result;
+                LastStatusCode = (int)response.StatusCode;
                 if (!response.IsSuccessStatusCode) {
                     LogRequestHeaders(response.RequestMessage, response);
                     return null;
                 }
                 return response.Content.ReadAsStringAsync().Result;
-            } catch { }
+            } catch {
+                LastStatusCode = 0;
+            }
             return null;
         }
 
@@ -226,31 +234,37 @@ namespace VoidX.WPF {
             string result = string.Empty;
             TimeSpan interval = TimeSpan.FromMilliseconds(callbackPeriodMs);
             DateTime sendAt = default;
-            using HttpResponseMessage response = await CreateClient(cookies, timeoutSeconds).
-                SendAsync(request, HttpCompletionOption.ResponseHeadersRead, canceller);
-            response.EnsureSuccessStatusCode();
-            using Stream stream = await response.Content.ReadAsStreamAsync();
-            using StreamReader reader = new(stream);
-            string line;
-            DateTime failAt = DateTime.UtcNow + TimeSpan.FromSeconds(timeoutSeconds); // As the timeout for the client is "since last reply"
-            while ((line = await reader.ReadLineAsync()) != null) {
-                result += transformer(line);
-                if (canceller.IsCancellationRequested) {
-                    return result;
+            try {
+                using HttpResponseMessage response = await CreateClient(cookies, timeoutSeconds).
+                    SendAsync(request, HttpCompletionOption.ResponseHeadersRead, canceller);
+                LastStatusCode = (int)response.StatusCode;
+                response.EnsureSuccessStatusCode();
+                using Stream stream = await response.Content.ReadAsStreamAsync();
+                using StreamReader reader = new(stream);
+                string line;
+                DateTime failAt = DateTime.UtcNow + TimeSpan.FromSeconds(timeoutSeconds); // As the timeout for the client is "since last reply"
+                while ((line = await reader.ReadLineAsync()) != null) {
+                    result += transformer(line);
+                    if (canceller.IsCancellationRequested) {
+                        return result;
+                    }
+                    DateTime now = DateTime.UtcNow;
+                    if (sendAt == default) { // Prevent sending too small of a progress
+                        sendAt = now + interval;
+                    }
+                    if (sendAt < now) {
+                        callback(result);
+                        sendAt = now + interval;
+                    }
+                    if (failAt < now) {
+                        return result;
+                    }
                 }
-                DateTime now = DateTime.UtcNow;
-                if (sendAt == default) { // Prevent sending too small of a progress
-                    sendAt = now + interval;
-                }
-                if (sendAt < now) {
-                    callback(result);
-                    sendAt = now + interval;
-                }
-                if (failAt < now) {
-                    return result;
-                }
+                return result;
+            } catch {
+                LastStatusCode = 0;
+                throw;
             }
-            return result;
         }
 
         /// <summary>
