@@ -104,7 +104,7 @@ public static partial class Config {
         if (config.TryGetValue(key, out string value)) {
             return value;
         }
-        Logger.Error($"{key} is missing from the highest priority configuration file. Please check its integrity.");
+        Logger.Error($"{key} is missing from the highest priority configuration file. Please check its integrity.{Environment.NewLine}{Environment.StackTrace}");
         Environment.Exit(1);
         return null;
     }
