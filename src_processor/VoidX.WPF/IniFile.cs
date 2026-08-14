@@ -1,4 +1,4 @@
-﻿namespace VoidX.WPF;
+namespace VoidX.WPF;
 
 /// <summary>
 /// INI file handling functions.
@@ -52,7 +52,29 @@ class IniFileParser(string path) {
     /// <summary>
     /// The entire ini file read into lines.
     /// </summary>
-    readonly string[] file = File.ReadAllLines(path);
+    readonly string[] file = ReadLines(path);
+
+    static string[] ReadLines(string path, HashSet<string> visited = null) {
+        visited ??= new(StringComparer.OrdinalIgnoreCase);
+        string fullPath = Path.GetFullPath(path);
+        if (!visited.Add(fullPath) || !File.Exists(fullPath)) {
+            return [];
+        }
+
+        List<string> result = [];
+        string dir = Path.GetDirectoryName(fullPath) ?? string.Empty;
+        foreach (string rawLine in File.ReadAllLines(fullPath)) {
+            string trimmed = rawLine.Trim();
+            if (trimmed.StartsWith("Import(", StringComparison.OrdinalIgnoreCase) && trimmed.EndsWith(")")) {
+                string importFileName = trimmed[7..^1].Trim();
+                string importPath = Path.IsPathRooted(importFileName) ? importFileName : Path.Combine(dir, importFileName);
+                result.AddRange(ReadLines(importPath, visited));
+            } else {
+                result.Add(rawLine);
+            }
+        }
+        return [.. result];
+    }
 
     /// <summary>
     /// Number of lines read so far.

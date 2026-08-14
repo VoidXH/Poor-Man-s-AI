@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 
 using PoorMansAI.Configuration;
 using PoorMansAI.Engines.Jinja;
@@ -45,6 +45,11 @@ public class LLModel {
     public float MinP { get; }
 
     /// <summary>
+    /// Penalty to reduce repetition of tokens already in the context.
+    /// </summary>
+    public float PresencePenalty { get; }
+
+    /// <summary>
     /// List of supported external tools.
     /// </summary>
     public JinjaConfig Jinja { get; }
@@ -74,6 +79,9 @@ public class LLModel {
 
         string minP = Config.GetValueOrDefault(prefix + "MinP", Config.GetValue("ChatMinP"));
         MinP = float.Parse(minP, CultureInfo.InvariantCulture);
+
+        string presencePenalty = Config.GetValueOrDefault(prefix + "PresencePenalty", Config.GetValue("ChatPresencePenalty"));
+        PresencePenalty = float.Parse(presencePenalty, CultureInfo.InvariantCulture);
 
         if (Config.TryGetValue(prefix + "Jinja", out string jinja)) {
             Jinja = new(Path.Combine(Directory.GetCurrentDirectory(), "Configuration", jinja));

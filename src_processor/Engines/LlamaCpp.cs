@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Text.Json.Nodes;
 
 using VoidX.WPF;
@@ -224,7 +224,8 @@ public partial class LlamaCpp : ChatEngine {
 
         ProcessStartInfo info = ProcessUtils.CreateRedirectedStartInfo(executable, workingDir);
         info.Arguments = $"-m \"{lastModel.FilePath}\" --port {settings.Port} -c {settings.Context} -np {settings.Parallel} -fa on --keep {settings.Keep}" +
-                $" --temp {lastModel.Temperature:0.00} --min-p {lastModel.MinP:0.00} --reasoning-budget {Config.chatReasoningBudget}";
+            $" --temp {lastModel.Temperature:0.00} --min-p {lastModel.MinP:0.00} --presence-penalty {lastModel.PresencePenalty:0.00}" +
+            $" --reasoning-budget {Config.chatReasoningBudget}";
         if (!string.IsNullOrEmpty(lastModel.MMProjPath)) {
             info.Arguments += $" --mmproj \"{lastModel.MMProjPath}\"";
         }

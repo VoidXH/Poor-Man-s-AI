@@ -86,6 +86,16 @@ public static partial class Config {
     static Dictionary<string, string> loadedConfig;
 
     /// <summary>
+    /// Overwrites the active configuration with the provided dictionary, or resets it if <c>null</c>.
+    /// </summary>
+    public static void Overwrite(Dictionary<string, string> config) => loadedConfig = config;
+
+    /// <summary>
+    /// Overwrites the active configuration with the parsed contents of the specified INI file path.
+    /// </summary>
+    public static void Overwrite(string iniFilePath) => loadedConfig = iniFilePath != null ? IniFile.ParseAll(iniFilePath) : null;
+
+    /// <summary>
     /// Returns the configuration value associated with <paramref name="key"/>. If the key is missing, logs a
     /// clear message to the console and terminates the application before a confusing <see cref="KeyNotFoundException"/> is thrown.
     /// </summary>
