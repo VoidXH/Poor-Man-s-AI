@@ -1,3 +1,5 @@
+using System.Globalization;
+
 using VoidX.WPF;
 
 namespace PoorMansAI.Configuration;
@@ -118,6 +120,12 @@ public static partial class Config {
     /// Reads an optional configuration value, returning <paramref name="defaultValue"/> if the <paramref name="key"/> is absent.
     /// </summary>
     internal static string GetValueOrDefault(string key, string defaultValue) => TryGetValue(key, out string value) ? value : defaultValue;
+
+    /// <summary>
+    /// Reads an optional configuration value, returning <paramref name="defaultValue"/> if the <paramref name="key"/> is absent.
+    /// </summary>
+    internal static float GetValueOrDefault(string key, float defaultValue) =>
+        TryGetValue(key, out string value) ? float.Parse(value, CultureInfo.InvariantCulture) : defaultValue;
 
     /// <summary>
     /// Parse keywords or selectors to a binary searchable (sorted) array.

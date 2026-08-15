@@ -74,14 +74,9 @@ public class LLModel {
             PostMessage = postMessage;
         }
 
-        string temperature = Config.GetValueOrDefault(prefix + "Temperature", Config.GetValue("ChatTemperature"));
-        Temperature = float.Parse(temperature, CultureInfo.InvariantCulture);
-
-        string minP = Config.GetValueOrDefault(prefix + "MinP", Config.GetValue("ChatMinP"));
-        MinP = float.Parse(minP, CultureInfo.InvariantCulture);
-
-        string presencePenalty = Config.GetValueOrDefault(prefix + "PresencePenalty", Config.GetValue("ChatPresencePenalty"));
-        PresencePenalty = float.Parse(presencePenalty, CultureInfo.InvariantCulture);
+        Temperature = Config.GetValueOrDefault(prefix + "Temperature", Config.chatTemperature);
+        MinP = Config.GetValueOrDefault(prefix + "MinP", Config.chatMinP);
+        PresencePenalty = Config.GetValueOrDefault(prefix + "PresencePenalty", Config.chatPresencePenalty);
 
         if (Config.TryGetValue(prefix + "Jinja", out string jinja)) {
             Jinja = new(Path.Combine(Directory.GetCurrentDirectory(), "Configuration", jinja));

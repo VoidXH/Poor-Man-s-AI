@@ -137,6 +137,8 @@ public partial class LlamaCpp : ChatEngine {
             ["messages"] = messages,
             ["n_discard"] = settings.Discard,
             ["temperature"] = model.Temperature,
+            ["min_p"] = model.MinP,
+            ["presence_penalty"] = model.PresencePenalty,
             ["stream"] = true
         };
         model.Jinja?.Attach(root);
@@ -224,7 +226,7 @@ public partial class LlamaCpp : ChatEngine {
 
         ProcessStartInfo info = ProcessUtils.CreateRedirectedStartInfo(executable, workingDir);
         info.Arguments = $"-m \"{lastModel.FilePath}\" --port {settings.Port} -c {settings.Context} -np {settings.Parallel} -fa on --keep {settings.Keep}" +
-            $" --temp {lastModel.Temperature:0.00} --min-p {lastModel.MinP:0.00} --presence-penalty {lastModel.PresencePenalty:0.00}" +
+            $" --temp {Config.chatTemperature:0.00} --min-p {Config.chatMinP:0.00} --presence-penalty {Config.chatPresencePenalty:0.00}" +
             $" --reasoning-budget {Config.chatReasoningBudget}";
         if (!string.IsNullOrEmpty(lastModel.MMProjPath)) {
             info.Arguments += $" --mmproj \"{lastModel.MMProjPath}\"";

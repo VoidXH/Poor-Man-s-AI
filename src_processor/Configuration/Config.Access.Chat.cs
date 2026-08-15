@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace PoorMansAI.Configuration {
     // Parsed config values related to LLM chatbots
     partial class Config {
@@ -70,6 +72,21 @@ namespace PoorMansAI.Configuration {
         /// When switching models, allow this many extra seconds over the normal timeout.
         /// </summary>
         public static readonly int chatLoading = int.Parse(GetValue("ChatLoading"));
+
+        /// <summary>
+        /// Temperature for chat responses, higher = more random, lower = more deterministic.
+        /// </summary>
+        public static readonly float chatTemperature = float.Parse(GetValue("ChatTemperature"), CultureInfo.InvariantCulture);
+
+        /// <summary>
+        /// Minimum probability for token selection.
+        /// </summary>
+        public static readonly float chatMinP = float.Parse(GetValue("ChatMinP"), CultureInfo.InvariantCulture);
+
+        /// <summary>
+        /// Presence penalty for chat responses, higher = less repetition of tokens already in the context.
+        /// </summary>
+        public static readonly float chatPresencePenalty = float.Parse(GetValue("ChatPresencePenalty"), CultureInfo.InvariantCulture);
 
         /// <summary>
         /// Maximum number of tokens to generate (-1 = infinite).
