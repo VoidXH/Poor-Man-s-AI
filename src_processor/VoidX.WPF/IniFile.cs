@@ -1,9 +1,23 @@
+using System.Text.RegularExpressions;
+
 namespace VoidX.WPF;
 
 /// <summary>
 /// INI file handling functions.
 /// </summary>
-public static class IniFile {
+public static partial class IniFile {
+    /// <summary>
+    /// Regex matching %variable% patterns for batch variable substitution.
+    /// </summary>
+    static readonly Regex VariableRegex = CreateVariableRegex();
+    [GeneratedRegex(@"%([^%]+)%", RegexOptions.Compiled)]
+    private static partial Regex CreateVariableRegex();
+
+    /// <summary>
+    /// Variables loaded once from Variables.ini in the Configuration directory.
+    /// </summary>
+    static readonly Dictionary<string, string> Variables = LoadVariables();
+
     /// <summary>
     /// Parse all blocks in an INI file.
     /// </summary>
@@ -18,7 +32,7 @@ public static class IniFile {
     }
 
     /// <summary>
-    /// Parse an INI file into a dictionary.
+    /// Parse an INI file into a dictionary, resolving %variable% references from Variables.ini.
     /// </summary>
     public static Dictionary<string, string> ParseAll(string path) {
         Dictionary<string, string> result = [];
@@ -26,10 +40,29 @@ public static class IniFile {
         IniFileBlock lastBlock;
         while ((lastBlock = parser.ReadNextBlock()) != null) {
             foreach (KeyValuePair<string, string> kvp in lastBlock.Values) {
-                result[kvp.Key] = kvp.Value;
+                result[kvp.Key] = ResolveVariables(kvp.Value);
             }
         }
         return result;
+    }
+
+    /// <summary>
+    /// Load variables from Variables.ini located in the Configuration directory.
+    /// </summary>
+    static Dictionary<string, string> LoadVariables() {
+        string configDir = Path.Combine(AppContext.BaseDirectory, "Configuration");
+        string variablesPath = Path.Combine(configDir, "Variables.ini");
+        return File.Exists(variablesPath) ? ParseAll(variablesPath) : [];
+    }
+
+    /// <summary>
+    /// Replace all %variable% patterns in <paramref name="value"/> with values from Variables.ini. Unresolved patterns are left as-is.
+    /// </summary>
+    static string ResolveVariables(string value) {
+        return VariableRegex.Replace(value, match => {
+            string key = match.Groups[1].Value;
+            return Variables.TryGetValue(key, out string replacement) ? replacement : match.Value;
+        });
     }
 }
 
@@ -65,7 +98,7 @@ class IniFileParser(string path) {
         string dir = Path.GetDirectoryName(fullPath) ?? string.Empty;
         foreach (string rawLine in File.ReadAllLines(fullPath)) {
             string trimmed = rawLine.Trim();
-            if (trimmed.StartsWith("Import(", StringComparison.OrdinalIgnoreCase) && trimmed.EndsWith(")")) {
+            if (trimmed.StartsWith("Import(", StringComparison.OrdinalIgnoreCase) && trimmed.EndsWith(')')) {
                 string importFileName = trimmed[7..^1].Trim();
                 string importPath = Path.IsPathRooted(importFileName) ? importFileName : Path.Combine(dir, importFileName);
                 result.AddRange(ReadLines(importPath, visited));
