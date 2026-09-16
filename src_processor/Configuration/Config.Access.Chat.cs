@@ -109,6 +109,11 @@ namespace PoorMansAI.Configuration {
         public static readonly int chatReasoningBudget = int.Parse(GetValue("ChatReasoningBudget"));
 
         /// <summary>
+        /// Reasoning effort level given to the chat template (low, medium, high, xhigh...).
+        /// </summary>
+        public static readonly string chatReasoningEffort = GetValue("ChatReasoningEffort");
+
+        /// <summary>
         /// How much to keep of the initial prompt context for each generation.
         /// </summary>
         public static readonly int chatKeep = int.Parse(GetValue("ChatKeep"));
