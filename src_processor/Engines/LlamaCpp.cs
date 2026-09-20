@@ -227,7 +227,8 @@ public partial class LlamaCpp : ChatEngine {
         ProcessStartInfo info = ProcessUtils.CreateRedirectedStartInfo(executable, workingDir);
         info.Arguments = $"-m \"{lastModel.FilePath}\" --port {settings.Port} -c {settings.Context} -np {settings.Parallel} -fa on --keep {settings.Keep}" +
             $" --temp {Config.chatTemperature:0.00} --min-p {Config.chatMinP:0.00} --presence-penalty {Config.chatPresencePenalty:0.00}" +
-            $" --reasoning-budget {Config.chatReasoningBudget} --reasoning-effort {Config.chatReasoningEffort}";
+            $" --reasoning-budget {Config.chatReasoningBudget} --reasoning-effort {Config.chatReasoningEffort}" +
+            $" --cache-type-k {settings.KVQuantization} --cache-type-v {settings.KVQuantization}";
         if (!string.IsNullOrEmpty(lastModel.MMProjPath)) {
             info.Arguments += $" --mmproj \"{lastModel.MMProjPath}\"";
         }

@@ -104,6 +104,11 @@ namespace PoorMansAI.Configuration {
         public static readonly int chatContextLLM = int.Parse(GetValue("ChatContextLLM"));
 
         /// <summary>
+        /// Quantization type for KV cache layers (--cache-type-k and --cache-type-v).
+        /// </summary>
+        public static readonly string chatKVQuantization = GetValueOrDefault("ChatKVQuantization", "q8_0");
+
+        /// <summary>
         /// Number of tokens to maximally use for a single reasoning session.
         /// </summary>
         public static readonly int chatReasoningBudget = int.Parse(GetValue("ChatReasoningBudget"));

@@ -39,6 +39,11 @@ public class LlamaCppSettings {
     public int Context { get; set; } = 4096;
 
     /// <summary>
+    /// Quantization type for KV cache layers (--cache-type-k and --cache-type-v).
+    /// </summary>
+    public string KVQuantization { get; set; } = "q8_0";
+
+    /// <summary>
     /// How much to keep of the initial prompt context for each generation.
     /// </summary>
     public int Keep { get; set; } = 128;
@@ -73,6 +78,7 @@ public class LlamaCppSettings {
         Loading = Config.chatLoading;
         Predict = Config.chatPredict;
         Context = llm ? Config.chatContextLLM : Config.chatContextSLM;
+        KVQuantization = Config.chatKVQuantization;
         Keep = Config.chatKeep;
         Discard = Config.chatDiscard;
         MTP = Config.chatMTP;
