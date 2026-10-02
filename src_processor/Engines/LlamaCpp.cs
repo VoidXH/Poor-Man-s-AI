@@ -258,16 +258,17 @@ public partial class LlamaCpp : ChatEngine {
         instance.BeginErrorReadLine();
         instance.BeginOutputReadLine();
 
-        // Give 30 seconds for startup - if fails, kill it
-        DateTime tryUntil = DateTime.UtcNow + TimeSpan.FromSeconds(30);
-        while (DateTime.UtcNow < tryUntil) {
+        DateTime lastWarning = DateTime.UtcNow;
+        while (true) {
             if (HTTP.GET(Server + "/health")?.Contains("ok") ?? false) {
                 return instance;
             }
+            if (DateTime.UtcNow - lastWarning >= TimeSpan.FromSeconds(30)) {
+                Logger.Warning("The llama-server process failed to initialize in 30 seconds. Waiting...");
+                lastWarning = DateTime.UtcNow;
+            }
             Thread.Sleep(100);
         }
-        lastModel = null;
-        return instance;
     }
 
     /// <summary>
